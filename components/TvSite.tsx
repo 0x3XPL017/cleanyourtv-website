@@ -8,6 +8,7 @@ import { GROUPS, KONAMI, NAMES, ORDER, S, TERM, TERM_TOTAL, THEMES, TILE_COLORS,
 import type { ThemeName } from "@/lib/site";
 
 const TWEET = "https://x.com/gathint/status/2111379569030939102";
+const COFFEE = "https://buymeacoffee.com/gathint";
 const BOOT_DELAY = 1500;
 
 type Counter = { key: string; label: string; value: number; max: number; display: number };
@@ -491,6 +492,7 @@ export default class TvSite extends React.Component<Props, State> {
                     <div ref={this.gaugeRef} style={S("position:relative;height:10px;margin-top:-18px;width:0;background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);color:var(--ink,#fff);transition:width .08s linear")} />
                   </div>
                   <button onClick={() => this.onPower()} style={S("height:44px;padding:0 20px;border-radius:22px;border:0;background:var(--pill-bg,rgba(255,255,255,.12));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500")}>Turn it off</button>
+                  <a href={COFFEE} target="_blank" rel="noopener" style={S("font-size:14px;color:var(--ink-dim,rgba(255,255,255,.6))")}>Buy me a coffee</a>
                 </div>
               </section>
             </div>
@@ -502,6 +504,7 @@ export default class TvSite extends React.Component<Props, State> {
                 <a href={GH} target="_blank" rel="noopener">GitHub</a>
                 <a href={TWEET} target="_blank" rel="noopener">The tweet</a>
                 <a href={GH + "/blob/main/LICENSE"} target="_blank" rel="noopener">MIT licence</a>
+                <a href={COFFEE} target="_blank" rel="noopener">Buy me a coffee</a>
               </div>
               <p style={S("margin:0;max-width:34em;line-height:1.45;text-wrap:pretty")}>Started as one afternoon on my parents&apos; TV. Built with Claude Code.</p>
               <div style={S("font-family:'VT323',monospace;font-size:clamp(16px,1.8cqw,22px);opacity:.45;letter-spacing:.08em")}>POWER TURNS IT BACK ON</div>
