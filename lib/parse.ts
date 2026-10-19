@@ -1,5 +1,5 @@
 // Parsers shared by the server loader and the client component. No Node imports here.
-export const REPO = "Gathin23/tv-vibehack";
+export const REPO = "Gathin23/cleanyourtv";
 export const GH = `https://github.com/${REPO}`;
 
 export type Tv = { folder: string; tv: string; brand: string; model: string; os: string; notes: string };

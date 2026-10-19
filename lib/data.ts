@@ -1,4 +1,4 @@
-// Everything the site reads from the tv-vibehack repo and GitHub, fetched on the server with
+// Everything the site reads from the cleanyourtv repo and GitHub, fetched on the server with
 // Incremental Static Regeneration (revalidate hourly) and a static fallback for every value, so the
 // page never depends on the public GitHub rate limit at request time.
 import fs from "node:fs/promises";

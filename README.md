@@ -1,6 +1,6 @@
 # cleanyour.tv
 
-The website for [tv-vibehack](https://github.com/Gathin23/tv-vibehack): debloat any Android TV or Google TV over Wi-Fi and swap the ad-filled home screen for a clean launcher.
+The website for [cleanyourtv](https://github.com/Gathin23/cleanyourtv), formerly tv-vibehack: debloat any Android TV or Google TV over Wi-Fi and swap the ad-filled home screen for a clean launcher.
 
 The whole site is one old television. Six channels, a remote in the corner, static between channels, and a power button that actually turns it off.
 
@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-Content comes from the tv-vibehack repo and the GitHub API at build time and is re-fetched at most once an hour (ISR). Every value has a static fallback, so the site builds without network access and never depends on the public GitHub rate limit at request time.
+Content comes from the cleanyourtv repo and the GitHub API at build time and is re-fetched at most once an hour (ISR). Every value has a static fallback, so the site builds without network access and never depends on the public GitHub rate limit at request time.
 
 Optional: set `GITHUB_TOKEN` in the environment (Vercel project settings, never in a file) to raise the API rate limit and turn on the real star history behind the oscilloscope. Without it the chart draws a placeholder curve.
 
