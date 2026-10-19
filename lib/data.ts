@@ -3,8 +3,8 @@
 // page never depends on the public GitHub rate limit at request time.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { GH, REPO, parseShowcase, parseTVs, parseThemes, starSeriesFallback } from "./parse";
-import type { Pr, ResultItem, ShowcaseItem, SiteData, ThemeItem } from "./parse";
+import { GH, REPO, parseShowcase, parseTVs, parseThemes, starSeriesFallback, tweetToken } from "./parse";
+import type { Pr, ResultItem, ShowcaseItem, SiteData, ThemeItem, Tweet } from "./parse";
 
 const RAW = `https://raw.githubusercontent.com/${REPO}/main/`;
 const REVALIDATE = 3600;
@@ -67,15 +67,36 @@ async function starSeries(total: number): Promise<number[]> {
   return cum.map((v) => v / max);
 }
 
+// ---- the launch tweet: text and counts from X's public syndication endpoint (the one embeds use)
+
+const TWEET_ID = "2111379569030939102";
+
+async function tweet(): Promise<Tweet> {
+  try {
+    const r = await fetch(`https://cdn.syndication.twimg.com/tweet-result?id=${TWEET_ID}&token=${tweetToken(TWEET_ID)}&lang=en`, {
+      headers: { "User-Agent": "Mozilla/5.0 (cleanyour.tv)" },
+      next: { revalidate: REVALIDATE },
+    });
+    if (!r.ok) return FALLBACK.tweet;
+    const j = (await r.json()) as { text?: string; favorite_count?: number; conversation_count?: number; created_at?: string };
+    const text = (j.text || "").replace(/\s*https?:\/\/t\.co\/\S+/g, "").trim();
+    if (!text) return FALLBACK.tweet;
+    return { text, likes: j.favorite_count ?? FALLBACK.tweet.likes, replies: j.conversation_count ?? FALLBACK.tweet.replies, date: j.created_at || FALLBACK.tweet.date };
+  } catch {
+    return FALLBACK.tweet;
+  }
+}
+
 // ---- the one call page.tsx makes
 
 export async function loadSiteData(): Promise<SiteData> {
-  const [repo, examplesMd, showcaseMd, themesMd, prompt] = await Promise.all([
+  const [repo, examplesMd, showcaseMd, themesMd, prompt, tw] = await Promise.all([
     json<{ stargazers_count: number; forks_count: number }>(`https://api.github.com/repos/${REPO}`),
     text(RAW + "examples/README.md"),
     text(RAW + "SHOWCASE.md"),
     text(RAW + "themes/README.md"),
     text(RAW + "PROMPT.md"),
+    tweet(),
   ]);
 
   const prs: Pr[] = [];
@@ -104,6 +125,7 @@ export async function loadSiteData(): Promise<SiteData> {
     showcase: showcaseMd ? parseShowcase(showcaseMd) : FALLBACK.showcase,
     themes: themesMd ? parseThemes(themesMd) : FALLBACK.themes,
     prompt: prompt || `Read and follow the prompt at ${GH}/blob/main/PROMPT.md\nMy TV model is: <MODEL NAME HERE>.`,
+    tweet: tw,
     starSeries: await starSeries(stars),
     fetchedAt: new Date().toISOString(),
   };
@@ -112,6 +134,12 @@ export async function loadSiteData(): Promise<SiteData> {
 // ---- static fallbacks (snapshot of the repo on 2026-10-19)
 
 export const FALLBACK = {
+  tweet: {
+    text: "Vibe coded my parents' TV this afternoon!\n\nIt was showing a sponsored ad before you could even get to Netflix.\n\nGave Claude Code the model number, it found the TV on wifi, removed 25 Xiaomi packages and wrote a new launcher.\n\nLooks like an Apple TV now lol",
+    likes: 26044,
+    replies: 647,
+    date: "2026-10-17T08:51:31.000Z",
+  } as Tweet,
   stars: 2780,
   forks: 331,
   prCount: 52,

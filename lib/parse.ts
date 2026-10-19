@@ -7,6 +7,7 @@ export type Pr = { login: string; avatar: string; title: string };
 export type ResultItem = { handle: string; quote: string; image: string; link: string; tv: string };
 export type ShowcaseItem = { name: string; what: string; builtOn: string; by: string; url: string };
 export type ThemeItem = { name: string; what: string };
+export type Tweet = { text: string; likes: number; replies: number; date: string };
 export type SiteData = {
   stars: number;
   forks: number;
@@ -18,6 +19,7 @@ export type SiteData = {
   showcase: ShowcaseItem[];
   themes: ThemeItem[];
   prompt: string;
+  tweet: Tweet;
   starSeries: number[];
   fetchedAt: string;
 };
@@ -72,4 +74,15 @@ export function starSeriesFallback(): number[] {
     out.push(Math.max(0, Math.min(1, v)));
   }
   return out;
+}
+
+/** The token X's syndication endpoint wants: ((id / 1e15) * PI) in base 36 without zeros or the point. */
+export function tweetToken(id: string): string {
+  let x = (Number(id) / 1e15) * Math.PI;
+  const d = "0123456789abcdefghijklmnopqrstuvwxyz";
+  let ip = Math.floor(x), fp = x - ip, out = "";
+  while (ip > 0) { out = d[ip % 36] + out; ip = Math.floor(ip / 36); }
+  let frac = "";
+  for (let i = 0; i < 12; i++) { fp *= 36; const k = Math.floor(fp); frac += d[k]; fp -= k; }
+  return ((out || "0") + "." + frac).replace(/(0+|\.)/g, "");
 }

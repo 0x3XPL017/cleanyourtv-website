@@ -653,7 +653,7 @@ export default class TvSite extends React.Component<Props, State> {
   }
 
   renderStory() {
-    const d = this.props.data;
+    const d = this.props.data, tw = d.tweet;
     const stars = d.stars.toLocaleString("en-US");
     const ticker = `Oct 17, 2:21 PM: posted · 48 hours later: ${stars} stars, ${d.forks.toLocaleString("en-US")} forks, ${d.prCount.toLocaleString("en-US")} pull requests · ${d.tvs.length} TVs from ${new Set(d.tvs.map((t) => t.brand)).size} brands`;
     return (
@@ -666,10 +666,22 @@ export default class TvSite extends React.Component<Props, State> {
               <span style={S("opacity:.75")}>OCT 17 · 2:21 PM</span>
             </div>
             <div style={S("flex:1;display:grid;place-items:center;padding:6px 18px 66px")}>
-              <a href={TWEET} target="_blank" rel="noopener" aria-label="The tweet that started it, on X" className="no-border" style={S("width:100%;max-width:440px;border-radius:16px;overflow:hidden;background:#FFFFFF;box-shadow:0 18px 40px rgba(0,0,0,.5);display:block;transition:transform .2s")}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/docs/tweet.png" alt="The tweet: Vibe coded my parents' TV this afternoon. Before and after screenshots." style={S("width:100%;height:auto;display:block")} />
-              </a>
+              <article style={S("width:100%;max-width:480px;background:#FFFFFF;color:#0F1419;border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;box-shadow:0 18px 40px rgba(0,0,0,.5);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif")}>
+                <div style={S("display:flex;gap:10px;align-items:center")}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/docs/avatar.jpg" alt="" width={40} height={40} style={S("width:40px;height:40px;border-radius:50%;background:#E6E6E6")} />
+                  <div style={S("display:flex;flex-direction:column;line-height:1.25")}><span style={S("font-weight:700;font-size:15px")}>Gathin</span><span style={S("font-size:14px;color:#536471")}>@gathint</span></div>
+                </div>
+                <p style={S("margin:0;font-size:15px;line-height:1.4;white-space:pre-line;text-wrap:pretty")}>{tw.text}</p>
+                <a href={TWEET} target="_blank" rel="noopener" className="no-border" style={S("display:block;border-radius:12px;overflow:hidden;background:#000")}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/docs/tweet-photo.jpg" alt="Before: the stock home with a sponsored ad. After: the clean launcher." style={S("width:100%;height:auto;display:block;aspect-ratio:16/9;object-fit:cover")} />
+                </a>
+                <div style={S("display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px;color:#536471")}>
+                  <span><b style={S("color:#0F1419;font-weight:700")}>{tw.likes.toLocaleString("en-US")}</b> likes · <b style={S("color:#0F1419;font-weight:700")}>{tw.replies.toLocaleString("en-US")}</b> replies</span>
+                  <a href={TWEET} target="_blank" rel="noopener" style={S("color:#1D5F9E;border-bottom:1px solid rgba(29,95,158,.35)")}>Read it on X</a>
+                </div>
+              </article>
             </div>
             <div style={S("position:absolute;left:0;right:0;bottom:0;display:flex;height:44px;background:#F2F2F2;color:#090E12;font-family:'VT323',monospace;font-size:22px;overflow:hidden")}>
               <div style={S("flex-shrink:0;padding:0 14px;display:flex;align-items:center;background:#C8102E;color:#fff;letter-spacing:.08em")}>LATEST</div>
