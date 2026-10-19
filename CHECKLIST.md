@@ -5,5 +5,5 @@
 - [ ] Open the site on a phone: the bottom bar replaces the remote, channels swipe, the Made-with carousel swipes.
 - [ ] Open it with "Reduce motion" on: no boot sequence, no static, rows wrap instead of scrolling, every channel readable.
 - [ ] Check the Open Graph preview (`/docs/new-home.jpg`) in the X card validator.
-- [ ] Rename the main repo to `cleanyourtv` the same evening; GitHub redirects the old name, but update `REPO` in `lib/parse.ts` and the links in the main repo's README and release notes.
-- [ ] Attach `cleanyour.tv` (and `www`) to the Vercel project, then post the update tweet with the link.
+- [x] Main repo renamed to `cleanyourtv`; `REPO` in `lib/parse.ts` updated.
+- [x] `cleanyour.tv` and `www` are attached; www redirects to the apex. Post the update tweet with the link.
