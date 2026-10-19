@@ -483,7 +483,7 @@ export default class TvSite extends React.Component<Props, State> {
               {this.renderHowTo()}
               {this.renderCredits()}
               {this.renderMade()}
-              <section id="ch-end" aria-label="End of transmission" style={S("position:relative;min-height:70%;scroll-snap-align:none;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));display:grid;place-items:center;border-top:1px solid var(--line,rgba(255,255,255,.12))")}>
+              <section id="ch-end" aria-label="End of transmission" style={S("position:relative;min-height:70%;scroll-snap-align:none;background:var(--page,#15181e);color:var(--ink,rgba(255,255,255,.95));display:grid;place-items:center;border-top:1px solid var(--line,rgba(255,255,255,.12))")}>
                 <div ref={this.r.end} style={S("display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding:24px")}>
                   <div style={S("font-family:'VT323',monospace;font-size:28px;letter-spacing:.14em;color:var(--ink-dim,rgba(255,255,255,.6))")}>END OF TRANSMISSION</div>
                   <div style={S("display:flex;flex-direction:column;gap:8px;width:min(320px,70vw);font-family:'VT323',monospace;font-size:18px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))")}>
@@ -640,7 +640,7 @@ export default class TvSite extends React.Component<Props, State> {
   }
 
   sectionStyle(gap = "clamp(22px,3cqw,40px)") {
-    return S(`position:relative;min-height:100%;scroll-snap-align:start;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));padding:clamp(56px,7cqw,96px) var(--pad-r,clamp(16px,6cqw,84px)) clamp(48px,6cqw,84px) clamp(16px,6cqw,84px);display:flex;flex-direction:column;gap:${gap};border-top:1px solid var(--line,rgba(255,255,255,.12))`);
+    return S(`position:relative;min-height:100%;scroll-snap-align:start;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0) 32%),var(--page,#15181e);color:var(--ink,rgba(255,255,255,.95));padding:clamp(56px,7cqw,96px) var(--pad-r,clamp(16px,6cqw,84px)) clamp(48px,6cqw,84px) clamp(16px,6cqw,84px);display:flex;flex-direction:column;gap:${gap};border-top:1px solid var(--line,rgba(255,255,255,.12))`);
   }
   header(kicker: string, title: string, blurb: string) {
     return (
@@ -716,11 +716,11 @@ export default class TvSite extends React.Component<Props, State> {
       <section id="ch-02" data-ch="2" aria-label="Channel 02, On air" style={this.sectionStyle()}>
         {this.header("CH 02 · ON AIR", "On air", "Screens from people who ran it on their own TV. Hover or tap one to read the rest.")}
         <div style={S("display:flex;flex-direction:column;gap:clamp(18px,2.4cqw,30px)")}>
-          <div ref={this.r.rowA} onMouseEnter={() => this.setPause("a", true)} onMouseLeave={() => this.setPause("a", false)} onTouchStart={() => this.setPause("a", true)} onTouchEnd={() => this.setPause("a", false, true)} style={{ ...S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:4px 2px"), flexWrap: this.reduced ? "wrap" : "nowrap" }}>
+          <div ref={this.r.rowA} onMouseEnter={() => this.setPause("a", true)} onMouseLeave={() => this.setPause("a", false)} onTouchStart={() => this.setPause("a", true)} onTouchEnd={() => this.setPause("a", false, true)} style={{ ...S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:18px;border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))"), flexWrap: this.reduced ? "wrap" : "nowrap" }}>
             {rowA.map((it) => fig(it, true))}
           </div>
           {rowB.length > 0 && (
-            <div ref={this.r.rowB} onMouseEnter={() => this.setPause("b", true)} onMouseLeave={() => this.setPause("b", false)} onTouchStart={() => this.setPause("b", true)} onTouchEnd={() => this.setPause("b", false, true)} style={S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:4px 2px")}>
+            <div ref={this.r.rowB} onMouseEnter={() => this.setPause("b", true)} onMouseLeave={() => this.setPause("b", false)} onTouchStart={() => this.setPause("b", true)} onTouchEnd={() => this.setPause("b", false, true)} style={S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:18px;border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))")}>
               {rowB.map((it) => fig(it, false))}
             </div>
           )}
@@ -735,6 +735,7 @@ export default class TvSite extends React.Component<Props, State> {
       <section id="ch-04" data-ch="4" aria-label="Channel 04, The community" style={this.sectionStyle()}>
         {this.header("CH 04 · THE COMMUNITY", "The credits", "Every TV on the list got there because someone wrote it down for the next person. Thank you.")}
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(24px,4cqw,56px);align-items:center")}>
+          <div style={S("border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16));padding:0 16px")}>
           <div style={{ ...S("position:relative;height:clamp(340px,40cqw,540px);scrollbar-width:none;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)"), overflowY: this.reduced ? "auto" : "hidden" }}>
             <div ref={this.r.credits} style={S("display:flex;flex-direction:column;align-items:center;will-change:transform")}>
               {this.creditGroups().map((g, gi) => (
@@ -751,7 +752,8 @@ export default class TvSite extends React.Component<Props, State> {
               ))}
             </div>
           </div>
-          <div style={S("display:flex;flex-direction:column;gap:clamp(20px,3cqw,36px)")}>
+          </div>
+          <div style={S("display:flex;flex-direction:column;gap:clamp(20px,3cqw,36px);padding:clamp(20px,2.6cqw,34px);border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))")}>
             <div style={S("display:flex;flex-direction:column;gap:6px")}>
               <div style={S("font-size:clamp(64px,9cqw,128px);font-weight:200;line-height:.9;letter-spacing:-.04em")}>{d.prCount.toLocaleString("en-US")}</div>
               <div style={S("font-size:16px;color:var(--ink-dim,rgba(255,255,255,.6))")}>pull requests merged</div>
@@ -779,7 +781,7 @@ export default class TvSite extends React.Component<Props, State> {
       <section id="ch-03" data-ch="3" aria-label="Channel 03, How to" style={this.sectionStyle()}>
         {this.header("CH 03 · HOW TO", "Set it up", "Three screens on two devices. The assistant does the typing; you answer its questions.")}
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(18px,3cqw,40px)")}>
-          <div style={S("display:flex;flex-direction:column;gap:20px;padding:clamp(18px,2.4cqw,30px);border-radius:26px;background:var(--band,#141416);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.12));min-height:440px")}>
+          <div style={S("display:flex;flex-direction:column;gap:20px;padding:clamp(18px,2.4cqw,30px);border-radius:26px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16));min-height:440px")}>
             <div style={S("display:flex;gap:8px;align-items:center")}>
               {[0, 1, 2].map((i) => (
                 <button key={i} aria-label={`Step ${i + 1} of 3`} onClick={() => this.wizGo(i)} style={{ ...S("height:8px;border-radius:4px;border:0;padding:0;background:var(--ink,#fff);transition:width .25s,opacity .25s"), width: s.wiz === i ? "28px" : "8px", opacity: s.wiz === i ? 1 : 0.35 }} />
@@ -881,7 +883,7 @@ export default class TvSite extends React.Component<Props, State> {
               <div style={S("position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,rgba(0,0,0,0) 1px 3px),radial-gradient(ellipse at center,rgba(0,0,0,0) 58%,rgba(0,0,0,.4))")} />
             </div>
           </div>
-          <div style={S("display:flex;flex-direction:column;gap:14px")}>
+          <div style={S("display:flex;flex-direction:column;gap:14px;padding:clamp(20px,2.6cqw,34px);border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))")}>
             <div style={S("font-family:'VT323',monospace;font-size:20px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))")}>{sl.kicker}</div>
             <h3 style={S("margin:0;font-size:clamp(24px,3cqw,40px);font-weight:300;line-height:1.1;letter-spacing:-.01em")}>{sl.name}</h3>
             <p style={S("margin:0;font-size:16px;line-height:1.5;color:var(--ink,rgba(255,255,255,.95));opacity:.9;text-wrap:pretty;min-height:4.5em")}>{sl.what}</p>
