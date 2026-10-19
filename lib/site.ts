@@ -138,3 +138,12 @@ export function S(decl: string): React.CSSProperties {
 }
 
 export const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/** Screenshots for Made-with projects, keyed by the author's GitHub login (from their fork or PR). */
+export const SHOWCASE_IMAGES: Record<string, string> = {
+  youlop009: "/showcase/youlop009.jpg",
+  omkark97: "/showcase/omkark97.jpg",
+  itsmeterrylin: "/showcase/itsmeterrylin.jpg",
+  samdegan2311: "/showcase/samdegan2311.jpg",
+  rakshajag13: "/showcase/rakshajag13.jpg",
+};

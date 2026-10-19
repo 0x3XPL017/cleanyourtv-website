@@ -4,7 +4,7 @@
 import React from "react";
 import { GH } from "@/lib/parse";
 import type { SiteData } from "@/lib/parse";
-import { GROUPS, KONAMI, NAMES, ORDER, S, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
+import { GROUPS, KONAMI, NAMES, ORDER, S, SHOWCASE_IMAGES, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
 import type { ThemeName } from "@/lib/site";
 
 const TWEET = "https://x.com/gathint/status/2111379569030939102";
@@ -12,7 +12,7 @@ const COFFEE = "https://buymeacoffee.com/gathint";
 const BOOT_DELAY = 1500;
 
 type Counter = { key: string; label: string; value: number; max: number; display: number };
-type Slide = { kind: "show" | "theme"; name: string; what: string; meta: string; by: string; byUrl: string; url: string; wall: "aurora" | "black"; tiles: number; site?: ThemeName; kicker: string };
+type Slide = { kind: "show" | "theme"; name: string; what: string; meta: string; by: string; byUrl: string; url: string; wall: "aurora" | "black"; tiles: number; site?: ThemeName; kicker: string; image?: string };
 type Spring = { p: number; v: number; t: number };
 type Axis = "x" | "y" | "w" | "h";
 
@@ -48,7 +48,7 @@ export default class TvSite extends React.Component<Props, State> {
     this.r = Object.fromEntries(REF_KEYS.map((k) => [k, React.createRef<HTMLDivElement>()])) as Record<RefKey, React.RefObject<HTMLDivElement | null>>;
     const d = p.data;
     this.slides = d.showcase
-      .map<Slide>((s, i) => ({ kind: "show", name: s.name, what: s.what, meta: "Built on " + s.builtOn, by: s.by, byUrl: "https://github.com/" + s.by, url: s.url, wall: "aurora", tiles: 4, kicker: `SHOWCASE ${String(i + 1).padStart(2, "0")} / ${String(d.showcase.length).padStart(2, "0")}` }))
+      .map<Slide>((s, i) => ({ kind: "show", name: s.name, what: s.what, meta: "Built on " + s.builtOn, by: s.by, byUrl: "https://github.com/" + s.by, url: s.url, wall: "aurora", tiles: 4, image: SHOWCASE_IMAGES[s.by.toLowerCase()], kicker: `SHOWCASE ${String(i + 1).padStart(2, "0")} / ${String(d.showcase.length).padStart(2, "0")}` }))
       .concat(d.themes.map<Slide>((t) => ({ kind: "theme", name: t.name + "/", what: t.what, meta: "In themes/" + t.name + "/", by: "cleanyourtv", byUrl: GH, url: GH + "/tree/main/themes/" + t.name, wall: t.name === "aurora" ? "aurora" : "black", tiles: t.name === "six-columns" ? 6 : 4, site: t.name === "aurora" ? "aurora" : "black", kicker: "THEME" })));
     this.state = {
       osd: "CH 00", theme: "black", sound: false, power: true, booted: false, mobile: false, mounted: false, focus: 0,
@@ -857,12 +857,26 @@ export default class TvSite extends React.Component<Props, State> {
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(20px,3.4cqw,48px);align-items:center")}>
           <div onTouchStart={(e) => { this.tx = e.touches[0].clientX; }} onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - (this.tx || 0); if (Math.abs(dx) > 40) this.slideGo(s.slide + (dx < 0 ? 1 : -1)); }} style={S("padding:clamp(10px,1.2cqw,16px);border-radius:22px;background:linear-gradient(180deg,#26262a,#121214);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 40px rgba(0,0,0,.4)")}>
             <div style={{ ...S("position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background-size:cover;background-position:center;transition:background-color .3s"), backgroundColor: sl.wall === "aurora" ? "#070A14" : "#000000", backgroundImage: sl.wall === "aurora" ? "url('/themes/aurora/wallpaper.jpg')" : "none" }}>
-              <div style={S("position:absolute;left:6%;right:6%;bottom:38%;color:#fff;font-size:clamp(18px,2.8cqw,40px);font-weight:200;letter-spacing:-.02em;line-height:1.05;text-wrap:balance")}>{sl.name}</div>
-              <div style={S("position:absolute;left:50%;bottom:9%;transform:translateX(-50%);width:66%;display:flex;gap:4%;padding:2%;border-radius:12px;background:rgba(20,20,22,.82);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)")}>
-                {TILE_COLORS.slice(0, sl.tiles).map((c, i) => (
-                  <div key={c} style={{ ...S("flex:1;aspect-ratio:16/9;border-radius:5px"), background: c, boxShadow: i === 0 ? "0 0 0 1.5px rgba(255,255,255,.85),0 0 10px rgba(255,255,255,.3)" : "none", transform: i === 0 ? "scale(1.08)" : "none" }} />
-                ))}
-              </div>
+              {sl.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={sl.image} alt={sl.name + " on a TV"} style={S("position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block")} />
+              ) : sl.kind === "theme" ? (
+                <>
+                  <div style={S("position:absolute;left:6%;right:6%;bottom:38%;color:#fff;font-size:clamp(18px,2.8cqw,40px);font-weight:200;letter-spacing:-.02em;line-height:1.05;text-wrap:balance")}>{sl.name}</div>
+                  <div style={S("position:absolute;left:50%;bottom:9%;transform:translateX(-50%);width:66%;display:flex;gap:4%;padding:2%;border-radius:12px;background:rgba(20,20,22,.82);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)")}>
+                    {TILE_COLORS.slice(0, sl.tiles).map((c, i) => (
+                      <div key={c} style={{ ...S("flex:1;aspect-ratio:16/9;border-radius:5px"), background: c, boxShadow: i === 0 ? "0 0 0 1.5px rgba(255,255,255,.85),0 0 10px rgba(255,255,255,.3)" : "none", transform: i === 0 ? "scale(1.08)" : "none" }} />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div style={S("position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4%;color:#fff;text-align:center;padding:6%")}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={`https://github.com/${sl.by}.png?size=160`} alt="" width={80} height={80} style={S("width:22%;max-width:96px;aspect-ratio:1;height:auto;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.7),0 10px 30px rgba(0,0,0,.5);background:rgba(255,255,255,.1)")} />
+                  <div style={S("font-size:clamp(16px,2.4cqw,34px);font-weight:200;letter-spacing:-.02em;line-height:1.05;text-wrap:balance")}>{sl.name}</div>
+                  <div style={S("font-family:'VT323',monospace;font-size:clamp(12px,1.4cqw,18px);letter-spacing:.1em;opacity:.7")}>NO SCREENSHOT YET · {sl.by.toUpperCase()}</div>
+                </div>
+              )}
               <div style={S("position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,rgba(0,0,0,0) 1px 3px),radial-gradient(ellipse at center,rgba(0,0,0,0) 58%,rgba(0,0,0,.4))")} />
             </div>
           </div>
