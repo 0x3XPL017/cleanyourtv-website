@@ -16,10 +16,10 @@ export const metadata: Metadata = {
     description: "Your TV, minus the ads. No root, nothing uninstalled, one line restores it.",
     url: "https://cleanyour.tv",
     siteName: "CleanYourTV",
-    images: [{ url: "/docs/new-home.jpg", width: 1920, height: 1080, alt: "The clean launcher on a TV" }],
+    images: [{ url: "/docs/og.png", width: 1200, height: 630, alt: "Clean Your TV. Your TV, minus the ads." }],
     type: "website",
   },
-  twitter: { card: "summary_large_image", creator: "@gathint", title: "CleanYourTV", description: "Your TV, minus the ads." },
+  twitter: { card: "summary_large_image", creator: "@gathint", title: "CleanYourTV", description: "Your TV, minus the ads.", images: ["/docs/og.png"] },
 };
 
 export const viewport: Viewport = { themeColor: "#050505", width: "device-width", initialScale: 1 };
