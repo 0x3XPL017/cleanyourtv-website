@@ -501,7 +501,7 @@ export default class TvSite extends React.Component<Props, State> {
   renderBoot() {
     const s = this.state;
     const counters = s.counters.map((c) => ({ ...c, text: c.display.toLocaleString("en-US"), pct: s.booted ? Math.min(100, c.value / c.max * 100) : 0 }));
-    const tile = "position:relative;width:clamp(64px,14cqw,180px);aspect-ratio:16/9;border-radius:clamp(8px,1.25cqw,16px);display:grid;place-items:center;font-weight:500;font-size:clamp(10px,1.4cqw,18px);letter-spacing:.02em;color:#fff;opacity:0;transition:transform .25s;cursor:pointer;background:";
+    const tile = "position:relative;width:clamp(64px,14cqw,180px);aspect-ratio:16/9;border-radius:clamp(8px,1.25cqw,16px);display:grid;place-items:center;font-weight:500;font-size:clamp(10px,1.4cqw,18px);letter-spacing:.02em;color:#fff;opacity:0;transition:transform .25s;cursor:default;background:";
     const name = "position:absolute;top:calc(100% + clamp(10px,1.4cqw,18px));left:0;right:0;text-align:center;font-size:clamp(9px,1.1cqw,14px);font-weight:500;letter-spacing:.02em;color:var(--ink,rgba(255,255,255,.95));opacity:0;transition:opacity .25s";
     const pill = "height:clamp(24px,3.3cqw,42px);padding:0 clamp(10px,1.5cqw,20px);border-radius:999px;background:var(--pill-bg,linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));display:flex;align-items:center;font-size:clamp(9px,1.15cqw,15px);font-weight:500";
     const zap = "flex-shrink:0;width:11cqw;aspect-ratio:16/9;border-radius:.8cqw;display:grid;place-items:center;";
