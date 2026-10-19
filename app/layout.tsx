@@ -7,18 +7,19 @@ const vt323 = VT323({ subsets: ["latin"], weight: "400", variable: "--font-vt323
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://cleanyour.tv"),
-  title: "clean your TV",
+  title: "CleanYourTV",
+  applicationName: "CleanYourTV",
   description:
     "Your TV, minus the ads. Debloat any Android TV or Google TV over Wi-Fi and swap the ad-filled home screen for a clean Apple TV-style launcher. No root, fully reversible.",
   openGraph: {
-    title: "clean your TV",
+    title: "CleanYourTV",
     description: "Your TV, minus the ads. No root, nothing uninstalled, one line restores it.",
     url: "https://cleanyour.tv",
-    siteName: "cleanyour.tv",
+    siteName: "CleanYourTV",
     images: [{ url: "/docs/new-home.jpg", width: 1920, height: 1080, alt: "The clean launcher on a TV" }],
     type: "website",
   },
-  twitter: { card: "summary_large_image", creator: "@gathint", title: "clean your TV", description: "Your TV, minus the ads." },
+  twitter: { card: "summary_large_image", creator: "@gathint", title: "CleanYourTV", description: "Your TV, minus the ads." },
 };
 
 export const viewport: Viewport = { themeColor: "#050505", width: "device-width", initialScale: 1 };
