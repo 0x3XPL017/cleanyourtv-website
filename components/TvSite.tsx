@@ -206,7 +206,7 @@ export default class TvSite extends React.Component<Props, State> {
         if (a) { const half = a.scrollWidth / 2; if (this.pause.a) this.ax = a.scrollLeft; else { this.ax += 30 * dt; if (this.ax >= half) this.ax -= half; a.scrollLeft = this.ax; } }
         if (b) { const half = b.scrollWidth / 2; if (!this.bInit && half > 0) { this.bx = half; this.bInit = true; } if (this.pause.b) this.bx = b.scrollLeft; else { this.bx -= 22 * dt; if (this.bx <= 0) this.bx += half; b.scrollLeft = this.bx; } }
       }
-      if (ch === 3) { const c = this.r.credits.current; if (c && !this.pause.c) { const h = c.scrollHeight / 2; this.cy += 26 * dt; if (h && this.cy >= h) this.cy -= h; c.style.transform = `translateY(${-this.cy}px)`; } }
+      if (ch === 4) { const c = this.r.credits.current; if (c && !this.pause.c) { const h = c.scrollHeight / 2; this.cy += 26 * dt; if (h && this.cy >= h) this.cy -= h; c.style.transform = `translateY(${-this.cy}px)`; } }
     }
     this.loopRaf = requestAnimationFrame(this.loop);
   };
@@ -263,7 +263,7 @@ export default class TvSite extends React.Component<Props, State> {
     if (performance.now() > this.quietUntil && this.state.booted) this.showOsd(`CH 0${n}`, 1200, false);
     this.enter(n);
   }
-  enter(n: number) { if (n === 1) this.animateScope(); if (n === 5 && !this.typingStarted) this.startTyping(); }
+  enter(n: number) { if (n === 1) this.animateScope(); if (n === 3 && !this.typingStarted) this.startTyping(); }
   channel(n: number) {
     this.click(); if (!this.state.power || n < 0) return;
     if (!this.state.booted) this.skipBoot = true;
@@ -375,7 +375,7 @@ export default class TvSite extends React.Component<Props, State> {
   }
   wizGo(i: number) { i = Math.max(0, Math.min(2, i)); if (i === this.state.wiz) return; this.click(); this.setState({ wiz: i }); }
   slideGo(i: number) { const n = this.slides.length; if (!n) return; this.click(); this.setState({ slide: ((i % n) + n) % n }); }
-  side(d: number) { const ch = this.state.ch; if (ch === 0) return this.move(d); if (ch === 5) return this.wizGo(this.state.wiz + d); if (ch === 6) return this.slideGo(this.state.slide + d); }
+  side(d: number) { const ch = this.state.ch; if (ch === 0) return this.move(d); if (ch === 3) return this.wizGo(this.state.wiz + d); if (ch === 6) return this.slideGo(this.state.slide + d); }
   key(e: KeyboardEvent) {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const tag = ((e.target as HTMLElement | null)?.tagName) || ""; if (tag === "INPUT" || tag === "TEXTAREA") return;
@@ -394,7 +394,7 @@ export default class TvSite extends React.Component<Props, State> {
   ok() {
     if (!this.state.power) return this.powerOn(); if (!this.state.booted) { this.skipBoot = true; return; }
     const ch = this.state.ch;
-    if (ch === 5) return this.wizGo(this.state.wiz + 1);
+    if (ch === 3) return this.wizGo(this.state.wiz + 1);
     if (ch === 6) return this.slideGo(this.state.slide + 1);
     this.channel(ch + 1);
   }
@@ -459,9 +459,9 @@ export default class TvSite extends React.Component<Props, State> {
               {this.renderBoot()}
               {this.renderStory()}
               {this.renderWall()}
+              {this.renderHowTo()}
               {this.renderCredits()}
               {this.renderGuide()}
-              {this.renderHowTo()}
               {this.renderMade()}
               <section id="ch-end" aria-label="End of transmission" style={S("position:relative;min-height:70%;scroll-snap-align:end;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));display:grid;place-items:center;border-top:1px solid var(--line,rgba(255,255,255,.12))")}>
                 <div ref={this.r.end} style={S("display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding:24px")}>
@@ -698,8 +698,8 @@ export default class TvSite extends React.Component<Props, State> {
   renderCredits() {
     const d = this.props.data;
     return (
-      <section id="ch-03" data-ch="3" aria-label="Channel 03, The community" style={this.sectionStyle()}>
-        {this.header("CH 03 · THE COMMUNITY", "The credits", "Every TV on the list got there because someone wrote it down for the next person. Thank you.")}
+      <section id="ch-04" data-ch="4" aria-label="Channel 04, The community" style={this.sectionStyle()}>
+        {this.header("CH 04 · THE COMMUNITY", "The credits", "Every TV on the list got there because someone wrote it down for the next person. Thank you.")}
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(24px,4cqw,56px);align-items:center")}>
           <div onMouseEnter={() => this.setPause("c", true)} onMouseLeave={() => this.setPause("c", false)} onTouchStart={() => this.setPause("c", true)} onTouchEnd={() => this.setPause("c", false, true)} style={{ ...S("position:relative;height:clamp(340px,40cqw,540px);scrollbar-width:none;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)"), overflowY: this.reduced ? "auto" : "hidden" }}>
             <div ref={this.r.credits} style={S("display:flex;flex-direction:column;align-items:center;will-change:transform")}>
@@ -737,8 +737,8 @@ export default class TvSite extends React.Component<Props, State> {
     const s = this.state, g = this.guide();
     const epgCols = s.mobile ? "minmax(0,1fr)" : "minmax(120px,180px) minmax(0,1fr)";
     return (
-      <section id="ch-04" data-ch="4" aria-label="Channel 04, Supported TVs" style={this.sectionStyle("clamp(18px,2.4cqw,30px)")}>
-        {this.header("CH 04 · SUPPORTED TVS", "The guide", "Each TV has a folder listing what is safe to disable on that firmware. Click a model to open it.")}
+      <section id="ch-05" data-ch="5" aria-label="Channel 05, Supported TVs" style={this.sectionStyle("clamp(18px,2.4cqw,30px)")}>
+        {this.header("CH 05 · SUPPORTED TVS", "The guide", "Each TV has a folder listing what is safe to disable on that firmware. Click a model to open it.")}
         <div style={S("display:flex;flex-wrap:wrap;gap:12px 20px;justify-content:space-between;align-items:center")}>
           <label style={S("flex:1 1 280px;max-width:520px;display:flex;align-items:center;gap:12px;height:48px;padding:0 18px;border-radius:24px;background:var(--card,rgba(255,255,255,.05));box-shadow:inset 0 0 0 1px var(--line,rgba(255,255,255,.12))")}>
             <span style={S("font-family:'VT323',monospace;font-size:20px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))")}>FIND</span>
@@ -779,8 +779,8 @@ export default class TvSite extends React.Component<Props, State> {
     const osBtn = "height:32px;padding:0 12px;border-radius:16px;border:0;font-size:13px;white-space:nowrap;color:#fff;background:";
     const setOs = (os: "mac" | "win") => { if (this.state.os !== os) this.setState({ os }, () => this.startTyping()); };
     return (
-      <section id="ch-05" data-ch="5" aria-label="Channel 05, How to" style={this.sectionStyle()}>
-        {this.header("CH 05 · HOW TO", "Set it up", "Three screens on two devices. The assistant does the typing; you answer its questions.")}
+      <section id="ch-03" data-ch="3" aria-label="Channel 03, How to" style={this.sectionStyle()}>
+        {this.header("CH 03 · HOW TO", "Set it up", "Three screens on two devices. The assistant does the typing; you answer its questions.")}
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(18px,3cqw,40px)")}>
           <div style={S("display:flex;flex-direction:column;gap:20px;padding:clamp(18px,2.4cqw,30px);border-radius:26px;background:var(--band,#141416);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.12));min-height:440px")}>
             <div style={S("display:flex;gap:8px;align-items:center")}>
@@ -825,7 +825,7 @@ export default class TvSite extends React.Component<Props, State> {
               <span style={S("font-size:14px;color:var(--ink-dim,rgba(255,255,255,.6))")}>Nothing uninstalled. One line restores it.</span>
               <div style={S("display:flex;gap:8px")}>
                 <button onClick={() => this.wizGo(s.wiz - 1)} aria-label="Previous step" style={{ ...S(navBtn), opacity: s.wiz === 0 ? 0.4 : 1 }}>Back</button>
-                <button onClick={() => (s.wiz === 2 ? this.channel(6) : this.wizGo(s.wiz + 1))} aria-label="Next step" style={S(navBtn)}>{s.wiz === 2 ? "Done" : "Next"}</button>
+                <button onClick={() => (s.wiz === 2 ? this.channel(4) : this.wizGo(s.wiz + 1))} aria-label="Next step" style={S(navBtn)}>{s.wiz === 2 ? "Done" : "Next"}</button>
               </div>
             </div>
           </div>
