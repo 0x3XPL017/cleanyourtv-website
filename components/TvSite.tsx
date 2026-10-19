@@ -102,12 +102,12 @@ export default class TvSite extends React.Component<Props, State> {
     const greeting = h < 5 ? "Good night" : h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : h < 22 ? "Good evening" : "Good night";
     this.setState({ clock: `${h12}:${m}`, ampm: h < 12 ? "AM" : "PM", greeting, date: d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }) });
   }
-  showOsd(text: string, ms = 1600) {
+  showOsd(text: string, ms = 1600, flicker = true) {
     const el = this.r.osd.current; if (!el) return;
     this.setState({ osd: text });
     clearTimeout(this.osdT);
-    el.style.transition = "none"; el.style.animation = "none"; void el.offsetWidth;
-    el.style.opacity = "1"; if (!this.reduced) el.style.animation = "osdFlicker .45s steps(1)";
+    el.style.transition = flicker ? "none" : "opacity .3s"; el.style.animation = "none"; void el.offsetWidth;
+    el.style.opacity = "1"; if (flicker && !this.reduced) el.style.animation = "osdFlicker .45s steps(1)";
     this.osdT = setTimeout(() => { el.style.animation = "none"; el.style.transition = "opacity .3s"; el.style.opacity = "0"; }, ms);
   }
   drawStatic() {
@@ -260,7 +260,8 @@ export default class TvSite extends React.Component<Props, State> {
   onSection(e: IntersectionObserverEntry) {
     if (!e.isIntersecting) return; const n = Number((e.target as HTMLElement).dataset.ch); if (n === this.state.ch) return;
     this.setState({ ch: n });
-    if (performance.now() > this.quietUntil && this.state.booted) { this.cut(250); this.showOsd(`CH 0${n}`); }
+    // Scrolling between channels only updates the corner label; static is kept for the remote and number keys.
+    if (performance.now() > this.quietUntil && this.state.booted) this.showOsd(`CH 0${n}`, 1200, false);
     this.enter(n);
   }
   enter(n: number) { if (n === 1) this.animateScope(); if (n === 5 && !this.typingStarted) this.startTyping(); }
