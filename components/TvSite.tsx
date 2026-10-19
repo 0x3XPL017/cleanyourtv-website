@@ -39,7 +39,7 @@ export default class TvSite extends React.Component<Props, State> {
   reduced = false; mq!: MediaQueryList; onMq!: () => void; onKey!: (e: KeyboardEvent) => void; onResize!: () => void;
   clockTimer!: ReturnType<typeof setInterval>; typeT!: ReturnType<typeof setInterval>; osdT!: ReturnType<typeof setTimeout>; copyT!: ReturnType<typeof setTimeout>;
   io!: IntersectionObserver; typingStarted = false; tx = 0;
-  resumeCh = 0; pull = 0; pullAt = 0; pullY = 0; onWheel!: (e: WheelEvent) => void; onTouchS!: (e: TouchEvent) => void; onTouchM!: (e: TouchEvent) => void; onTouchE!: () => void;
+  resumeCh = 0; instant = false; pull = 0; pullAt = 0; pullY = 0; onWheel!: (e: WheelEvent) => void; onTouchS!: (e: TouchEvent) => void; onTouchM!: (e: TouchEvent) => void; onTouchE!: () => void;
   gaugeRef = React.createRef<HTMLDivElement>(); gaugeTextRef = React.createRef<HTMLDivElement>();
   _ac: AudioContext | null = null; humNode: { o: OscillatorNode; o2: OscillatorNode; g: GainNode; g2: GainNode } | null = null;
 
@@ -67,6 +67,14 @@ export default class TvSite extends React.Component<Props, State> {
     try { theme = localStorage.getItem("cyt-theme"); sound = localStorage.getItem("cyt-sound") === "1"; } catch { /* private mode */ }
     // A refresh lands back on the channel that was showing, without the boot sequence.
     try { const n = Number(sessionStorage.getItem("cyt-ch")); if (n >= 1 && n <= 5) this.resumeCh = n; } catch { /* ignore */ }
+    // Deep links win over the remembered channel: #ch-03 or ?ch=3 opens that channel; ?boot=0 skips the boot sequence.
+    try {
+      const q = new URLSearchParams(location.search);
+      const m = /^#ch-0?([0-5])$/.exec(location.hash);
+      const n = m ? Number(m[1]) : q.has("ch") ? Number(q.get("ch")) : NaN;
+      if (n >= 1 && n <= 5) this.resumeCh = n; else if (n === 0) { this.resumeCh = 0; this.instant = true; }
+      if (q.get("boot") === "0") this.instant = true;
+    } catch { /* ignore */ }
     this.reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.mq = matchMedia("(max-width: 1100px)");
     this.onMq = () => { this.setPadR(); this.setState({ mobile: this.mq.matches }, () => this.retarget()); };
@@ -287,7 +295,11 @@ export default class TvSite extends React.Component<Props, State> {
     if (n !== this.state.ch) { this.setState({ ch: n }); this.enter(n); }
     this.remember(n);
   }
-  remember(n: number) { try { sessionStorage.setItem("cyt-ch", String(n)); } catch { /* ignore */ } }
+  remember(n: number) {
+    try { sessionStorage.setItem("cyt-ch", String(n)); } catch { /* ignore */ }
+    // Keep the address in step so a channel can be linked to; replaceState never scrolls the page.
+    try { history.replaceState(null, "", n ? `#ch-0${n}` : location.pathname + location.search); } catch { /* ignore */ }
+  }
 
   // ---- boot: power on, parody home, cleanup, launcher
   resetScene() {
@@ -303,10 +315,13 @@ export default class TvSite extends React.Component<Props, State> {
     const cl = this.r.clutter.current!, fl = this.r.flash.current!, sc = this.r.scroll.current!;
     sc.scrollTop = 0; this.setVar("--led", "#4bff7a");
     const resume = this.resumeCh; this.resumeCh = 0;
-    if (resume) {
+    if (resume || this.instant) {
+      this.instant = false;
       this.finalize(id);
-      const target = sc.querySelector<HTMLElement>(`#ch-0${resume}`); if (target) sc.scrollTop = target.offsetTop;
-      this.quietUntil = performance.now() + 1500; this.setState({ ch: resume }); this.enter(resume);
+      if (resume) {
+        const target = sc.querySelector<HTMLElement>(`#ch-0${resume}`); if (target) sc.scrollTop = target.offsetTop;
+        this.quietUntil = performance.now() + 1500; this.setState({ ch: resume }); this.enter(resume);
+      }
       return;
     }
     if (this.reduced) {
@@ -474,16 +489,16 @@ export default class TvSite extends React.Component<Props, State> {
     const s = this.state;
     return (
       <div ref={this.r.root} style={S("position:fixed;inset:0;background:#070708;font-family:Outfit,sans-serif;color:rgba(255,255,255,.95);-webkit-font-smoothing:antialiased")}>
-        <div style={S("position:absolute;inset:0;padding:clamp(8px,2.4vw,30px) clamp(8px,2.4vw,30px) max(64px,5vw);background:linear-gradient(180deg,#1c1c1f 0%,#121214 60%,#0b0b0c 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)")}>
-          <div ref={this.r.screen} style={S("position:relative;height:100%;border-radius:clamp(8px,1.5vw,22px);background:#000;overflow:hidden;container-type:inline-size;box-shadow:0 0 0 2px #000,0 0 0 3px #232326,inset 0 0 60px rgba(0,0,0,.9)")}>
-            <div ref={this.r.scroll} style={S("position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y proximity;scrollbar-width:none")}>
+        <div className="m-bezel" style={S("position:absolute;inset:0;padding:clamp(8px,2.4vw,30px) clamp(8px,2.4vw,30px) max(64px,5vw);background:linear-gradient(180deg,#1c1c1f 0%,#121214 60%,#0b0b0c 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)")}>
+          <div ref={this.r.screen} className="m-screen" style={S("position:relative;height:100%;border-radius:clamp(8px,1.5vw,22px);background:#000;overflow:hidden;container-type:inline-size;box-shadow:0 0 0 2px #000,0 0 0 3px #232326,inset 0 0 60px rgba(0,0,0,.9)")}>
+            <div ref={this.r.scroll} className="m-scroll" style={S("position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y proximity;scrollbar-width:none")}>
               {this.renderBoot()}
               {this.renderStory()}
               {this.renderWall()}
               {this.renderHowTo()}
               {this.renderCredits()}
               {this.renderMade()}
-              <section id="ch-end" aria-label="End of transmission" style={S("position:relative;min-height:70%;scroll-snap-align:none;background:var(--page,#15181e);color:var(--ink,rgba(255,255,255,.95));display:grid;place-items:center;border-top:1px solid var(--line,rgba(255,255,255,.12))")}>
+              <section id="ch-end" aria-label="End of transmission" className="m-end" style={S("position:relative;min-height:70%;scroll-snap-align:none;background:var(--page,#15181e);color:var(--ink,rgba(255,255,255,.95));display:grid;place-items:center;border-top:1px solid var(--line,rgba(255,255,255,.12))")}>
                 <div ref={this.r.end} style={S("display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding:24px")}>
                   <div style={S("font-family:'VT323',monospace;font-size:28px;letter-spacing:.14em;color:var(--ink-dim,rgba(255,255,255,.6))")}>END OF TRANSMISSION</div>
                   <div style={S("display:flex;flex-direction:column;gap:8px;width:min(320px,70vw);font-family:'VT323',monospace;font-size:18px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))")}>
@@ -510,10 +525,10 @@ export default class TvSite extends React.Component<Props, State> {
               <div style={S("font-family:'VT323',monospace;font-size:clamp(16px,1.8cqw,22px);opacity:.45;letter-spacing:.08em")}>POWER TURNS IT BACK ON</div>
             </div>
             {/* The CRT layers read as texture on the boot channel and as murk over text, so they fade once you scroll. */}
-            <div aria-hidden="true" style={{ ...S("position:absolute;inset:0;z-index:9;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,rgba(0,0,0,0) 1px 3px);transition:opacity .6s"), opacity: s.ch === 0 ? 1 : 0.25 }} />
-            <div aria-hidden="true" style={{ ...S("position:absolute;inset:0;z-index:9;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 58%,rgba(0,0,0,.42) 100%),linear-gradient(112deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,0) 38%);transition:opacity .6s"), opacity: s.ch === 0 ? 1 : 0.3 }} />
+            <div aria-hidden="true" className="m-crt" style={{ ...S("position:absolute;inset:0;z-index:9;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,rgba(0,0,0,0) 1px 3px);transition:opacity .6s"), opacity: s.ch === 0 ? 1 : 0.25 }} />
+            <div aria-hidden="true" className="m-crt" style={{ ...S("position:absolute;inset:0;z-index:9;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 58%,rgba(0,0,0,.42) 100%),linear-gradient(112deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,0) 38%);transition:opacity .6s"), opacity: s.ch === 0 ? 1 : 0.3 }} />
           </div>
-          <div style={S("position:absolute;left:0;right:0;bottom:0;height:max(64px,5vw);display:flex;align-items:center;justify-content:center;gap:16px;pointer-events:none")}>
+          <div className="m-strip" style={S("position:absolute;left:0;right:0;bottom:0;height:max(64px,5vw);display:flex;align-items:center;justify-content:center;gap:16px;pointer-events:none")}>
             <div style={S("font-size:10px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.22)")}>cleanyour.tv</div>
             <div aria-hidden="true" style={S("width:6px;height:6px;border-radius:50%;background:var(--led,#4bff7a);box-shadow:0 0 6px var(--led,#4bff7a),0 0 1px #000")} />
           </div>
@@ -537,10 +552,10 @@ export default class TvSite extends React.Component<Props, State> {
     const hoverTile = (e: React.MouseEvent<HTMLDivElement>) => { if (this.state.booted) this.focusTile(Number(e.currentTarget.dataset.tile)); };
     const clickTile = (e: React.MouseEvent<HTMLDivElement>) => { if (!this.state.booted) return; this.click(); e.currentTarget.animate([{ transform: "scale(1.06)" }, { transform: "scale(.98)" }, { transform: "scale(1.06)" }], { duration: 220, easing: "ease-out" }); };
     return (
-      <section id="ch-00" data-ch="0" aria-label="Channel 00, Boot" style={S("position:relative;height:100%;scroll-snap-align:start;overflow:hidden")}>
+      <section id="ch-00" data-ch="0" aria-label="Channel 00, Boot" className="m-hero" style={S("position:relative;height:100%;scroll-snap-align:start;overflow:hidden")}>
         <div ref={this.r.launcher} style={S("position:absolute;inset:0;background-color:var(--bg,#000);background-image:var(--wall,none);background-size:cover;background-position:center;color:var(--ink,rgba(255,255,255,.95))")}>
           <div ref={this.r.ambient} style={S("position:absolute;inset:0;background:radial-gradient(55% 50% at 30% 42%,var(--glow,rgba(0,0,0,0)) 0%,rgba(0,0,0,0) 70%);transition:opacity .6s;opacity:.9;pointer-events:none")} />
-          <div style={S("position:absolute;left:4.2cqw;right:4.2cqw;top:clamp(44px,5.6cqw,72px);display:flex;justify-content:space-between;align-items:flex-end;gap:12px")}>
+          <div className="m-hero-top" style={S("position:absolute;left:4.2cqw;right:4.2cqw;top:clamp(44px,5.6cqw,72px);display:flex;justify-content:space-between;align-items:flex-end;gap:12px")}>
             <div style={S("display:flex;flex-direction:column;gap:2px;min-width:0")}>
               <div style={S("font-size:clamp(9px,.95cqw,12px);font-weight:500;letter-spacing:.22em;text-transform:uppercase;opacity:.55;padding-left:2px")}>{s.greeting}</div>
               <div style={S("display:flex;align-items:flex-end;gap:clamp(6px,.8cqw,12px);white-space:nowrap")}>
@@ -550,7 +565,7 @@ export default class TvSite extends React.Component<Props, State> {
                 <div style={S("font-size:clamp(9px,1.1cqw,14px);letter-spacing:.14em;text-transform:uppercase;opacity:.65;padding-bottom:3px")}>{s.date}</div>
               </div>
             </div>
-            <div style={S("display:flex;gap:clamp(4px,.8cqw,10px);flex-shrink:0")}>
+            <div className="m-pills" style={S("display:flex;gap:clamp(4px,.8cqw,10px);flex-shrink:0")}>
               <div style={S(pill)}>Inputs</div>
               <div style={S(pill)}>Wi-Fi</div>
               <div style={S(pill)}>Settings</div>
@@ -584,7 +599,7 @@ export default class TvSite extends React.Component<Props, State> {
               <div style={S("font-size:clamp(9px,1.3cqw,16px);opacity:.75;line-height:1.3")}>Open an account from your sofa. Terms apply. Offer ends soon, probably.</div>
             </div>
             <div style={S("position:absolute;right:3cqw;top:2.4cqw;font-family:'VT323',monospace;font-size:clamp(10px,1.6cqw,20px);letter-spacing:.1em;padding:.2cqw .8cqw;border:1px solid rgba(255,255,255,.5);opacity:.8")}>AD</div>
-            <div data-row="1" style={S("position:absolute;left:0;right:0;bottom:0;padding:1.6cqw 3cqw;background:rgba(10,14,24,.78);backdrop-filter:blur(6px);display:flex;justify-content:space-between;align-items:center;gap:1cqw;transform-origin:top")}>
+            <div data-row="1" className="m-blur" style={S("position:absolute;left:0;right:0;bottom:0;padding:1.6cqw 3cqw;background:rgba(10,14,24,.78);backdrop-filter:blur(6px);display:flex;justify-content:space-between;align-items:center;gap:1cqw;transform-origin:top")}>
               <div style={S("display:flex;flex-direction:column;gap:.4cqw")}><div style={S("font-size:clamp(11px,2cqw,26px);font-weight:500")}>The Discover tab is going away soon</div><div style={S("font-size:clamp(9px,1.3cqw,16px);opacity:.8")}>Your recommendations and watchlist will move to the Home tab.</div></div>
               <div style={S("font-size:clamp(9px,1.3cqw,16px);padding:.6cqw 1.4cqw;border-radius:999px;background:rgba(255,255,255,.1);flex-shrink:0")}>Dismiss</div>
             </div>
@@ -611,12 +626,12 @@ export default class TvSite extends React.Component<Props, State> {
           </div>
           <div ref={this.r.miss} style={S("position:absolute;left:50%;bottom:4cqw;transform:translateX(-50%);font-family:'VT323',monospace;font-size:clamp(20px,3.4cqw,40px);color:#CFFFCF;text-shadow:0 0 10px rgba(140,255,140,.6);opacity:0;pointer-events:none")}>miss it?</div>
         </div>
-        <div ref={this.r.title} style={S("position:absolute;left:0;right:0;top:0;bottom:clamp(90px,16cqw,200px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,28px);padding:clamp(60px,9cqw,110px) 5cqw 0;text-align:center;opacity:0;pointer-events:none;color:var(--ink,rgba(255,255,255,.95))")}>
+        <div ref={this.r.title} className="m-title" style={S("position:absolute;left:0;right:0;top:0;bottom:clamp(90px,16cqw,200px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,28px);padding:clamp(60px,9cqw,110px) 5cqw 0;text-align:center;opacity:0;pointer-events:none;color:var(--ink,rgba(255,255,255,.95))")}>
           <div style={S("display:flex;flex-direction:column;align-items:center;gap:clamp(6px,.8cqw,12px)")}>
-            <h1 style={S("margin:0;font-size:clamp(40px,8.5cqw,112px);font-weight:200;letter-spacing:-.03em;line-height:.95;text-wrap:balance")}>clean your TV</h1>
-            <p style={S("margin:0;font-size:clamp(15px,2.1cqw,26px);font-weight:300;opacity:.8")}>Your TV, minus the ads.</p>
+            <h1 className="m-h1" style={S("margin:0;font-size:clamp(40px,8.5cqw,112px);font-weight:200;letter-spacing:-.03em;line-height:.95;text-wrap:balance")}>clean your TV</h1>
+            <p className="m-tag" style={S("margin:0;font-size:clamp(15px,2.1cqw,26px);font-weight:300;opacity:.8")}>Your TV, minus the ads.</p>
           </div>
-          <div style={S("width:min(86cqw,760px);display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:clamp(8px,1.4cqw,18px) clamp(14px,2.4cqw,32px);font-family:'VT323',monospace;font-size:clamp(18px,2.1cqw,28px);line-height:1")}>
+          <div className="m-counters" style={S("width:min(86cqw,760px);display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:clamp(8px,1.4cqw,18px) clamp(14px,2.4cqw,32px);font-family:'VT323',monospace;font-size:clamp(18px,2.1cqw,28px);line-height:1")}>
             {counters.map((c) => (
               <div key={c.key} style={S("display:flex;flex-direction:column;gap:5px;text-align:left")}>
                 <div style={S("display:flex;justify-content:space-between;gap:8px")}><span style={S("opacity:.7;letter-spacing:.06em")}>{c.label}</span><span>{c.text}</span></div>
@@ -627,7 +642,7 @@ export default class TvSite extends React.Component<Props, State> {
               </div>
             ))}
           </div>
-          <div style={S("display:flex;gap:10px;flex-wrap:wrap;justify-content:center")}>
+          <div className="m-btns" style={S("display:flex;gap:10px;flex-wrap:wrap;justify-content:center")}>
             <button onClick={() => this.ok()} className="hov-white act-shrink" style={S("pointer-events:auto;height:42px;padding:0 22px;border-radius:21px;border:0;background:var(--pill-bg,linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500;letter-spacing:.01em;color:inherit;transition:background .2s,transform .2s")}>Press OK to start</button>
             <a href={GH} target="_blank" rel="noopener" onClick={() => this.click()} className="hov-white act-shrink" style={S("pointer-events:auto;display:flex;align-items:center;gap:8px;height:42px;padding:0 20px;border-radius:21px;border:0;background:var(--pill-bg,linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500;letter-spacing:.01em;color:inherit;transition:background .2s,transform .2s")}>
               <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" /></svg>
@@ -657,7 +672,7 @@ export default class TvSite extends React.Component<Props, State> {
     const stars = d.stars.toLocaleString("en-US");
     const ticker = `Oct 17, 2:21 PM: posted · 48 hours later: ${stars} stars, ${d.forks.toLocaleString("en-US")} forks, ${d.prCount.toLocaleString("en-US")} pull requests · ${d.tvs.length} TVs from ${new Set(d.tvs.map((t) => t.brand)).size} brands`;
     return (
-      <section id="ch-01" data-ch="1" aria-label="Channel 01, The story" style={this.sectionStyle()}>
+      <section id="ch-01" data-ch="1" aria-label="Channel 01, The story" className="m-section" style={this.sectionStyle()}>
         {this.header("CH 01 · THE STORY", "One afternoon, one tweet.", "It started on one TV. Then other people tried it on theirs.")}
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(18px,3cqw,40px)")}>
           <div style={S("position:relative;border-radius:16px;overflow:hidden;background:#0B0F16;color:rgba(255,255,255,.95);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);display:flex;flex-direction:column;min-height:clamp(320px,32cqw,440px)")}>
@@ -725,14 +740,14 @@ export default class TvSite extends React.Component<Props, State> {
       </figure>
     );
     return (
-      <section id="ch-02" data-ch="2" aria-label="Channel 02, On air" style={this.sectionStyle()}>
+      <section id="ch-02" data-ch="2" aria-label="Channel 02, On air" className="m-section" style={this.sectionStyle()}>
         {this.header("CH 02 · ON AIR", "On air", "Screens from people who ran it on their own TV. Hover or tap one to read the rest.")}
         <div style={S("display:flex;flex-direction:column;gap:clamp(18px,2.4cqw,30px)")}>
-          <div ref={this.r.rowA} onMouseEnter={() => this.setPause("a", true)} onMouseLeave={() => this.setPause("a", false)} onTouchStart={() => this.setPause("a", true)} onTouchEnd={() => this.setPause("a", false, true)} style={{ ...S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:18px;border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))"), flexWrap: this.reduced ? "wrap" : "nowrap" }}>
+          <div ref={this.r.rowA} onMouseEnter={() => this.setPause("a", true)} onMouseLeave={() => this.setPause("a", false)} onTouchStart={() => this.setPause("a", true)} onTouchEnd={() => this.setPause("a", false, true)} className="m-row" style={{ ...S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:18px;border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))"), flexWrap: this.reduced ? "wrap" : "nowrap" }}>
             {rowA.map((it) => fig(it, true))}
           </div>
           {rowB.length > 0 && (
-            <div ref={this.r.rowB} onMouseEnter={() => this.setPause("b", true)} onMouseLeave={() => this.setPause("b", false)} onTouchStart={() => this.setPause("b", true)} onTouchEnd={() => this.setPause("b", false, true)} style={S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:18px;border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))")}>
+            <div ref={this.r.rowB} onMouseEnter={() => this.setPause("b", true)} onMouseLeave={() => this.setPause("b", false)} onTouchStart={() => this.setPause("b", true)} onTouchEnd={() => this.setPause("b", false, true)} className="m-row" style={S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:18px;border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))")}>
               {rowB.map((it) => fig(it, false))}
             </div>
           )}
@@ -744,7 +759,7 @@ export default class TvSite extends React.Component<Props, State> {
   renderCredits() {
     const d = this.props.data;
     return (
-      <section id="ch-04" data-ch="4" aria-label="Channel 04, The community" style={this.sectionStyle()}>
+      <section id="ch-04" data-ch="4" aria-label="Channel 04, The community" className="m-section" style={this.sectionStyle()}>
         {this.header("CH 04 · THE COMMUNITY", "The credits", "Every TV on the list got there because someone wrote it down for the next person. Thank you.")}
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(24px,4cqw,56px);align-items:center")}>
           <div style={S("border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16));padding:0 16px")}>
@@ -790,7 +805,7 @@ export default class TvSite extends React.Component<Props, State> {
     const osBtn = "height:32px;padding:0 12px;border-radius:16px;border:0;font-size:13px;white-space:nowrap;color:#fff;background:";
     const setOs = (os: "mac" | "win") => { if (this.state.os !== os) this.setState({ os }, () => this.startTyping()); };
     return (
-      <section id="ch-03" data-ch="3" aria-label="Channel 03, How to" style={this.sectionStyle()}>
+      <section id="ch-03" data-ch="3" aria-label="Channel 03, How to" className="m-section" style={this.sectionStyle()}>
         {this.header("CH 03 · HOW TO", "Set it up", "Three screens on two devices. The assistant does the typing; you answer its questions.")}
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(18px,3cqw,40px)")}>
           <div style={S("display:flex;flex-direction:column;gap:20px;padding:clamp(18px,2.4cqw,30px);border-radius:26px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16));min-height:440px")}>
@@ -867,7 +882,7 @@ export default class TvSite extends React.Component<Props, State> {
     if (!sl) return null;
     const round = "width:44px;height:44px;border-radius:50%;border:0;background:var(--card,rgba(255,255,255,.05));box-shadow:inset 0 0 0 1px var(--line,rgba(255,255,255,.12));font-size:18px";
     return (
-      <section id="ch-05" data-ch="5" aria-label="Channel 05, Made with" style={this.sectionStyle()}>
+      <section id="ch-05" data-ch="5" aria-label="Channel 05, Made with" className="m-section" style={this.sectionStyle()}>
         {this.header("CH 05 · MADE WITH", "Made with it", "Launchers, ports and add-ons people built on top, plus the themes. Nothing here is reviewed by the repo: read each project's README before you sideload it.")}
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(20px,3.4cqw,48px);align-items:center")}>
           <div onTouchStart={(e) => { this.tx = e.touches[0].clientX; }} onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - (this.tx || 0); if (Math.abs(dx) > 40) this.slideGo(s.slide + (dx < 0 ? 1 : -1)); }} style={S("padding:clamp(10px,1.2cqw,16px);border-radius:22px;background:linear-gradient(180deg,#26262a,#121214);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 40px rgba(0,0,0,.4)")}>
@@ -955,12 +970,12 @@ export default class TvSite extends React.Component<Props, State> {
     const s = this.state;
     const btn = "width:44px;height:44px;flex-shrink:0;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:#1a1a1d;padding:0;";
     return (
-      <div role="group" aria-label="Remote control" style={S("position:absolute;left:0;right:0;bottom:0;height:60px;padding:0 6px;background:#0d0d0e;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:4px;z-index:20")}>
+      <div role="group" aria-label="Remote control" className="m-bar" style={S("position:absolute;left:0;right:0;bottom:0;height:60px;padding:0 6px;background:#0d0d0e;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:4px;z-index:20")}>
         <button aria-label="Power" onClick={() => this.onPower()} className={s.power ? "" : "power-wait"} style={S(btn + "display:grid;place-items:center")}><span className="power-led" style={S("width:9px;height:9px;border-radius:50%;background:#ff5252;box-shadow:0 0 6px #ff5252")} /></button>
         <button aria-label="Input: switch site theme" onClick={() => this.cycleTheme()} style={S(btn + "font-size:10px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.8)")}>IN</button>
         <div style={S("display:flex;flex:1;justify-content:center")}>
           {NAMES.map((n, i) => (
-            <button key={n} aria-label={`Channel ${i}, ${n.toLowerCase()}`} onClick={() => this.channel(i)} style={S("width:28px;height:44px;border:0;background:transparent;display:grid;place-items:center;padding:0")}>
+            <button key={n} aria-label={`Channel ${i}, ${n.toLowerCase()}`} onClick={() => this.channel(i)} className="m-dot" style={S("width:28px;height:44px;border:0;background:transparent;display:grid;place-items:center;padding:0")}>
               <span style={{ ...S("width:8px;height:8px;border-radius:50%"), background: s.ch === i ? "#CFFFCF" : "rgba(255,255,255,.28)", boxShadow: s.ch === i ? "0 0 6px rgba(140,255,140,.7)" : "none" }} />
             </button>
           ))}
