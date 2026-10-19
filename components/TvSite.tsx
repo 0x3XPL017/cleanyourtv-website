@@ -54,7 +54,6 @@ export default class TvSite extends React.Component<Props, State> {
         { key: "stars", label: "STARS", value: d.stars, max: Math.max(5000, d.stars * 1.4), display: 0 },
         { key: "forks", label: "FORKS", value: d.forks, max: Math.max(600, d.forks * 1.4), display: 0 },
         { key: "contributors", label: "CONTRIBUTORS", value: d.contributors, max: Math.max(120, d.contributors * 1.6), display: 0 },
-        { key: "tvs", label: "TVS SUPPORTED", value: d.tvs.length, max: Math.max(40, d.tvs.length * 1.5), display: 0 },
       ],
       ch: 0, wiz: 0, os: "mac", typed: 0, copied: false, slide: 0, q: "", info: null, active: null,
     };
