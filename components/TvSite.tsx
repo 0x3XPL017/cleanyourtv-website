@@ -261,7 +261,7 @@ export default class TvSite extends React.Component<Props, State> {
     for (const l of TERM[this.state.os]) {
       if (budget <= 0) break; const cost = termCost(l);
       if (l[0] === "cmd") { const n = Math.min(l[1].length, budget); out.push({ text: "$ " + l[1].slice(0, n) + (budget < cost ? "▌" : ""), color: "#FFFFFF", img: "", alt: "" }); }
-      else if (budget >= cost) out.push(l[0] === "img" ? { text: "  " + l[1], color: "rgba(216,245,218,.55)", img: l[2], alt: l[3] } : { text: (l[0] === "note" ? "› " : "  ") + l[1], color: l[0] === "note" ? "#CFFFCF" : "rgba(216,245,218,.6)", img: "", alt: "" });
+      else if (budget >= cost) out.push(l[0] === "img" ? { text: "  " + l[1], color: "rgba(216,245,218,.8)", img: l[2], alt: l[3] } : { text: (l[0] === "note" ? "› " : "  ") + l[1], color: l[0] === "note" ? "#CFFFCF" : "rgba(216,245,218,.85)", img: "", alt: "" });
       budget -= cost;
     }
     return out;
@@ -499,7 +499,7 @@ export default class TvSite extends React.Component<Props, State> {
             <div ref={this.r.osd} aria-live="polite" style={S("position:absolute;top:clamp(6px,1cqw,14px);right:clamp(10px,1.6cqw,22px);z-index:5;font-family:'VT323',monospace;font-size:clamp(22px,3.2cqw,40px);line-height:1;letter-spacing:.06em;color:var(--osd,#CFFFCF);text-shadow:0 0 10px var(--osd-glow,rgba(140,255,140,.6)),1px 0 0 rgba(255,0,0,.25),-1px 0 0 rgba(0,160,255,.25);opacity:0;transition:opacity .3s;pointer-events:none")}>{s.osd}</div>
             <canvas ref={this.staticRef} width={192} height={108} aria-hidden="true" style={S("position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;z-index:6;pointer-events:none")} />
             <div ref={this.r.flash} aria-hidden="true" style={S("position:absolute;inset:0;background:#fff;opacity:0;z-index:7;pointer-events:none;transform-origin:center")} />
-            <div ref={this.r.off} style={S("position:absolute;inset:0;z-index:8;display:none;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,24px);padding:6cqw;background:radial-gradient(80% 70% at 50% 40%,#0c0c0e,#050506);color:rgba(255,255,255,.72);text-align:center;font-size:clamp(14px,1.6cqw,19px);font-weight:300;opacity:0")}>
+            <div ref={this.r.off} style={S("position:absolute;inset:0;z-index:8;display:none;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,24px);padding:6cqw;background:radial-gradient(80% 70% at 50% 40%,#0c0c0e,#050506);color:rgba(255,255,255,.88);text-align:center;font-size:clamp(14px,1.6cqw,19px);font-weight:400;opacity:0")}>
               <div style={S("display:flex;gap:clamp(14px,3cqw,40px);flex-wrap:wrap;justify-content:center;font-weight:400")}>
                 <a href={GH} target="_blank" rel="noopener">GitHub</a>
                 <a href={TWEET} target="_blank" rel="noopener">The tweet</a>
@@ -509,8 +509,9 @@ export default class TvSite extends React.Component<Props, State> {
               <p style={S("margin:0;max-width:34em;line-height:1.45;text-wrap:pretty")}>Started as one afternoon on my parents&apos; TV. Built with Claude Code.</p>
               <div style={S("font-family:'VT323',monospace;font-size:clamp(16px,1.8cqw,22px);opacity:.45;letter-spacing:.08em")}>POWER TURNS IT BACK ON</div>
             </div>
-            <div aria-hidden="true" style={S("position:absolute;inset:0;z-index:9;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,rgba(0,0,0,0) 1px 3px)")} />
-            <div aria-hidden="true" style={S("position:absolute;inset:0;z-index:9;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 58%,rgba(0,0,0,.42) 100%),linear-gradient(112deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,0) 38%)")} />
+            {/* The CRT layers read as texture on the boot channel and as murk over text, so they fade once you scroll. */}
+            <div aria-hidden="true" style={{ ...S("position:absolute;inset:0;z-index:9;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,rgba(0,0,0,0) 1px 3px);transition:opacity .6s"), opacity: s.ch === 0 ? 1 : 0.25 }} />
+            <div aria-hidden="true" style={{ ...S("position:absolute;inset:0;z-index:9;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 58%,rgba(0,0,0,.42) 100%),linear-gradient(112deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,0) 38%);transition:opacity .6s"), opacity: s.ch === 0 ? 1 : 0.3 }} />
           </div>
           <div style={S("position:absolute;left:0;right:0;bottom:0;height:max(64px,5vw);display:flex;align-items:center;justify-content:center;gap:16px;pointer-events:none")}>
             <div style={S("font-size:10px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.22)")}>cleanyour.tv</div>
@@ -645,8 +646,8 @@ export default class TvSite extends React.Component<Props, State> {
     return (
       <header style={S("display:flex;flex-direction:column;gap:10px;max-width:760px")}>
         <div style={S("font-family:'VT323',monospace;font-size:22px;letter-spacing:.12em;color:var(--ink-dim,rgba(255,255,255,.6))")}>{kicker}</div>
-        <h2 style={S("margin:0;font-size:clamp(34px,5.2cqw,72px);font-weight:200;letter-spacing:-.03em;line-height:1")}>{title}</h2>
-        <p style={S("margin:0;font-size:clamp(15px,1.4cqw,18px);line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));text-wrap:pretty")}>{blurb}</p>
+        <h2 style={S("margin:0;font-size:clamp(34px,5.2cqw,72px);font-weight:300;letter-spacing:-.03em;line-height:1")}>{title}</h2>
+        <p style={S("margin:0;font-size:clamp(16px,1.5cqw,19px);line-height:1.5;color:var(--ink,rgba(255,255,255,.95));opacity:.9;text-wrap:pretty")}>{blurb}</p>
       </header>
     );
   }
@@ -698,7 +699,7 @@ export default class TvSite extends React.Component<Props, State> {
           <div style={S("position:relative;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000")}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={it.image} alt={"Before and after on " + it.tv} loading="lazy" style={S("width:100%;height:100%;object-fit:cover;display:block")} />
-            <div style={S("position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,rgba(0,0,0,0) 1px 3px),radial-gradient(ellipse at center,rgba(0,0,0,0) 55%,rgba(0,0,0,.45))")} />
+            <div style={S("position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0 1px,rgba(0,0,0,0) 1px 3px),radial-gradient(ellipse at center,rgba(0,0,0,0) 60%,rgba(0,0,0,.3))")} />
             <div style={{ ...S("position:absolute;inset:0;background:rgba(6,6,8,.9);color:#fff;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;transition:opacity .2s"), opacity: it.op, pointerEvents: it.pe as "auto" | "none" }}>
               <p style={S("margin:0;font-size:14px;line-height:1.4;text-wrap:pretty")}>{it.quote}</p>
               <a href={it.link} target="_blank" rel="noopener" style={S("align-self:flex-start;font-size:13px")}>See the original</a>
@@ -740,7 +741,7 @@ export default class TvSite extends React.Component<Props, State> {
                 <div key={g.title + gi} style={S("display:flex;flex-direction:column;align-items:center;gap:12px;padding:28px 0")}>
                   <div style={S("font-family:'VT323',monospace;font-size:22px;letter-spacing:.14em;color:var(--ink-dim,rgba(255,255,255,.6));text-transform:uppercase")}>{g.title}</div>
                   {g.people.map((p) => (
-                    <a key={p.login} href={p.url} target="_blank" rel="noopener" title={p.url} onMouseEnter={() => this.setPause("c", true)} onMouseLeave={() => this.setPause("c", false)} onTouchStart={() => this.setPause("c", true)} onTouchEnd={() => this.setPause("c", false, true)} className="hov-card" style={S("display:flex;align-items:center;gap:10px;font-size:18px;font-weight:300;border:0;padding:2px 8px;border-radius:999px")}>
+                    <a key={p.login} href={p.url} target="_blank" rel="noopener" title={p.url} onMouseEnter={() => this.setPause("c", true)} onMouseLeave={() => this.setPause("c", false)} onTouchStart={() => this.setPause("c", true)} onTouchEnd={() => this.setPause("c", false, true)} className="hov-card" style={S("display:flex;align-items:center;gap:10px;font-size:18px;font-weight:400;border:0;padding:2px 8px;border-radius:999px")}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={p.avatar} alt="" width={28} height={28} loading="lazy" style={S("width:28px;height:28px;border-radius:50%;background:var(--card,rgba(255,255,255,.06))")} />
                       <span>{p.login}</span>
@@ -833,7 +834,7 @@ export default class TvSite extends React.Component<Props, State> {
                 <button aria-pressed={s.os === "win"} onClick={() => setOs("win")} style={S(osBtn + (s.os === "win" ? "rgba(255,255,255,.18)" : "transparent"))}>Windows</button>
               </div>
             </div>
-            <div style={S("flex:1;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.6;display:flex;flex-direction:column;gap:3px")}>
+            <div style={S("flex:1;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.6;display:flex;flex-direction:column;gap:3px")}>
               {this.termView().map((l, i) => (
                 <div key={i} style={S("display:flex;flex-direction:column;gap:6px")}>
                   <div style={{ ...S("white-space:pre-wrap;word-break:break-word"), color: l.color }}>{l.text}</div>
@@ -883,7 +884,7 @@ export default class TvSite extends React.Component<Props, State> {
           <div style={S("display:flex;flex-direction:column;gap:14px")}>
             <div style={S("font-family:'VT323',monospace;font-size:20px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))")}>{sl.kicker}</div>
             <h3 style={S("margin:0;font-size:clamp(24px,3cqw,40px);font-weight:300;line-height:1.1;letter-spacing:-.01em")}>{sl.name}</h3>
-            <p style={S("margin:0;font-size:16px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));text-wrap:pretty;min-height:4.5em")}>{sl.what}</p>
+            <p style={S("margin:0;font-size:16px;line-height:1.5;color:var(--ink,rgba(255,255,255,.95));opacity:.9;text-wrap:pretty;min-height:4.5em")}>{sl.what}</p>
             <div style={S("display:flex;flex-wrap:wrap;gap:6px 20px;font-size:14px")}><span>{sl.meta}</span><span>by <a href={sl.byUrl} target="_blank" rel="noopener">{sl.by}</a></span></div>
             <div style={S("display:flex;flex-wrap:wrap;gap:10px;align-items:center")}>
               <a href={sl.url} target="_blank" rel="noopener" style={S("display:flex;align-items:center;height:44px;padding:0 18px;border-radius:22px;border:0;background:var(--pill-bg,rgba(255,255,255,.12));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500")}>Open the project</a>
