@@ -1,5 +1,247 @@
 [
-  {"handle":"@placeholder-one","quote":"Placeholder quote. Swap in one line from the real post, in their words.","image":"/results/placeholder-1.png","link":"https://github.com/Gathin23/tv-vibehack/pulls?q=is%3Amerged","tv":"TCL 65C725"},
-  {"handle":"@placeholder-two","quote":"Placeholder quote. Each entry is one line of JSON: handle, quote, image, link, tv.","image":"/results/placeholder-2.png","link":"https://github.com/Gathin23/tv-vibehack/pulls?q=is%3Amerged","tv":"Xiaomi Mi Box S"},
-  {"handle":"@placeholder-three","quote":"Placeholder quote. Drop the screenshot in public/results/ and point image at it.","image":"/results/placeholder-3.png","link":"https://github.com/Gathin23/tv-vibehack/pulls?q=is%3Amerged","tv":"Sony BRAVIA XBR-65X900E"}
+  {
+    "handle": "@dylanorrell",
+    "quote": "Gave my TV live @Polymarket game odds charts You really can just do things nowadays",
+    "image": "/results/dylanorrell.jpg",
+    "link": "https://x.com/dylanorrell/status/2111852766314598833",
+    "tv": "Live Polymarket odds"
+  },
+  {
+    "handle": "@0xYash_Jain",
+    "quote": "This was super easy to do, Now my tv running super smooth same as new one - Added my own lightweight UI - custom wallpaper slideshow - switch between…",
+    "image": "/results/0xyash_jain.jpg",
+    "link": "https://x.com/0xYash_Jain/status/2111846001975894235",
+    "tv": "Own UI, Hindi/English"
+  },
+  {
+    "handle": "@amoltangade",
+    "quote": "It’s just ADB commands over the local network with Claude doing most of the heavy lifting. Killed 40+ bloatware apps, built a custom Java launcher with…",
+    "image": "/results/amoltangade.jpg",
+    "link": "https://x.com/amoltangade/status/2112113132466540685",
+    "tv": "Java launcher + mascot"
+  },
+  {
+    "handle": "@pranabs1ngh",
+    "quote": "Took this to the next level on my TV📺 • Opus 5 debugged it via adb, ripped out 21 bloat apps and wrote me a PS5 style launcher from scratch • Settings…",
+    "image": "/results/pranabs1ngh.jpg",
+    "link": "https://x.com/pranabs1ngh/status/2111905446298857608",
+    "tv": "PS5-style launcher"
+  },
+  {
+    "handle": "@utkarshbagri",
+    "quote": "Ran this on my Acer TV: 21 preloaded apps disabled, and a clean home screen with my own photos as the backdrop. Then had Claude Code take it further: one…",
+    "image": "/results/utkarshbagri.jpg",
+    "link": "https://x.com/utkarshbagri/status/2111868781152948563",
+    "tv": "Acer TV, one search"
+  },
+  {
+    "handle": "@zhutyler21",
+    "quote": "我参考了这个项目，更新了家里小米电视的首页。 并且我希望有一个封面照片轮播的功能，于是把我经常存放宝宝照片的亲宝宝APP后台做了逆向工程，这样它云端储存的数据就可以定时分批地缓存到电视里了。感谢这个项目，它很成功！",
+    "image": "/results/zhutyler21.jpg",
+    "link": "https://x.com/zhutyler21/status/2111801879508480186",
+    "tv": "Xiaomi, baby photos"
+  },
+  {
+    "handle": "@pranavrajs",
+    "quote": "I did not realize you could do this over ADB. Samsung has SDB (similar to adb), works over Wifi. I have a Samsung Freestyle projector that I use quite…",
+    "image": "/results/pranavrajs.jpg",
+    "link": "https://x.com/pranavrajs/status/2112018629697093737",
+    "tv": "Samsung Freestyle"
+  },
+  {
+    "handle": "@docsofduke",
+    "quote": "It's really just adb commands through your local network which Claude knows by heart. Removed clutter, Added logo, BTC price &amp; block height, and a…",
+    "image": "/results/docsofduke.jpg",
+    "link": "https://x.com/docsofduke/status/2111863607676092540",
+    "tv": "BTC price + HK skyline"
+  },
+  {
+    "handle": "@Landy_696",
+    "quote": "Ça m’a donné envie de faire mon petit launcher vibe codé aussi ça rend super bien si ça intéresse certains. Pour ceux qui ont une TV OLED, j’ai pensé à un…",
+    "image": "/results/landy_696.jpg",
+    "link": "https://x.com/Landy_696/status/2111861144520442345",
+    "tv": "Own launcher, OLED saver"
+  },
+  {
+    "handle": "@0xRampey",
+    "quote": "Fun Sunday afternoon of de-bloating. My TV has a great screen but a weak chip, so Liquid Glass-style effects were out. Material is forgiving: Material 3…",
+    "image": "/results/0xrampey.jpg",
+    "link": "https://x.com/0xRampey/status/2111992897906393559",
+    "tv": "Material 3, 40 MB RAM"
+  },
+  {
+    "handle": "@udhaykumarbala",
+    "quote": "Perfect timing. I was wiring every device in my house into one system and literally setting up \"Play Time\" and \"TV Time\" on my Apple TV remote. Saw this…",
+    "image": "/results/udhaykumarbala.jpg",
+    "link": "https://x.com/udhaykumarbala/status/2111828606196633769",
+    "tv": "Mi TV, two tiles"
+  },
+  {
+    "handle": "@bligh_hedges",
+    "quote": "Saw @gathint’s TV makeover and had to try it! Used Codex over Wi-Fi to build a Frieren dashboard for our LG: YouTube, Crunchyroll, Netflix, TVNZ+ and HDMI…",
+    "image": "/results/bligh_hedges.jpg",
+    "link": "https://x.com/bligh_hedges/status/2112075277212012628",
+    "tv": "LG webOS, Frieren"
+  },
+  {
+    "handle": "@_tsanthosh",
+    "quote": "Tried this on our Mi TV. Made the home screen useful and pinned 'Siragadikka Aasai' and 'Pandian Stores 2' to the home screen so my wife can quickly access…",
+    "image": "/results/_tsanthosh.jpg",
+    "link": "https://x.com/_tsanthosh/status/2112038239339270622",
+    "tv": "Mi TV, pinned serials"
+  },
+  {
+    "handle": "@sudeepsd_",
+    "quote": "What a life saver! Our google TV is bloat-free now :D @anirudhamudan spent some time in deploying this and we’re making a few more tweaks to make it more…",
+    "image": "/results/sudeepsd_.jpg",
+    "link": "https://x.com/sudeepsd_/status/2111825786001088592",
+    "tv": "Google TV"
+  },
+  {
+    "handle": "@thegriffinwells",
+    "quote": "this is crazy my fire tv now looks like a wii",
+    "image": "/results/thegriffinwells.jpg",
+    "link": "https://x.com/thegriffinwells/status/2111893584425496842",
+    "tv": "Fire TV as a Wii"
+  },
+  {
+    "handle": "@MahrajSuraj",
+    "quote": "xiaomi tv de-bloat, umbrelOS style",
+    "image": "/results/mahrajsuraj.jpg",
+    "link": "https://x.com/MahrajSuraj/status/2111847400776302992",
+    "tv": "Xiaomi, umbrelOS look"
+  },
+  {
+    "handle": "@wallacex227",
+    "quote": "Otimizei a tv bem antiga, todo o lixo removi e ainda fiz umas telas com Claude",
+    "image": "/results/wallacex227.jpg",
+    "link": "https://x.com/wallacex227/status/2111907641090052265",
+    "tv": "Very old TV"
+  },
+  {
+    "handle": "@this_is_sanjai",
+    "quote": "My Xiaomi TV was insanely slow because of adware and bloatware. Been struggling with this problem for a long time Used claude to make it fast and smooth!…",
+    "image": "/results/this_is_sanjai.jpg",
+    "link": "https://x.com/this_is_sanjai/status/2111751886680510674",
+    "tv": "Xiaomi"
+  },
+  {
+    "handle": "@OVERTECK",
+    "quote": "Merci ma tv est beaucoup plus fluide 🫱🏼‍🫲🏽",
+    "image": "/results/overteck.jpg",
+    "link": "https://x.com/OVERTECK/status/2111909487162388849",
+    "tv": "Smoother"
+  },
+  {
+    "handle": "@tokifyi",
+    "quote": "this is crazy just gave claude code control of my lg tv to uninstall all the bloatware",
+    "image": "/results/tokifyi.jpg",
+    "link": "https://x.com/tokifyi/status/2111721895016219091",
+    "tv": "LG"
+  },
+  {
+    "handle": "@AjeshRPai",
+    "quote": "Saw this post and got inspired. Have been trying to update my TV launcher to ✅ Remove bloat ✅ Make it fast and smooth",
+    "image": "/results/ajeshrpai.jpg",
+    "link": "https://x.com/AjeshRPai/status/2111893778349076978",
+    "tv": "New launcher"
+  },
+  {
+    "handle": "@kingloves2code",
+    "quote": "Insane! I customized my bloated OnePlus TV entirely for me and made it ~80% faster and efficient!",
+    "image": "/results/kingloves2code.jpg",
+    "link": "https://x.com/kingloves2code/status/2112084343673979362",
+    "tv": "OnePlus TV"
+  },
+  {
+    "handle": "@Prince_Jain17",
+    "quote": "Was too useful of a hack to ignore. Free of bloatware after five years.",
+    "image": "/results/prince_jain17.jpg",
+    "link": "https://x.com/Prince_Jain17/status/2111767650066186254",
+    "tv": "Five-year-old TV"
+  },
+  {
+    "handle": "@liamzhuhk",
+    "quote": "花了一块钱token,也优化了一下家里的电视,界面都流畅了不少,很满意",
+    "image": "/results/liamzhuhk.jpg",
+    "link": "https://x.com/liamzhuhk/status/2111832357384982619",
+    "tv": "Smoother"
+  },
+  {
+    "handle": "@pushpak1300",
+    "quote": "Used this to remove lot of bloat from my grandma's tv and she is super happy now. 😅😅 we are vibe coding tv's now",
+    "image": "/results/pushpak1300.jpg",
+    "link": "https://x.com/pushpak1300/status/2112088958985547968",
+    "tv": "Grandma's TV"
+  },
+  {
+    "handle": "@yoda_FDE",
+    "quote": "Did the same with my 📽️ projector with Argon 4",
+    "image": "/results/yoda_fde.jpg",
+    "link": "https://x.com/yoda_FDE/status/2111812197597032571",
+    "tv": "Projector"
+  },
+  {
+    "handle": "@viraj_shoor",
+    "quote": "Did the same for my LG TV. It’s absolutely crazy!",
+    "image": "/results/viraj_shoor.jpg",
+    "link": "https://x.com/viraj_shoor/status/2112052734061072477",
+    "tv": "LG"
+  },
+  {
+    "handle": "@behalnihal",
+    "quote": "also tried it with an old tv at home , it works so much faster now",
+    "image": "/results/behalnihal.jpg",
+    "link": "https://x.com/behalnihal/status/2111701476880130343",
+    "tv": "Old TV"
+  },
+  {
+    "handle": "@Ashutos07033842",
+    "quote": "What a lifesaver! Updated my MI TV! Onto making it more personalised now.",
+    "image": "/results/ashutos07033842.jpg",
+    "link": "https://x.com/Ashutos07033842/status/2111912830748516766",
+    "tv": "Mi TV"
+  },
+  {
+    "handle": "@SirCribs_a_Lot",
+    "quote": "Tried this on our TV, works like a charm. Speed has gone 2x.",
+    "image": "/results/sircribs_a_lot.jpg",
+    "link": "https://x.com/SirCribs_a_Lot/status/2112113885935489351",
+    "tv": "2x speed"
+  },
+  {
+    "handle": "@Gadgetfather",
+    "quote": "Thanks! my TV is looking lot better now!",
+    "image": "/results/gadgetfather.jpg",
+    "link": "https://x.com/Gadgetfather/status/2112103522422681899",
+    "tv": "Looks better"
+  },
+  {
+    "handle": "@mntolia",
+    "quote": "Debloating my android tv with your prompt! Very cool! Can't wait to see what happens..",
+    "image": "/results/mntolia.jpg",
+    "link": "https://x.com/mntolia/status/2111770036708720768",
+    "tv": "Debloating"
+  },
+  {
+    "handle": "@ugosus",
+    "quote": "Thanks a lot! It’s done ✅",
+    "image": "/results/ugosus.jpg",
+    "link": "https://x.com/ugosus/status/2111860025618776289",
+    "tv": "Done"
+  },
+  {
+    "handle": "@amnasahamed",
+    "quote": "debloating done",
+    "image": "/results/amnasahamed.jpg",
+    "link": "https://x.com/amnasahamed/status/2112026288890454273",
+    "tv": "Done"
+  },
+  {
+    "handle": "@rakesh_at_tweet",
+    "quote": "Thanks bro 🫂",
+    "image": "/results/rakesh_at_tweet.jpg",
+    "link": "https://x.com/rakesh_at_tweet/status/2111777483674825193",
+    "tv": "Done"
+  }
 ]

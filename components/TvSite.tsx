@@ -454,9 +454,10 @@ export default class TvSite extends React.Component<Props, State> {
         tap: (e: React.MouseEvent) => { if ((e.target as HTMLElement).closest("a")) return; this.setState((s) => ({ active: s.active === key ? null : key })); } };
     });
     if (this.reduced) return [mk(res, "s"), []] as const;
-    let base: typeof res = []; while (base.length < 6) base = base.concat(res);
-    const rev = base.slice().reverse();
-    return [mk(base.concat(base), "a"), mk(rev.concat(rev), "b")] as const;
+    let a: typeof res = res, b: typeof res = [];
+    if (res.length >= 12) { const h = Math.ceil(res.length / 2); a = res.slice(0, h); b = res.slice(h); }
+    else { let base: typeof res = []; while (base.length < 6) base = base.concat(res); a = base; b = base.slice().reverse(); }
+    return [mk(a.concat(a), "a"), mk(b.concat(b), "b")] as const;
   }
   creditGroups() {
     const prs = this.props.data.prs, seen: Record<string, 1> = {}, groups: Record<string, { login: string; url: string; avatar: string }[]> = {};

@@ -1,7 +1,7 @@
 # Before the site goes public
 
-- [ ] Replace the three placeholder entries in `content/results.json` with real before-and-after posts (handle, one-line quote in their words, link to the post, screenshot in `public/results/`).
-- [ ] Set `GITHUB_TOKEN` in the Vercel project (Settings, Environment Variables, all environments). Redeploy so the oscilloscope draws the real 48-hour star history.
+- [x] `content/results.json` holds 35 quote posts (their own words, first image of the post, link). Add more the same way.
+- [x] `GITHUB_TOKEN` is set in the Vercel project (production and preview).
 - [ ] Open the site on a phone: the bottom bar replaces the remote, channels swipe, the Made-with carousel swipes.
 - [ ] Open it with "Reduce motion" on: no boot sequence, no static, rows wrap instead of scrolling, every channel readable.
 - [ ] Check the Open Graph preview (`/docs/new-home.jpg`) in the X card validator.
