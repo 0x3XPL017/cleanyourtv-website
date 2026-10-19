@@ -396,7 +396,7 @@ export default class TvSite extends React.Component<Props, State> {
     const ch = this.state.ch;
     if (ch === 5) return this.wizGo(this.state.wiz + 1);
     if (ch === 6) return this.slideGo(this.state.slide + 1);
-    this.channel(ch === 0 ? 5 : ch + 1);
+    this.channel(ch + 1);
   }
   async missIt() {
     if (!this.state.booted) return; const cl = this.r.clutter.current!, miss = this.r.miss.current!;
