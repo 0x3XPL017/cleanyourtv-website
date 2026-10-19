@@ -37,7 +37,9 @@ export default class TvSite extends React.Component<Props, State> {
   ax = 0; bx = 0; bInit = false; cy = 0; pause = { a: false, b: false, c: false }; resumeT: Record<string, ReturnType<typeof setTimeout>> = {};
   reduced = false; mq!: MediaQueryList; onMq!: () => void; onKey!: (e: KeyboardEvent) => void; onResize!: () => void;
   clockTimer!: ReturnType<typeof setInterval>; typeT!: ReturnType<typeof setInterval>; osdT!: ReturnType<typeof setTimeout>; copyT!: ReturnType<typeof setTimeout>;
-  io!: IntersectionObserver; endIo!: IntersectionObserver; typingStarted = false; tx = 0;
+  io!: IntersectionObserver; typingStarted = false; tx = 0;
+  pull = 0; pullAt = 0; pullY = 0; onWheel!: (e: WheelEvent) => void; onTouchS!: (e: TouchEvent) => void; onTouchM!: (e: TouchEvent) => void; onTouchE!: () => void;
+  gaugeRef = React.createRef<HTMLDivElement>(); gaugeTextRef = React.createRef<HTMLDivElement>();
   _ac: AudioContext | null = null; humNode: { o: OscillatorNode; o2: OscillatorNode; g: GainNode; g2: GainNode } | null = null;
 
   constructor(p: Props) {
@@ -75,15 +77,21 @@ export default class TvSite extends React.Component<Props, State> {
     const sc = this.r.scroll.current!;
     this.io = new IntersectionObserver((es) => es.forEach((e) => this.onSection(e)), { root: sc, threshold: [0.5] });
     sc.querySelectorAll("section[data-ch]").forEach((s) => this.io.observe(s));
-    this.endIo = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting && this.state.power && this.state.booted) this.powerOff(); }), { root: sc, threshold: [0.95] });
-    if (this.r.end.current) this.endIo.observe(this.r.end.current);
+    // Turning the set off takes a deliberate pull: sit at the very bottom and keep scrolling.
+    this.onWheel = (e) => { if (e.deltaY > 0 && this.atBottom()) this.addPull(Math.min(e.deltaY, 60) / 1100); };
+    this.onTouchS = (e) => { this.pullY = e.touches[0].clientY; };
+    this.onTouchM = (e) => { const dy = this.pullY - e.touches[0].clientY; if (dy > 0 && this.atBottom()) this.setPull(dy / 320); };
+    this.onTouchE = () => { if (this.pull < 1) this.setPull(0); };
+    sc.addEventListener("wheel", this.onWheel, { passive: true }); sc.addEventListener("touchstart", this.onTouchS, { passive: true });
+    sc.addEventListener("touchmove", this.onTouchM, { passive: true }); sc.addEventListener("touchend", this.onTouchE);
     this.lastLoop = performance.now(); this.loopRaf = requestAnimationFrame(this.loop);
     this.boot();
   }
   componentWillUnmount() {
     clearInterval(this.clockTimer); clearInterval(this.typeT); window.removeEventListener("keydown", this.onKey); window.removeEventListener("resize", this.onResize);
     this.mq.removeEventListener("change", this.onMq); cancelAnimationFrame(this.glassRaf); cancelAnimationFrame(this.loopRaf); cancelAnimationFrame(this.scopeRaf);
-    this.io?.disconnect(); this.endIo?.disconnect(); this.hum(false);
+    this.io?.disconnect(); this.hum(false);
+    const sc = this.r.scroll.current; if (sc) { sc.removeEventListener("wheel", this.onWheel); sc.removeEventListener("touchstart", this.onTouchS); sc.removeEventListener("touchmove", this.onTouchM); sc.removeEventListener("touchend", this.onTouchE); }
   }
 
   // ---- helpers
@@ -206,6 +214,7 @@ export default class TvSite extends React.Component<Props, State> {
         if (a) { const half = a.scrollWidth / 2; if (this.pause.a) this.ax = a.scrollLeft; else { this.ax += 30 * dt; if (this.ax >= half) this.ax -= half; a.scrollLeft = this.ax; } }
         if (b) { const half = b.scrollWidth / 2; if (!this.bInit && half > 0) { this.bx = half; this.bInit = true; } if (this.pause.b) this.bx = b.scrollLeft; else { this.bx -= 22 * dt; if (this.bx <= 0) this.bx += half; b.scrollLeft = this.bx; } }
       }
+      if (this.pull > 0 && now - this.pullAt > 160) this.setPull(this.pull - dt * 0.7);
       if (ch === 4) { const c = this.r.credits.current; if (c && !this.pause.c) { const h = c.scrollHeight / 2; this.cy += 26 * dt; if (h && this.cy >= h) this.cy -= h; c.style.transform = `translateY(${-this.cy}px)`; } }
     }
     this.loopRaf = requestAnimationFrame(this.loop);
@@ -336,6 +345,17 @@ export default class TvSite extends React.Component<Props, State> {
     ti.style.transition = "opacity .6s"; ti.style.opacity = "1"; this.hum(true);
   }
 
+  // ---- the pull that turns it off
+  atBottom() { const sc = this.r.scroll.current; return !!sc && this.state.power && this.state.booted && sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4; }
+  addPull(d: number) { this.pullAt = performance.now(); this.setPull(this.pull + d); }
+  setPull(v: number) {
+    this.pull = Math.max(0, Math.min(1, v));
+    const g = this.gaugeRef.current, t = this.gaugeTextRef.current;
+    if (g) g.style.width = this.pull * 100 + "%";
+    if (t) t.textContent = this.pull <= 0 ? "KEEP SCROLLING TO TURN IT OFF" : this.pull < 1 ? `PULLING  ${Math.round(this.pull * 100)}%` : "OFF";
+    if (this.pull >= 1) { this.pull = 0; this.powerOff(); }
+  }
+
   // ---- power
   async powerOff() {
     if (!this.state.power) return;
@@ -353,7 +373,7 @@ export default class TvSite extends React.Component<Props, State> {
     const sc = this.r.scroll.current!, off = this.r.off.current!;
     off.getAnimations().forEach((a) => a.cancel()); off.style.display = "none"; off.style.opacity = "0";
     sc.getAnimations().forEach((a) => a.cancel()); sc.style.visibility = ""; sc.style.transform = ""; sc.style.filter = "";
-    this.quietUntil = performance.now() + 1500;
+    this.quietUntil = performance.now() + 1500; this.setPull(0);
     this.setState({ power: true }, () => this.boot());
   }
 
@@ -463,9 +483,14 @@ export default class TvSite extends React.Component<Props, State> {
               {this.renderCredits()}
               {this.renderGuide()}
               {this.renderMade()}
-              <section id="ch-end" aria-label="End of transmission" style={S("position:relative;min-height:70%;scroll-snap-align:end;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));display:grid;place-items:center;border-top:1px solid var(--line,rgba(255,255,255,.12))")}>
+              <section id="ch-end" aria-label="End of transmission" style={S("position:relative;min-height:70%;scroll-snap-align:none;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));display:grid;place-items:center;border-top:1px solid var(--line,rgba(255,255,255,.12))")}>
                 <div ref={this.r.end} style={S("display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding:24px")}>
                   <div style={S("font-family:'VT323',monospace;font-size:28px;letter-spacing:.14em;color:var(--ink-dim,rgba(255,255,255,.6))")}>END OF TRANSMISSION</div>
+                  <div style={S("display:flex;flex-direction:column;gap:8px;width:min(320px,70vw);font-family:'VT323',monospace;font-size:18px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))")}>
+                    <div ref={this.gaugeTextRef} aria-live="polite">KEEP SCROLLING TO TURN IT OFF</div>
+                    <div style={S("position:relative;height:10px;background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);opacity:.25")} />
+                    <div ref={this.gaugeRef} style={S("position:relative;height:10px;margin-top:-18px;width:0;background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);color:var(--ink,#fff);transition:width .08s linear")} />
+                  </div>
                   <button onClick={() => this.onPower()} style={S("height:44px;padding:0 20px;border-radius:22px;border:0;background:var(--pill-bg,rgba(255,255,255,.12));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500")}>Turn it off</button>
                 </div>
               </section>
