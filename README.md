@@ -2,7 +2,7 @@
 
 The website for [tv-vibehack](https://github.com/Gathin23/tv-vibehack): debloat any Android TV or Google TV over Wi-Fi and swap the ad-filled home screen for a clean launcher.
 
-The whole site is one old television. Seven channels, a remote in the corner, static between channels, and a power button that actually turns it off.
+The whole site is one old television. Six channels, a remote in the corner, static between channels, and a power button that actually turns it off.
 
 | Channel | What is on |
 |---|---|
@@ -11,10 +11,9 @@ The whole site is one old television. Seven channels, a remote in the corner, st
 | 02 On air | Before-and-after screens from people who ran it (`content/results.json`) |
 | 03 How to | Three-step wizard, copy-the-prompt button, a terminal that types itself |
 | 04 The community | The credits roll: everyone whose pull request was merged, from the GitHub API |
-| 05 Supported TVs | The `examples/` table from the repo as an EPG grid, with search |
-| 06 Made with | Showcase projects from `SHOWCASE.md` and the themes from `themes/` |
+| 05 Made with | Showcase projects from `SHOWCASE.md` and the themes from `themes/` |
 
-Keys: `0`–`6` change channel, arrows move, `Enter` is OK, `I` switches the site theme, `M` toggles sound, `P` is power. The Konami code does something too.
+Keys: `0`–`5` change channel, arrows move, `Enter` is OK, `I` switches the site theme, `M` toggles sound, `P` is power. The Konami code does something too.
 
 ## Run it
 

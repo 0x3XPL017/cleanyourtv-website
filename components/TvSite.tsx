@@ -3,7 +3,7 @@
 // (design/cleanyour.tv.dc.html): same refs, state and methods, with the content coming in as props.
 import React from "react";
 import { GH } from "@/lib/parse";
-import type { SiteData, Tv } from "@/lib/parse";
+import type { SiteData } from "@/lib/parse";
 import { GROUPS, KONAMI, NAMES, ORDER, S, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
 import type { ThemeName } from "@/lib/site";
 
@@ -20,7 +20,7 @@ type State = {
   osd: string; theme: ThemeName; sound: boolean; power: boolean; booted: boolean; mobile: boolean; mounted: boolean; focus: number;
   clock: string; ampm: string; date: string; greeting: string;
   counters: Counter[];
-  ch: number; wiz: number; os: "mac" | "win"; typed: number; copied: boolean; slide: number; q: string; info: Tv | null; active: string | null;
+  ch: number; wiz: number; os: "mac" | "win"; typed: number; copied: boolean; slide: number; active: string | null;
 };
 
 const REF_KEYS = ["root", "screen", "scroll", "launcher", "ambient", "dock", "glass", "clutter", "miss", "title", "osd", "flash", "off", "rowA", "rowB", "credits", "end"] as const;
@@ -57,7 +57,7 @@ export default class TvSite extends React.Component<Props, State> {
         { key: "forks", label: "FORKS", value: d.forks, max: Math.max(600, d.forks * 1.4), display: 0 },
         { key: "contributors", label: "CONTRIBUTORS", value: d.contributors, max: Math.max(120, d.contributors * 1.6), display: 0 },
       ],
-      ch: 0, wiz: 0, os: "mac", typed: 0, copied: false, slide: 0, q: "", info: null, active: null,
+      ch: 0, wiz: 0, os: "mac", typed: 0, copied: false, slide: 0, active: null,
     };
   }
 
@@ -65,7 +65,7 @@ export default class TvSite extends React.Component<Props, State> {
     let theme: string | null = null, sound = false;
     try { theme = localStorage.getItem("cyt-theme"); sound = localStorage.getItem("cyt-sound") === "1"; } catch { /* private mode */ }
     // A refresh lands back on the channel that was showing, without the boot sequence.
-    try { const n = Number(sessionStorage.getItem("cyt-ch")); if (n >= 1 && n <= 6) this.resumeCh = n; } catch { /* ignore */ }
+    try { const n = Number(sessionStorage.getItem("cyt-ch")); if (n >= 1 && n <= 5) this.resumeCh = n; } catch { /* ignore */ }
     this.reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.mq = matchMedia("(max-width: 1100px)");
     this.onMq = () => { this.setPadR(); this.setState({ mobile: this.mq.matches }, () => this.retarget()); };
@@ -278,7 +278,7 @@ export default class TvSite extends React.Component<Props, State> {
   channel(n: number) {
     this.click(); if (!this.state.power || n < 0) return;
     if (!this.state.booted) this.skipBoot = true;
-    if (n > 6) { this.showOsd(`CH 0${n}  NO SIGNAL`); this.cut(250); return; }
+    if (n > 5) { this.showOsd(`CH 0${n}  NO SIGNAL`); this.cut(250); return; }
     const sc = this.r.scroll.current!, target = sc.querySelector<HTMLElement>(`#ch-0${n}`); if (!target) return;
     this.quietUntil = performance.now() + 900; this.showOsd(`CH 0${n}`);
     if (this.reduced) { sc.animate([{ opacity: 1 }, { opacity: 0, offset: 0.5 }, { opacity: 1 }], { duration: 500 }); setTimeout(() => { sc.scrollTop = target.offsetTop; }, 250); }
@@ -392,7 +392,7 @@ export default class TvSite extends React.Component<Props, State> {
   cycleTheme() {
     this.click();
     const sl = this.slides[this.state.slide];
-    if (this.state.ch === 6 && sl && sl.kind === "theme" && sl.site && sl.site !== this.state.theme) return this.setTheme(sl.site);
+    if (this.state.ch === 5 && sl && sl.kind === "theme" && sl.site && sl.site !== this.state.theme) return this.setTheme(sl.site);
     this.setTheme(ORDER[(ORDER.indexOf(this.state.theme) + 1) % ORDER.length]);
   }
   toggleSound() {
@@ -406,7 +406,7 @@ export default class TvSite extends React.Component<Props, State> {
   }
   wizGo(i: number) { i = Math.max(0, Math.min(2, i)); if (i === this.state.wiz) return; this.click(); this.setState({ wiz: i }); }
   slideGo(i: number) { const n = this.slides.length; if (!n) return; this.click(); this.setState({ slide: ((i % n) + n) % n }); }
-  side(d: number) { const ch = this.state.ch; if (ch === 0) return this.move(d); if (ch === 3) return this.wizGo(this.state.wiz + d); if (ch === 6) return this.slideGo(this.state.slide + d); }
+  side(d: number) { const ch = this.state.ch; if (ch === 0) return this.move(d); if (ch === 3) return this.wizGo(this.state.wiz + d); if (ch === 5) return this.slideGo(this.state.slide + d); }
   key(e: KeyboardEvent) {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const tag = ((e.target as HTMLElement | null)?.tagName) || ""; if (tag === "INPUT" || tag === "TEXTAREA") return;
@@ -415,7 +415,7 @@ export default class TvSite extends React.Component<Props, State> {
     if (e.key === "ArrowLeft") { e.preventDefault(); return this.side(-1); }
     if (e.key === "ArrowRight") { e.preventDefault(); return this.side(1); }
     if (e.key === "ArrowUp") { e.preventDefault(); return this.channel(this.state.ch - 1); }
-    if (e.key === "ArrowDown") { e.preventDefault(); return this.channel(Math.min(6, this.state.ch + 1)); }
+    if (e.key === "ArrowDown") { e.preventDefault(); return this.channel(Math.min(5, this.state.ch + 1)); }
     if (e.key === "Enter" && tag !== "BUTTON" && tag !== "A") return this.ok();
     if (e.key === "m" || e.key === "M") return this.toggleSound();
     if (e.key === "i" || e.key === "I") return this.cycleTheme();
@@ -426,7 +426,7 @@ export default class TvSite extends React.Component<Props, State> {
     if (!this.state.power) return this.powerOn(); if (!this.state.booted) { this.skipBoot = true; return; }
     const ch = this.state.ch;
     if (ch === 3) return this.wizGo(this.state.wiz + 1);
-    if (ch === 6) return this.slideGo(this.state.slide + 1);
+    if (ch === 5) return this.slideGo(this.state.slide + 1);
     this.channel(ch + 1);
   }
   async missIt() {
@@ -467,18 +467,6 @@ export default class TvSite extends React.Component<Props, State> {
     const list = GROUPS.filter(([k]) => groups[k] && groups[k].length).map(([k, title]) => ({ title, people: groups[k] }));
     return this.reduced ? list : list.concat(list);
   }
-  guide() {
-    const tvs = this.props.data.tvs, q = this.state.q.trim().toLowerCase();
-    const hit = tvs.filter((t) => !q || (t.brand + " " + t.tv + " " + t.os + " " + t.folder + " " + t.notes).toLowerCase().includes(q));
-    const by: Record<string, Tv[]> = {}; hit.forEach((t) => { (by[t.brand] = by[t.brand] || []).push(t); });
-    const names = Object.keys(by).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
-    const brands = names.map((name, i) => ({ name, count: by[name].length, border: i ? "1px solid var(--line,rgba(255,255,255,.12))" : "0",
-      models: by[name].map((t) => ({ ...t, url: GH + "/tree/main/examples/" + t.folder, show: () => this.setState({ info: t }) })) }));
-    const info = this.state.info && hit.includes(this.state.info) ? this.state.info : hit[0];
-    const allBrands = new Set(tvs.map((t) => t.brand)).size;
-    return { brands, info, count: q ? `${hit.length} OF ${tvs.length} TVS` : `${tvs.length} TVS · ${allBrands} BRANDS` };
-  }
-
   // ---- render
   render() {
     const s = this.state;
@@ -492,7 +480,6 @@ export default class TvSite extends React.Component<Props, State> {
               {this.renderWall()}
               {this.renderHowTo()}
               {this.renderCredits()}
-              {this.renderGuide()}
               {this.renderMade()}
               <section id="ch-end" aria-label="End of transmission" style={S("position:relative;min-height:70%;scroll-snap-align:none;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));display:grid;place-items:center;border-top:1px solid var(--line,rgba(255,255,255,.12))")}>
                 <div ref={this.r.end} style={S("display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding:24px")}>
@@ -775,43 +762,6 @@ export default class TvSite extends React.Component<Props, State> {
     );
   }
 
-  renderGuide() {
-    const s = this.state, g = this.guide();
-    const epgCols = s.mobile ? "minmax(0,1fr)" : "minmax(120px,180px) minmax(0,1fr)";
-    return (
-      <section id="ch-05" data-ch="5" aria-label="Channel 05, Supported TVs" style={this.sectionStyle("clamp(18px,2.4cqw,30px)")}>
-        {this.header("CH 05 · SUPPORTED TVS", "The guide", "Each TV has a folder listing what is safe to disable on that firmware. Click a model to open it.")}
-        <div style={S("display:flex;flex-wrap:wrap;gap:12px 20px;justify-content:space-between;align-items:center")}>
-          <label style={S("flex:1 1 280px;max-width:520px;display:flex;align-items:center;gap:12px;height:48px;padding:0 18px;border-radius:24px;background:var(--card,rgba(255,255,255,.05));box-shadow:inset 0 0 0 1px var(--line,rgba(255,255,255,.12))")}>
-            <span style={S("font-family:'VT323',monospace;font-size:20px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))")}>FIND</span>
-            <input type="search" placeholder="Is my TV here?" aria-label="Is my TV here?" value={s.q} onChange={(e) => this.setState({ q: e.target.value, info: null })} style={S("flex:1;min-width:0;height:100%;border:0;background:transparent;color:inherit;font-family:inherit;font-size:16px;outline:none")} />
-          </label>
-          <div style={S("font-family:'VT323',monospace;font-size:20px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))")}>{g.count}</div>
-        </div>
-        <div aria-live="polite" style={S("display:flex;flex-direction:column;gap:4px;padding:14px 18px;border-radius:16px;background:var(--band,#141416);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.12));min-height:84px")}>
-          <div style={S("display:flex;gap:12px;align-items:baseline;flex-wrap:wrap")}><span style={S("font-size:18px")}>{g.info ? g.info.tv : "No match yet"}</span><span style={S("font-family:'VT323',monospace;font-size:18px;color:var(--ink-dim,rgba(255,255,255,.6))")}>{g.info ? `${g.info.os.toUpperCase()} · examples/${g.info.folder}/` : ""}</span></div>
-          <div style={S("font-size:14px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));text-wrap:pretty")}>{g.info ? g.info.notes : "Try the brand or the model number from the sticker on the back."}</div>
-        </div>
-        <div style={S("display:flex;flex-direction:column;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line,rgba(255,255,255,.12))")}>
-          {g.brands.map((b) => (
-            <div key={b.name} style={{ display: "grid", gridTemplateColumns: epgCols, borderTop: b.border }}>
-              <div style={S("padding:12px 16px;font-weight:500;font-size:15px;background:var(--card,rgba(255,255,255,.05));display:flex;align-items:center;justify-content:space-between;gap:8px")}><span>{b.name}</span><span style={S("font-family:'VT323',monospace;font-size:18px;font-weight:400;color:var(--ink-dim,rgba(255,255,255,.6))")}>{b.count}</span></div>
-              <div style={S("display:flex;flex-wrap:wrap;gap:6px;padding:8px")}>
-                {b.models.map((m) => (
-                  <a key={m.folder} href={m.url} target="_blank" rel="noopener" onMouseEnter={m.show} onFocus={m.show} className="hov-invert" style={S("flex:1 1 210px;display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:44px;padding:8px 12px;border-radius:10px;border:0;background:var(--card,rgba(255,255,255,.05));box-shadow:inset 0 0 0 1px var(--line,rgba(255,255,255,.12));font-size:14px;transition:background .15s,color .15s")}>
-                    <span>{m.model}</span>
-                    <span style={S("flex-shrink:0;font-family:'VT323',monospace;font-size:16px;padding:0 6px;border-radius:4px;box-shadow:inset 0 0 0 1px currentColor;opacity:.8")}>{m.os}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-        <p style={S("margin:0;font-size:15px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6))")}>Not here? The prompt discovers the bloat itself, and your list helps the next person.</p>
-      </section>
-    );
-  }
-
   renderHowTo() {
     const s = this.state;
     const li = "display:flex;gap:12px;align-items:baseline;font-size:16px;line-height:1.4";
@@ -898,8 +848,8 @@ export default class TvSite extends React.Component<Props, State> {
     if (!sl) return null;
     const round = "width:44px;height:44px;border-radius:50%;border:0;background:var(--card,rgba(255,255,255,.05));box-shadow:inset 0 0 0 1px var(--line,rgba(255,255,255,.12));font-size:18px";
     return (
-      <section id="ch-06" data-ch="6" aria-label="Channel 06, Made with" style={this.sectionStyle()}>
-        {this.header("CH 06 · MADE WITH", "Made with it", "Launchers, ports and add-ons people built on top, plus the themes. Nothing here is reviewed by the repo: read each project's README before you sideload it.")}
+      <section id="ch-05" data-ch="5" aria-label="Channel 05, Made with" style={this.sectionStyle()}>
+        {this.header("CH 05 · MADE WITH", "Made with it", "Launchers, ports and add-ons people built on top, plus the themes. Nothing here is reviewed by the repo: read each project's README before you sideload it.")}
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(20px,3.4cqw,48px);align-items:center")}>
           <div onTouchStart={(e) => { this.tx = e.touches[0].clientX; }} onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - (this.tx || 0); if (Math.abs(dx) > 40) this.slideGo(s.slide + (dx < 0 ? 1 : -1)); }} style={S("padding:clamp(10px,1.2cqw,16px);border-radius:22px;background:linear-gradient(180deg,#26262a,#121214);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 40px rgba(0,0,0,.4)")}>
             <div style={{ ...S("position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background-size:cover;background-position:center;transition:background-color .3s"), backgroundColor: sl.wall === "aurora" ? "#070A14" : "#000000", backgroundImage: sl.wall === "aurora" ? "url('/themes/aurora/wallpaper.jpg')" : "none" }}>
@@ -951,7 +901,7 @@ export default class TvSite extends React.Component<Props, State> {
         </div>
         <div style={S("position:relative;width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#2b2b2f,#161618);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 2px 4px rgba(0,0,0,.6)")}>
           <button aria-label="Up" onClick={() => this.channel(s.ch - 1)} style={S(arrow + "left:50%;top:4px;transform:translateX(-50%);width:22px;height:16px")}>▲</button>
-          <button aria-label="Down" onClick={() => this.channel(Math.min(6, s.ch + 1))} style={S(arrow + "left:50%;bottom:4px;transform:translateX(-50%);width:22px;height:16px")}>▼</button>
+          <button aria-label="Down" onClick={() => this.channel(Math.min(5, s.ch + 1))} style={S(arrow + "left:50%;bottom:4px;transform:translateX(-50%);width:22px;height:16px")}>▼</button>
           <button aria-label="Left" onClick={() => this.side(-1)} style={S(arrow + "top:50%;left:4px;transform:translateY(-50%);width:16px;height:22px")}>◀</button>
           <button aria-label="Right" onClick={() => this.side(1)} style={S(arrow + "top:50%;right:4px;transform:translateY(-50%);width:16px;height:22px")}>▶</button>
           <button aria-label="OK" onClick={() => this.ok()} className="hov-bright act-ok" style={S("position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,#333338,#1b1b1e);box-shadow:0 2px 3px rgba(0,0,0,.6);font-size:8px;font-weight:500;color:rgba(255,255,255,.85);padding:0")}>OK</button>
