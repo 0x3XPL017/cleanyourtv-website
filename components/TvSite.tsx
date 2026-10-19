@@ -903,7 +903,7 @@ export default class TvSite extends React.Component<Props, State> {
     return (
       <div role="group" aria-label="Remote control" className="remote-grow" style={S("position:absolute;right:clamp(10px,2vw,28px);bottom:clamp(10px,2vw,28px);width:96px;padding:14px 10px 16px;border-radius:48px 48px 22px 22px;background:linear-gradient(180deg,#1d1d20,#0c0c0d);box-shadow:0 24px 50px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.09),0 0 0 1px rgba(0,0,0,.8);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:20")}>
         <div style={S("display:grid;grid-template-columns:repeat(3,22px);gap:6px;justify-items:center;align-items:center")}>
-          <button aria-label="Power" onClick={() => this.onPower()} className="hov-bright act-down" style={S(btn + "display:grid;place-items:center")}><div style={S("width:7px;height:7px;border-radius:50%;background:#ff5252;box-shadow:0 0 5px #ff5252")} /></button>
+          <button aria-label="Power" onClick={() => this.onPower()} className={"hov-bright act-down" + (s.power ? "" : " power-wait")} style={S(btn + "display:grid;place-items:center")}><div className="power-led" style={S("width:7px;height:7px;border-radius:50%;background:#ff5252;box-shadow:0 0 5px #ff5252")} /></button>
           <div />
           <button aria-label="Input: switch site theme" onClick={() => this.cycleTheme()} className="hov-bright act-down" style={S(btn + "font-size:7px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.75)")}>IN</button>
         </div>
@@ -931,7 +931,7 @@ export default class TvSite extends React.Component<Props, State> {
     const btn = "width:44px;height:44px;flex-shrink:0;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:#1a1a1d;padding:0;";
     return (
       <div role="group" aria-label="Remote control" style={S("position:absolute;left:0;right:0;bottom:0;height:60px;padding:0 6px;background:#0d0d0e;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:4px;z-index:20")}>
-        <button aria-label="Power" onClick={() => this.onPower()} style={S(btn + "display:grid;place-items:center")}><span style={S("width:9px;height:9px;border-radius:50%;background:#ff5252;box-shadow:0 0 6px #ff5252")} /></button>
+        <button aria-label="Power" onClick={() => this.onPower()} className={s.power ? "" : "power-wait"} style={S(btn + "display:grid;place-items:center")}><span className="power-led" style={S("width:9px;height:9px;border-radius:50%;background:#ff5252;box-shadow:0 0 6px #ff5252")} /></button>
         <button aria-label="Input: switch site theme" onClick={() => this.cycleTheme()} style={S(btn + "font-size:10px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.8)")}>IN</button>
         <div style={S("display:flex;flex:1;justify-content:center")}>
           {NAMES.map((n, i) => (
