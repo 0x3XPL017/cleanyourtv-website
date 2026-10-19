@@ -901,7 +901,7 @@ export default class TvSite extends React.Component<Props, State> {
     const digit = btn + "font-size:10px;color:rgba(255,255,255,.75)";
     const arrow = "position:absolute;border:0;background:transparent;font-size:8px;color:rgba(255,255,255,.7);padding:0;";
     return (
-      <div role="group" aria-label="Remote control" style={S("position:absolute;right:clamp(10px,2vw,28px);bottom:clamp(10px,2vw,28px);width:96px;padding:14px 10px 16px;border-radius:48px 48px 22px 22px;background:linear-gradient(180deg,#1d1d20,#0c0c0d);box-shadow:0 24px 50px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.09),0 0 0 1px rgba(0,0,0,.8);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:20")}>
+      <div role="group" aria-label="Remote control" className="remote-grow" style={S("position:absolute;right:clamp(10px,2vw,28px);bottom:clamp(10px,2vw,28px);width:96px;padding:14px 10px 16px;border-radius:48px 48px 22px 22px;background:linear-gradient(180deg,#1d1d20,#0c0c0d);box-shadow:0 24px 50px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.09),0 0 0 1px rgba(0,0,0,.8);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:20")}>
         <div style={S("display:grid;grid-template-columns:repeat(3,22px);gap:6px;justify-items:center;align-items:center")}>
           <button aria-label="Power" onClick={() => this.onPower()} className="hov-bright act-down" style={S(btn + "display:grid;place-items:center")}><div style={S("width:7px;height:7px;border-radius:50%;background:#ff5252;box-shadow:0 0 5px #ff5252")} /></button>
           <div />
