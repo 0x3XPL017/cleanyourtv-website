@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500&family=VT323&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;height:100%;background:#050505;overflow:hidden}
+a{color:inherit;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.25)}
+a:hover{border-bottom-color:currentColor}
+input:focus-visible{outline:none}
+label:focus-within{outline:2px solid #CFFFCF;outline-offset:2px}
+a:focus-visible{outline:2px solid #CFFFCF;outline-offset:2px}
+@keyframes thumbIn{from{opacity:0;transform:scale(.9) translateY(6px)}to{opacity:1;transform:none}}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid #CFFFCF;outline-offset:2px}
+*{box-sizing:border-box}
+::-webkit-scrollbar{display:none}
+@keyframes osdFlicker{0%{opacity:0}8%{opacity:1}14%{opacity:.15}22%{opacity:1}40%{opacity:.5}52%{opacity:1}100%{opacity:1}}
+@keyframes tickerSlide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="position:fixed;inset:0;background:#070708;font-family:Outfit,sans-serif;color:rgba(255,255,255,.95);-webkit-font-smoothing:antialiased">
+  <div style="position:absolute;inset:0;padding:clamp(8px,2.4vw,30px) clamp(8px,2.4vw,30px) max(64px,5vw);background:linear-gradient(180deg,#1c1c1f 0%,#121214 60%,#0b0b0c 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)">
+    <div ref="{{ screenRef }}" style="position:relative;height:100%;border-radius:clamp(8px,1.5vw,22px);background:#000;overflow:hidden;container-type:inline-size;box-shadow:0 0 0 2px #000,0 0 0 3px #232326,inset 0 0 60px rgba(0,0,0,.9)">
+      <div ref="{{ scrollRef }}" style="position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y proximity;scrollbar-width:none">
+        <section id="ch-00" data-ch="0" aria-label="Channel 00, Boot" data-screen-label="00 Boot" style="position:relative;height:100%;scroll-snap-align:start;overflow:hidden">
+          <div ref="{{ launcherRef }}" style="position:absolute;inset:0;background-color:var(--bg,#000);background-image:var(--wall,none);background-size:cover;background-position:center;color:var(--ink,rgba(255,255,255,.95))">
+            <div ref="{{ ambientRef }}" style="position:absolute;inset:0;background:radial-gradient(55% 50% at 30% 42%,var(--glow,rgba(0,0,0,0)) 0%,rgba(0,0,0,0) 70%);transition:opacity .6s;opacity:.9;pointer-events:none"></div>
+            <div style="position:absolute;left:4.2cqw;right:4.2cqw;top:clamp(44px,5.6cqw,72px);display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                <div style="font-size:clamp(9px,.95cqw,12px);font-weight:500;letter-spacing:.22em;text-transform:uppercase;opacity:.55;padding-left:2px">{{ greeting }}</div>
+                <div style="display:flex;align-items:flex-end;gap:clamp(6px,.8cqw,12px);white-space:nowrap">
+                  <div style="font-size:clamp(24px,4cqw,52px);font-weight:300;letter-spacing:-.04em;line-height:1">{{ clock }}</div>
+                  <div style="font-size:clamp(9px,1.15cqw,15px);font-weight:500;letter-spacing:.08em;text-transform:uppercase;opacity:.7;padding-bottom:2px">{{ ampm }}</div>
+                  <div style="width:1px;height:clamp(14px,2cqw,26px);background:var(--ink-dim,rgba(255,255,255,.3));opacity:.5;margin:0 clamp(2px,.4cqw,6px) 3px"></div>
+                  <div style="font-size:clamp(9px,1.1cqw,14px);letter-spacing:.14em;text-transform:uppercase;opacity:.65;padding-bottom:3px">{{ date }}</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:clamp(4px,.8cqw,10px);flex-shrink:0">
+                <div style="height:clamp(24px,3.3cqw,42px);padding:0 clamp(10px,1.5cqw,20px);border-radius:999px;background:var(--pill-bg,linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));display:flex;align-items:center;font-size:clamp(9px,1.15cqw,15px);font-weight:500">Inputs</div>
+                <div style="height:clamp(24px,3.3cqw,42px);padding:0 clamp(10px,1.5cqw,20px);border-radius:999px;background:var(--pill-bg,linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));display:flex;align-items:center;font-size:clamp(9px,1.15cqw,15px);font-weight:500">Wi-Fi</div>
+                <div style="height:clamp(24px,3.3cqw,42px);padding:0 clamp(10px,1.5cqw,20px);border-radius:999px;background:var(--pill-bg,linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));display:flex;align-items:center;font-size:clamp(9px,1.15cqw,15px);font-weight:500">Settings</div>
+              </div>
+            </div>
+            <div ref="{{ dockRef }}" style="position:absolute;left:50%;bottom:clamp(28px,5cqw,64px);transform:translateX(-50%);padding:clamp(8px,1.1cqw,14px);border-radius:clamp(16px,2cqw,26px);background:var(--band,#141416);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.12));display:flex;gap:clamp(8px,1.6cqw,22px)">
+              <div data-tile="0" data-color="#D13B3B" onMouseEnter="{{ hoverTile }}" onClick="{{ clickTile }}" style="position:relative;width:clamp(64px,14cqw,180px);aspect-ratio:16/9;border-radius:clamp(8px,1.25cqw,16px);background:#D13B3B;display:grid;place-items:center;font-weight:500;font-size:clamp(10px,1.4cqw,18px);letter-spacing:.02em;color:#fff;opacity:0;transition:transform .25s;cursor:pointer">Films<div data-name style="position:absolute;top:calc(100% + clamp(10px,1.4cqw,18px));left:0;right:0;text-align:center;font-size:clamp(9px,1.1cqw,14px);font-weight:500;letter-spacing:.02em;color:var(--ink,rgba(255,255,255,.95));opacity:0;transition:opacity .25s">Films</div></div>
+              <div data-tile="1" data-color="#2256D9" onMouseEnter="{{ hoverTile }}" onClick="{{ clickTile }}" style="position:relative;width:clamp(64px,14cqw,180px);aspect-ratio:16/9;border-radius:clamp(8px,1.25cqw,16px);background:#2256D9;display:grid;place-items:center;font-weight:500;font-size:clamp(10px,1.4cqw,18px);letter-spacing:.02em;color:#fff;opacity:0;transition:transform .25s;cursor:pointer">Series<div data-name style="position:absolute;top:calc(100% + clamp(10px,1.4cqw,18px));left:0;right:0;text-align:center;font-size:clamp(9px,1.1cqw,14px);font-weight:500;letter-spacing:.02em;color:var(--ink,rgba(255,255,255,.95));opacity:0;transition:opacity .25s">Series</div></div>
+              <div data-tile="2" data-color="#1E9E5A" onMouseEnter="{{ hoverTile }}" onClick="{{ clickTile }}" style="position:relative;width:clamp(64px,14cqw,180px);aspect-ratio:16/9;border-radius:clamp(8px,1.25cqw,16px);background:#1E9E5A;display:grid;place-items:center;font-weight:500;font-size:clamp(10px,1.4cqw,18px);letter-spacing:.02em;color:#fff;opacity:0;transition:transform .25s;cursor:pointer">Music<div data-name style="position:absolute;top:calc(100% + clamp(10px,1.4cqw,18px));left:0;right:0;text-align:center;font-size:clamp(9px,1.1cqw,14px);font-weight:500;letter-spacing:.02em;color:var(--ink,rgba(255,255,255,.95));opacity:0;transition:opacity .25s">Music</div></div>
+              <div data-tile="3" data-color="#6B3FD1" onMouseEnter="{{ hoverTile }}" onClick="{{ clickTile }}" style="position:relative;width:clamp(64px,14cqw,180px);aspect-ratio:16/9;border-radius:clamp(8px,1.25cqw,16px);background:#6B3FD1;display:grid;place-items:center;font-weight:500;font-size:clamp(10px,1.4cqw,18px);letter-spacing:.02em;color:#fff;opacity:0;transition:transform .25s;cursor:pointer">Live TV<div data-name style="position:absolute;top:calc(100% + clamp(10px,1.4cqw,18px));left:0;right:0;text-align:center;font-size:clamp(9px,1.1cqw,14px);font-weight:500;letter-spacing:.02em;color:var(--ink,rgba(255,255,255,.95));opacity:0;transition:opacity .25s">Live TV</div></div>
+            </div>
+            <div ref="{{ glassRef }}" aria-hidden="true" style="position:absolute;left:0;top:0;width:10px;height:10px;opacity:0;pointer-events:none;border-radius:clamp(10px,1.6cqw,22px);background:var(--glass-fill,linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1.5px var(--glass-rim,rgba(255,255,255,.8)),0 0 0 1px rgba(255,255,255,.14),0 0 14px rgba(255,255,255,.28);will-change:transform,width,height">
+              <div style="position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 45%)"></div>
+            </div>
+          </div>
+          <div ref="{{ clutterRef }}" aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(180deg,#0B1220 0%,#05070C 100%);color:#fff;overflow:hidden">
+            <div data-row="3" style="display:flex;justify-content:space-between;align-items:center;padding:clamp(44px,5cqw,66px) 4.2cqw 0;transform-origin:top;font-size:clamp(10px,1.6cqw,20px)">
+              <div style="display:flex;gap:clamp(10px,2.6cqw,34px);align-items:center">
+                <div style="display:flex;gap:6px;align-items:center"><div style="display:flex;gap:2px"><div style="width:.7cqw;height:.7cqw;border-radius:50%;background:#4285F4"></div><div style="width:.7cqw;height:.7cqw;border-radius:50%;background:#EA4335"></div><div style="width:.7cqw;height:.7cqw;border-radius:50%;background:#FBBC04"></div></div>Search</div>
+                <div style="border-bottom:2px solid #fff;padding-bottom:2px">Home</div><div style="opacity:.8">Shop</div><div style="opacity:.8">Discover</div><div style="opacity:.8">Apps</div>
+              </div>
+              <div style="display:flex;gap:clamp(8px,1.6cqw,20px);align-items:center;opacity:.85"><div style="width:1.4cqw;height:1.4cqw;border:1.5px solid #fff;border-radius:50%"></div><div style="width:1.4cqw;height:1.4cqw;border:1.5px solid #fff;border-radius:3px"></div><div style="width:1.4cqw;height:1.4cqw;border-radius:50%;background:#1E9E5A"></div>11:54</div>
+            </div>
+            <div data-row="2" style="position:relative;margin:1.6cqw 4.2cqw 0;height:24cqw;border-radius:1cqw;overflow:hidden;background:repeating-linear-gradient(135deg,#1C2A4A 0 1.2cqw,#223558 1.2cqw 2.4cqw);transform-origin:top">
+              <div style="position:absolute;inset:0;background:linear-gradient(90deg,#070B14 30%,rgba(7,11,20,.2) 70%)"></div>
+              <div style="position:absolute;left:3cqw;top:3cqw;right:40%;display:flex;flex-direction:column;gap:.8cqw">
+                <div style="font-size:clamp(9px,1.3cqw,16px);font-weight:500;opacity:.8">Sponsored</div>
+                <div style="font-size:clamp(14px,3cqw,38px);font-weight:500;line-height:1.05">Savings, now on your TV</div>
+                <div style="font-size:clamp(9px,1.3cqw,16px);opacity:.75;line-height:1.3">Open an account from your sofa. Terms apply. Offer ends soon, probably.</div>
+              </div>
+              <div style="position:absolute;right:3cqw;top:2.4cqw;font-family:'VT323',monospace;font-size:clamp(10px,1.6cqw,20px);letter-spacing:.1em;padding:.2cqw .8cqw;border:1px solid rgba(255,255,255,.5);opacity:.8">AD</div>
+              <div data-row="1" style="position:absolute;left:0;right:0;bottom:0;padding:1.6cqw 3cqw;background:rgba(10,14,24,.78);backdrop-filter:blur(6px);display:flex;justify-content:space-between;align-items:center;gap:1cqw;transform-origin:top">
+                <div style="display:flex;flex-direction:column;gap:.4cqw"><div style="font-size:clamp(11px,2cqw,26px);font-weight:500">The Discover tab is going away soon</div><div style="font-size:clamp(9px,1.3cqw,16px);opacity:.8">Your recommendations and watchlist will move to the Home tab.</div></div>
+                <div style="font-size:clamp(9px,1.3cqw,16px);padding:.6cqw 1.4cqw;border-radius:999px;background:rgba(255,255,255,.1);flex-shrink:0">Dismiss</div>
+              </div>
+            </div>
+            <div style="margin:2cqw 4.2cqw 0;font-size:clamp(10px,1.5cqw,18px);font-weight:500">Favourite apps</div>
+            <div style="display:flex;gap:1.2cqw;margin:1cqw 0 0 4.2cqw;overflow:hidden">
+              <div data-zap="1" style="flex-shrink:0;width:11cqw;aspect-ratio:16/9;border-radius:.8cqw;background:#1F5BFF;display:grid;place-items:center;font-weight:500;font-size:clamp(9px,1.5cqw,18px)">streamr</div>
+              <div data-zap="2" style="flex-shrink:0;width:11cqw;aspect-ratio:16/9;border-radius:.8cqw;background:#1A73E8;display:grid;place-items:center"><div style="width:3cqw;height:2cqw;border:2px solid #fff;border-radius:.3cqw"></div></div>
+              <div data-zap="3" style="flex-shrink:0;width:11cqw;aspect-ratio:16/9;border-radius:.8cqw;background:#F2F2F2;color:#D22;display:grid;place-items:center;font-weight:500;font-size:clamp(9px,1.5cqw,18px)">Vuu</div>
+              <div data-zap="4" style="flex-shrink:0;width:11cqw;aspect-ratio:16/9;border-radius:.8cqw;background:#FFFFFF;color:#333;display:grid;place-items:center;font-weight:500;font-size:clamp(8px,1.2cqw,14px)">App Store</div>
+              <div data-zap="5" style="flex-shrink:0;width:11cqw;aspect-ratio:16/9;border-radius:.8cqw;background:#1A1A3E;display:grid;place-items:center;font-weight:300;font-size:clamp(12px,2.2cqw,28px)">Z6</div>
+              <div data-zap="6" style="flex-shrink:0;width:11cqw;aspect-ratio:16/9;border-radius:.8cqw;background:linear-gradient(135deg,#2A1BB0,#C11C9C);display:grid;place-items:center;font-weight:500;font-size:clamp(9px,1.4cqw,17px)">Kinoo+</div>
+              <div data-zap="7" style="flex-shrink:0;width:11cqw;aspect-ratio:16/9;border-radius:.8cqw;background:#EFEFEF;color:#C8102E;display:grid;place-items:center;font-weight:500;font-size:clamp(9px,1.5cqw,18px);letter-spacing:.06em">FLIXA</div>
+              <div data-zap="8" style="flex-shrink:0;width:11cqw;aspect-ratio:16/9;border-radius:.8cqw;background:#FF7A1A;display:grid;place-items:center;font-weight:500;font-size:clamp(9px,1.5cqw,18px)">ottr</div>
+              <div data-zap="9" style="flex-shrink:0;width:11cqw;aspect-ratio:16/9;border-radius:.8cqw;background:#C8102E;display:grid;place-items:center;font-weight:500;font-size:clamp(9px,1.5cqw,18px)">bingee</div>
+            </div>
+            <div data-row="0" style="display:flex;gap:1cqw;margin:2cqw 0 0 4.2cqw;overflow:hidden;transform-origin:top;font-size:clamp(9px,1.3cqw,16px)">
+              <div style="flex-shrink:0;padding:.7cqw 1.6cqw;border-radius:.6cqw;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)">Play next</div>
+              <div style="flex-shrink:0;padding:.7cqw 1.6cqw;border-radius:.6cqw;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)">Top-selling movies</div>
+              <div style="flex-shrink:0;padding:.7cqw 1.6cqw;border-radius:.6cqw;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)">Popular movies and TV shows</div>
+              <div style="flex-shrink:0;padding:.7cqw 1.6cqw;border-radius:.6cqw;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)">Trending</div>
+              <div style="flex-shrink:0;padding:.7cqw 1.6cqw;border-radius:.6cqw;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)">For you</div>
+            </div>
+            <div data-popup style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(36cqw,420px);padding:2cqw;border-radius:1.2cqw;background:#161B28;box-shadow:0 20px 60px rgba(0,0,0,.7),inset 0 0 0 1px rgba(255,255,255,.12);display:flex;flex-direction:column;gap:1cqw">
+              <div style="font-size:clamp(12px,2cqw,24px);font-weight:500">Try Premium+ free</div>
+              <div style="font-size:clamp(9px,1.3cqw,16px);opacity:.8;line-height:1.35">Three months on us, then a monthly fee. Cancel any time, from a menu you will not find.</div>
+              <div style="display:flex;gap:.8cqw;margin-top:.4cqw;font-size:clamp(9px,1.3cqw,16px)"><div style="padding:.7cqw 1.6cqw;border-radius:999px;background:#fff;color:#111;font-weight:500">Start trial</div><div style="padding:.7cqw 1.6cqw;border-radius:999px;background:rgba(255,255,255,.1)">Not now</div></div>
+            </div>
+            <div ref="{{ missRef }}" style="position:absolute;left:50%;bottom:4cqw;transform:translateX(-50%);font-family:'VT323',monospace;font-size:clamp(20px,3.4cqw,40px);color:#CFFFCF;text-shadow:0 0 10px rgba(140,255,140,.6);opacity:0;pointer-events:none">miss it?</div>
+          </div>
+          <div ref="{{ titleRef }}" style="position:absolute;left:0;right:0;top:0;bottom:clamp(90px,16cqw,200px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,28px);padding:clamp(60px,9cqw,110px) 5cqw 0;text-align:center;opacity:0;pointer-events:none;color:var(--ink,rgba(255,255,255,.95))">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:clamp(6px,.8cqw,12px)">
+              <h1 style="margin:0;font-size:clamp(40px,8.5cqw,112px);font-weight:200;letter-spacing:-.03em;line-height:.95;text-wrap:balance">clean your TV</h1>
+              <p style="margin:0;font-size:clamp(15px,2.1cqw,26px);font-weight:300;opacity:.8">Your TV, minus the ads.</p>
+            </div>
+            <div style="width:min(86cqw,760px);display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:clamp(8px,1.4cqw,18px) clamp(14px,2.4cqw,32px);font-family:'VT323',monospace;font-size:clamp(18px,2.1cqw,28px);line-height:1">
+              <sc-for list="{{ counters }}" as="c" hint-placeholder-count="4">
+                <div style="display:flex;flex-direction:column;gap:5px;text-align:left">
+                  <div style="display:flex;justify-content:space-between;gap:8px"><span style="opacity:.7;letter-spacing:.06em">{{ c.label }}</span><span>{{ c.display }}</span></div>
+                  <div style="position:relative;height:clamp(9px,1cqw,13px);background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);opacity:1">
+                    <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);opacity:.22"></div>
+                    <div style="position:absolute;left:0;top:0;bottom:0;background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);width:{{ c.pct }}%;transition:width 1.4s cubic-bezier(.2,.8,.2,1)"></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <button onClick="{{ onOk }}" style="pointer-events:auto;height:42px;padding:0 22px;border-radius:21px;border:0;background:var(--pill-bg,linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500;letter-spacing:.01em;color:inherit;transition:background .2s,transform .2s" style-hover="background:rgba(255,255,255,.95);color:#000" style-active="transform:scale(.97)">Press OK to start</button>
+          </div>
+        </section>
+        <section id="ch-01" data-ch="1" aria-label="Channel 01, The story" data-screen-label="01 The Story" style="position:relative;min-height:100%;scroll-snap-align:start;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));padding:clamp(56px,7cqw,96px) var(--pad-r,clamp(16px,6cqw,84px)) clamp(48px,6cqw,84px) clamp(16px,6cqw,84px);display:flex;flex-direction:column;gap:clamp(22px,3cqw,40px);border-top:1px solid var(--line,rgba(255,255,255,.12))">
+          <header style="display:flex;flex-direction:column;gap:10px;max-width:760px">
+            <div style="font-family:'VT323',monospace;font-size:22px;letter-spacing:.12em;color:var(--ink-dim,rgba(255,255,255,.6))">CH 01 · THE STORY</div>
+            <h2 style="margin:0;font-size:clamp(34px,5.2cqw,72px);font-weight:200;letter-spacing:-.03em;line-height:1">One afternoon, one tweet.</h2>
+            <p style="margin:0;font-size:clamp(15px,1.4cqw,18px);line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));text-wrap:pretty">It started on one TV. Then other people tried it on theirs.</p>
+          </header>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(18px,3cqw,40px)">
+            <div style="position:relative;border-radius:16px;overflow:hidden;background:#0B0F16;color:rgba(255,255,255,.95);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);display:flex;flex-direction:column;min-height:clamp(320px,32cqw,440px)">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font-family:'VT323',monospace;font-size:20px;letter-spacing:.1em">
+                <span style="background:#C8102E;color:#fff;padding:0 8px">NEWS</span>
+                <span style="opacity:.75">OCT 17 · 2:21 PM</span>
+              </div>
+              <div style="flex:1;display:grid;place-items:center;padding:6px 18px 66px">
+                <article style="width:100%;max-width:500px;background:#FFFFFF;color:#0F1419;border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:12px;box-shadow:0 18px 40px rgba(0,0,0,.5)">
+                  <div style="display:flex;gap:10px;align-items:center">
+                    <img src="https://github.com/Gathin23.png?size=96" alt="" width="40" height="40" style="width:40px;height:40px;border-radius:50%;background:#E6E6E6">
+                    <div style="display:flex;flex-direction:column"><span style="font-weight:500;font-size:15px">Gathin</span><span style="font-size:14px;color:#536471">@gathint</span></div>
+                  </div>
+                  <p style="margin:0;font-size:17px;line-height:1.4;text-wrap:pretty">Tweet text goes here, verbatim from the post.</p>
+                  <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px;color:#536471">
+                    <span>2:21 PM · Oct 17, 2026</span>
+                    <a href="https://x.com/gathint/status/2111379569030939102" target="_blank" rel="noopener" style="color:#1D5F9E;border-bottom:1px solid rgba(29,95,158,.35)">Read it on X</a>
+                  </div>
+                </article>
+              </div>
+              <div style="position:absolute;left:0;right:0;bottom:0;display:flex;height:44px;background:#F2F2F2;color:#090E12;font-family:'VT323',monospace;font-size:22px;overflow:hidden">
+                <div style="flex-shrink:0;padding:0 14px;display:flex;align-items:center;background:#C8102E;color:#fff;letter-spacing:.08em">LATEST</div>
+                <div style="flex:1;overflow:hidden;display:flex;align-items:center">
+                  <div style="display:flex;white-space:nowrap;animation:{{ tickerAnim }}">
+                    <span style="padding:0 64px 0 20px">Oct 17, 2:21 PM: posted · 48 hours later: 2,780 stars, 331 forks, 100 pull requests · 26 TVs from 14 brands</span>
+                    <span aria-hidden="true" style="padding:0 64px 0 20px">Oct 17, 2:21 PM: posted · 48 hours later: 2,780 stars, 331 forks, 100 pull requests · 26 TVs from 14 brands</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="border-radius:16px;background:#06120A;box-shadow:inset 0 0 0 1px rgba(140,255,140,.22),inset 0 0 50px rgba(0,0,0,.85);padding:16px;display:flex;flex-direction:column;gap:10px;color:#CFFFCF;font-family:'VT323',monospace;min-height:clamp(260px,26cqw,440px)">
+              <div style="display:flex;justify-content:space-between;gap:10px;font-size:20px;letter-spacing:.08em"><span>STARS · FIRST 48 H</span><span>{{ starEnd }}</span></div>
+              <canvas ref="{{ scopeRef }}" aria-label="Star history: slow for the first hours, then a steep climb, levelling off by hour 48" style="flex:1;width:100%;min-height:180px;display:block"></canvas>
+              <div style="display:flex;justify-content:space-between;font-size:18px;opacity:.7"><span>OCT 17 14:21</span><span>+24 H</span><span>+48 H</span></div>
+            </div>
+          </div>
+        </section>
+        <section id="ch-02" data-ch="2" aria-label="Channel 02, On air" data-screen-label="02 On Air" style="position:relative;min-height:100%;scroll-snap-align:start;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));padding:clamp(56px,7cqw,96px) var(--pad-r,clamp(16px,6cqw,84px)) clamp(48px,6cqw,84px) clamp(16px,6cqw,84px);display:flex;flex-direction:column;gap:clamp(22px,3cqw,40px);border-top:1px solid var(--line,rgba(255,255,255,.12))">
+          <header style="display:flex;flex-direction:column;gap:10px;max-width:760px">
+            <div style="font-family:'VT323',monospace;font-size:22px;letter-spacing:.12em;color:var(--ink-dim,rgba(255,255,255,.6))">CH 02 · ON AIR</div>
+            <h2 style="margin:0;font-size:clamp(34px,5.2cqw,72px);font-weight:200;letter-spacing:-.03em;line-height:1">On air</h2>
+            <p style="margin:0;font-size:clamp(15px,1.4cqw,18px);line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));text-wrap:pretty">Screens from people who ran it on their own TV. Hover or tap one to read the rest.</p>
+          </header>
+          <div style="display:flex;flex-direction:column;gap:clamp(18px,2.4cqw,30px)">
+            <div ref="{{ rowARef }}" onMouseEnter="{{ pauseA }}" onMouseLeave="{{ resumeA }}" onTouchStart="{{ pauseA }}" onTouchEnd="{{ resumeALater }}" style="display:flex;flex-wrap:{{ wallWrap }};gap:18px;overflow-x:auto;scrollbar-width:none;padding:4px 2px">
+              <sc-for list="{{ rowA }}" as="it" hint-placeholder-count="6">
+                <figure onMouseEnter="{{ it.enter }}" onMouseLeave="{{ it.leave }}" onClick="{{ it.tap }}" style="flex-shrink:0;width:clamp(230px,24cqw,320px);margin:0;display:flex;flex-direction:column;gap:10px;cursor:pointer">
+                  <div style="padding:8px;border-radius:14px;background:linear-gradient(180deg,#26262a,#141416);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 24px rgba(0,0,0,.35)">
+                    <div style="position:relative;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000">
+                      <img src="{{ it.src }}" alt="Before and after on {{ it.tv }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">
+                      <div style="position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,rgba(0,0,0,0) 1px 3px),radial-gradient(ellipse at center,rgba(0,0,0,0) 55%,rgba(0,0,0,.45))"></div>
+                      <div style="position:absolute;inset:0;background:rgba(6,6,8,.9);color:#fff;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;opacity:{{ it.op }};pointer-events:{{ it.pe }};transition:opacity .2s">
+                        <p style="margin:0;font-size:14px;line-height:1.4;text-wrap:pretty">{{ it.quote }}</p>
+                        <a href="{{ it.link }}" target="_blank" rel="noopener" style="align-self:flex-start;font-size:13px">See the original</a>
+                      </div>
+                    </div>
+                  </div>
+                  <figcaption style="display:flex;flex-direction:column;gap:2px;padding:0 4px">
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px"><span style="font-weight:500">{{ it.handle }}</span><span style="font-family:'VT323',monospace;font-size:17px;color:var(--ink-dim,rgba(255,255,255,.6));white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.tv }}</span></div>
+                    <div style="font-size:14px;color:var(--ink-dim,rgba(255,255,255,.6));white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.quote }}</div>
+                  </figcaption>
+                </figure>
+              </sc-for>
+            </div>
+            <sc-if value="{{ hasRowB }}" hint-placeholder-val="{{ true }}">
+              <div ref="{{ rowBRef }}" onMouseEnter="{{ pauseB }}" onMouseLeave="{{ resumeB }}" onTouchStart="{{ pauseB }}" onTouchEnd="{{ resumeBLater }}" style="display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:4px 2px">
+                <sc-for list="{{ rowB }}" as="it" hint-placeholder-count="6">
+                  <figure onMouseEnter="{{ it.enter }}" onMouseLeave="{{ it.leave }}" onClick="{{ it.tap }}" style="flex-shrink:0;width:clamp(210px,21cqw,280px);margin:0;display:flex;flex-direction:column;gap:10px;cursor:pointer">
+                    <div style="padding:8px;border-radius:14px;background:linear-gradient(180deg,#26262a,#141416);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 24px rgba(0,0,0,.35)">
+                      <div style="position:relative;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000">
+                        <img src="{{ it.src }}" alt="Before and after on {{ it.tv }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">
+                        <div style="position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,rgba(0,0,0,0) 1px 3px),radial-gradient(ellipse at center,rgba(0,0,0,0) 55%,rgba(0,0,0,.45))"></div>
+                        <div style="position:absolute;inset:0;background:rgba(6,6,8,.9);color:#fff;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;opacity:{{ it.op }};pointer-events:{{ it.pe }};transition:opacity .2s">
+                          <p style="margin:0;font-size:14px;line-height:1.4;text-wrap:pretty">{{ it.quote }}</p>
+                          <a href="{{ it.link }}" target="_blank" rel="noopener" style="align-self:flex-start;font-size:13px">See the original</a>
+                        </div>
+                      </div>
+                    </div>
+                    <figcaption style="display:flex;flex-direction:column;gap:2px;padding:0 4px">
+                      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px"><span style="font-weight:500">{{ it.handle }}</span><span style="font-family:'VT323',monospace;font-size:17px;color:var(--ink-dim,rgba(255,255,255,.6));white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.tv }}</span></div>
+                      <div style="font-size:14px;color:var(--ink-dim,rgba(255,255,255,.6));white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.quote }}</div>
+                    </figcaption>
+                  </figure>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </section>
+        <section id="ch-03" data-ch="3" aria-label="Channel 03, The community" data-screen-label="03 The Community" style="position:relative;min-height:100%;scroll-snap-align:start;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));padding:clamp(56px,7cqw,96px) var(--pad-r,clamp(16px,6cqw,84px)) clamp(48px,6cqw,84px) clamp(16px,6cqw,84px);display:flex;flex-direction:column;gap:clamp(22px,3cqw,40px);border-top:1px solid var(--line,rgba(255,255,255,.12))">
+          <header style="display:flex;flex-direction:column;gap:10px;max-width:760px">
+            <div style="font-family:'VT323',monospace;font-size:22px;letter-spacing:.12em;color:var(--ink-dim,rgba(255,255,255,.6))">CH 03 · THE COMMUNITY</div>
+            <h2 style="margin:0;font-size:clamp(34px,5.2cqw,72px);font-weight:200;letter-spacing:-.03em;line-height:1">The credits</h2>
+            <p style="margin:0;font-size:clamp(15px,1.4cqw,18px);line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));text-wrap:pretty">Every TV on the list got there because someone wrote it down for the next person. Thank you.</p>
+          </header>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(24px,4cqw,56px);align-items:center">
+            <div onMouseEnter="{{ pauseC }}" onMouseLeave="{{ resumeC }}" onTouchStart="{{ pauseC }}" onTouchEnd="{{ resumeCLater }}" style="position:relative;height:clamp(340px,40cqw,540px);overflow-y:{{ creditsOverflow }};scrollbar-width:none;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)">
+              <div ref="{{ creditsRef }}" style="display:flex;flex-direction:column;align-items:center;will-change:transform">
+                <sc-for list="{{ credits }}" as="g" hint-placeholder-count="3">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:28px 0">
+                    <div style="font-family:'VT323',monospace;font-size:22px;letter-spacing:.14em;color:var(--ink-dim,rgba(255,255,255,.6));text-transform:uppercase">{{ g.title }}</div>
+                    <sc-for list="{{ g.people }}" as="p" hint-placeholder-count="3">
+                      <a href="{{ p.url }}" target="_blank" rel="noopener" title="{{ p.url }}" style="display:flex;align-items:center;gap:10px;font-size:18px;font-weight:300;border:0;padding:2px 8px;border-radius:999px" style-hover="background:var(--card,rgba(255,255,255,.06))">
+                        <img src="{{ p.avatar }}" alt="" width="28" height="28" loading="lazy" style="width:28px;height:28px;border-radius:50%;background:var(--card,rgba(255,255,255,.06))">
+                        <span>{{ p.login }}</span>
+                      </a>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:clamp(20px,3cqw,36px)">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="font-size:clamp(64px,9cqw,128px);font-weight:200;line-height:.9;letter-spacing:-.04em">{{ prCount }}</div>
+                <div style="font-size:16px;color:var(--ink-dim,rgba(255,255,255,.6))">pull requests merged</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="font-size:clamp(64px,9cqw,128px);font-weight:200;line-height:.9;letter-spacing:-.04em">{{ contribCount }}</div>
+                <div style="font-size:16px;color:var(--ink-dim,rgba(255,255,255,.6))">people who sent them</div>
+              </div>
+              <p style="margin:0;font-size:15px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));max-width:30em">Hover a name to stop the roll. Every name goes to their GitHub.</p>
+            </div>
+          </div>
+        </section>
+        <section id="ch-04" data-ch="4" aria-label="Channel 04, Supported TVs" data-screen-label="04 Supported TVs" style="position:relative;min-height:100%;scroll-snap-align:start;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));padding:clamp(56px,7cqw,96px) var(--pad-r,clamp(16px,6cqw,84px)) clamp(48px,6cqw,84px) clamp(16px,6cqw,84px);display:flex;flex-direction:column;gap:clamp(18px,2.4cqw,30px);border-top:1px solid var(--line,rgba(255,255,255,.12))">
+          <header style="display:flex;flex-direction:column;gap:10px;max-width:760px">
+            <div style="font-family:'VT323',monospace;font-size:22px;letter-spacing:.12em;color:var(--ink-dim,rgba(255,255,255,.6))">CH 04 · SUPPORTED TVS</div>
+            <h2 style="margin:0;font-size:clamp(34px,5.2cqw,72px);font-weight:200;letter-spacing:-.03em;line-height:1">The guide</h2>
+            <p style="margin:0;font-size:clamp(15px,1.4cqw,18px);line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));text-wrap:pretty">Each TV has a folder listing what is safe to disable on that firmware. Click a model to open it.</p>
+          </header>
+          <div style="display:flex;flex-wrap:wrap;gap:12px 20px;justify-content:space-between;align-items:center">
+            <label style="flex:1 1 280px;max-width:520px;display:flex;align-items:center;gap:12px;height:48px;padding:0 18px;border-radius:24px;background:var(--card,rgba(255,255,255,.05));box-shadow:inset 0 0 0 1px var(--line,rgba(255,255,255,.12))">
+              <span style="font-family:'VT323',monospace;font-size:20px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))">FIND</span>
+              <input type="search" placeholder="Is my TV here?" aria-label="Is my TV here?" value="{{ q }}" onChange="{{ onSearch }}" style="flex:1;min-width:0;height:100%;border:0;background:transparent;color:inherit;font-family:inherit;font-size:16px;outline:none">
+            </label>
+            <div style="font-family:'VT323',monospace;font-size:20px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))">{{ guideCount }}</div>
+          </div>
+          <div aria-live="polite" style="display:flex;flex-direction:column;gap:4px;padding:14px 18px;border-radius:16px;background:var(--band,#141416);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.12));min-height:84px">
+            <div style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap"><span style="font-size:18px">{{ infoTv }}</span><span style="font-family:'VT323',monospace;font-size:18px;color:var(--ink-dim,rgba(255,255,255,.6))">{{ infoMeta }}</span></div>
+            <div style="font-size:14px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));text-wrap:pretty">{{ infoNotes }}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line,rgba(255,255,255,.12))">
+            <sc-for list="{{ brands }}" as="b" hint-placeholder-count="8">
+              <div style="display:grid;grid-template-columns:{{ epgCols }};border-top:{{ b.border }}">
+                <div style="padding:12px 16px;font-weight:500;font-size:15px;background:var(--card,rgba(255,255,255,.05));display:flex;align-items:center;justify-content:space-between;gap:8px"><span>{{ b.name }}</span><span style="font-family:'VT323',monospace;font-size:18px;font-weight:400;color:var(--ink-dim,rgba(255,255,255,.6))">{{ b.count }}</span></div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px">
+                  <sc-for list="{{ b.models }}" as="m" hint-placeholder-count="2">
+                    <a href="{{ m.url }}" target="_blank" rel="noopener" onMouseEnter="{{ m.show }}" onFocus="{{ m.show }}" style="flex:1 1 210px;display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:44px;padding:8px 12px;border-radius:10px;border:0;background:var(--card,rgba(255,255,255,.05));box-shadow:inset 0 0 0 1px var(--line,rgba(255,255,255,.12));font-size:14px;transition:background .15s,color .15s" style-hover="background:var(--ink,#fff);color:var(--bg,#000)">
+                      <span>{{ m.model }}</span>
+                      <span style="flex-shrink:0;font-family:'VT323',monospace;font-size:16px;padding:0 6px;border-radius:4px;box-shadow:inset 0 0 0 1px currentColor;opacity:.8">{{ m.os }}</span>
+                    </a>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <p style="margin:0;font-size:15px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6))">Not here? The prompt discovers the bloat itself, and your list helps the next person.</p>
+        </section>
+        <section id="ch-05" data-ch="5" aria-label="Channel 05, How to" data-screen-label="05 How To" style="position:relative;min-height:100%;scroll-snap-align:start;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));padding:clamp(56px,7cqw,96px) var(--pad-r,clamp(16px,6cqw,84px)) clamp(48px,6cqw,84px) clamp(16px,6cqw,84px);display:flex;flex-direction:column;gap:clamp(22px,3cqw,40px);border-top:1px solid var(--line,rgba(255,255,255,.12))">
+          <header style="display:flex;flex-direction:column;gap:10px;max-width:760px">
+            <div style="font-family:'VT323',monospace;font-size:22px;letter-spacing:.12em;color:var(--ink-dim,rgba(255,255,255,.6))">CH 05 · HOW TO</div>
+            <h2 style="margin:0;font-size:clamp(34px,5.2cqw,72px);font-weight:200;letter-spacing:-.03em;line-height:1">Set it up</h2>
+            <p style="margin:0;font-size:clamp(15px,1.4cqw,18px);line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));text-wrap:pretty">Three screens on two devices. The assistant does the typing; you answer its questions.</p>
+          </header>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(18px,3cqw,40px)">
+            <div style="display:flex;flex-direction:column;gap:20px;padding:clamp(18px,2.4cqw,30px);border-radius:26px;background:var(--band,#141416);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.12));min-height:440px">
+              <div style="display:flex;gap:8px;align-items:center">
+                <sc-for list="{{ wizDots }}" as="d" hint-placeholder-count="3">
+                  <button aria-label="{{ d.label }}" onClick="{{ d.go }}" style="width:{{ d.w }};height:8px;border-radius:4px;border:0;padding:0;background:var(--ink,#fff);opacity:{{ d.op }};transition:width .25s,opacity .25s"></button>
+                </sc-for>
+                <span style="margin-left:auto;font-family:'VT323',monospace;font-size:20px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))">{{ wizLabel }}</span>
+              </div>
+              <sc-if value="{{ wiz0 }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:16px">
+                  <h3 style="margin:0;font-size:clamp(24px,2.6cqw,34px);font-weight:300">On the TV</h3>
+                  <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px">
+                    <li style="display:flex;gap:12px;align-items:baseline;font-size:16px;line-height:1.4"><span style="font-family:'VT323',monospace;font-size:20px;color:var(--ink-dim,rgba(255,255,255,.6));width:18px;flex-shrink:0">1</span><span>Settings → Device Preferences → About</span></li>
+                    <li style="display:flex;gap:12px;align-items:baseline;font-size:16px;line-height:1.4"><span style="font-family:'VT323',monospace;font-size:20px;color:var(--ink-dim,rgba(255,255,255,.6));width:18px;flex-shrink:0">2</span><span>Press OK on Build seven times.</span></li>
+                    <li style="display:flex;gap:12px;align-items:baseline;font-size:16px;line-height:1.4"><span style="font-family:'VT323',monospace;font-size:20px;color:var(--ink-dim,rgba(255,255,255,.6));width:18px;flex-shrink:0">3</span><span>Go back to Developer options.</span></li>
+                    <li style="display:flex;gap:12px;align-items:baseline;font-size:16px;line-height:1.4"><span style="font-family:'VT323',monospace;font-size:20px;color:var(--ink-dim,rgba(255,255,255,.6));width:18px;flex-shrink:0">4</span><span>Turn on USB debugging, and Network or ADB debugging if your TV shows it.</span></li>
+                  </ol>
+                  <p style="margin:0;font-size:14px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6))">Keep the TV on, on the same Wi-Fi as your computer.</p>
+                </div>
+              </sc-if>
+              <sc-if value="{{ wiz1 }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:16px">
+                  <h3 style="margin:0;font-size:clamp(24px,2.6cqw,34px);font-weight:300">On your computer</h3>
+                  <p style="margin:0;font-size:16px;line-height:1.5">Paste the prompt into Claude Code, or another coding assistant with shell access. Put your TV model on the line that asks for it.</p>
+                  <button onClick="{{ onCopy }}" style="height:64px;border-radius:32px;border:0;background:var(--ink,#fff);color:var(--bg,#000);font-size:20px;font-weight:500;transition:transform .15s" style-active="transform:scale(.98)">{{ copyLabel }}</button>
+                  <a href="https://github.com/Gathin23/tv-vibehack" target="_blank" rel="noopener" style="align-self:center;font-size:15px">Open the repo</a>
+                </div>
+              </sc-if>
+              <sc-if value="{{ wiz2 }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:16px">
+                  <h3 style="margin:0;font-size:clamp(24px,2.6cqw,34px);font-weight:300">Follow along</h3>
+                  <p style="margin:0;font-size:16px;line-height:1.5">Accept "Allow USB debugging?" on the TV when the assistant says it is coming. Then answer its checklist:</p>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <div style="display:flex;gap:12px;align-items:center;font-size:15px"><span style="width:16px;height:16px;flex-shrink:0;border-radius:4px;box-shadow:inset 0 0 0 1.5px currentColor"></span>Which apps you use</div>
+                    <div style="display:flex;gap:12px;align-items:center;font-size:15px"><span style="width:16px;height:16px;flex-shrink:0;border-radius:4px;box-shadow:inset 0 0 0 1.5px currentColor"></span>Which four go in the dock</div>
+                    <div style="display:flex;gap:12px;align-items:center;font-size:15px"><span style="width:16px;height:16px;flex-shrink:0;border-radius:4px;box-shadow:inset 0 0 0 1.5px currentColor"></span>Keep the voice assistant, Chromecast, updates?</div>
+                  </div>
+                  <p style="margin:0;font-size:14px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6))">When it is done, switch USB debugging off again.</p>
+                </div>
+              </sc-if>
+              <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+                <span style="font-size:14px;color:var(--ink-dim,rgba(255,255,255,.6))">Nothing uninstalled. One line restores it.</span>
+                <div style="display:flex;gap:8px">
+                  <button onClick="{{ wizBack }}" aria-label="Previous step" style="height:44px;padding:0 18px;border-radius:22px;border:0;background:var(--pill-bg,rgba(255,255,255,.12));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500;opacity:{{ backOp }}">Back</button>
+                  <button onClick="{{ wizNext }}" aria-label="Next step" style="height:44px;padding:0 18px;border-radius:22px;border:0;background:var(--pill-bg,rgba(255,255,255,.12));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500">{{ nextLabel }}</button>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;border-radius:16px;overflow:hidden;background:#0A0C0E;color:#D8F5DA;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);min-height:440px">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-bottom:1px solid rgba(255,255,255,.08)">
+                <span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'VT323',monospace;font-size:18px;letter-spacing:.08em;opacity:.6">ASSISTANT · 192.168.1.50</span>
+                <div role="group" aria-label="Command style" style="flex-shrink:0;display:flex;padding:3px;border-radius:999px;background:rgba(255,255,255,.07)">
+                  <button aria-pressed="{{ isMac }}" onClick="{{ setMac }}" style="height:32px;padding:0 12px;border-radius:16px;border:0;background:{{ macBg }};font-size:13px;white-space:nowrap;color:#fff">macOS / Linux</button>
+                  <button aria-pressed="{{ isWin }}" onClick="{{ setWin }}" style="height:32px;padding:0 12px;border-radius:16px;border:0;background:{{ winBg }};font-size:13px;white-space:nowrap;color:#fff">Windows</button>
+                </div>
+              </div>
+              <div style="flex:1;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.6;display:flex;flex-direction:column;gap:3px">
+                <sc-for list="{{ termLines }}" as="l" hint-placeholder-count="0">
+                  <div style="display:flex;flex-direction:column;gap:6px">
+                    <div style="color:{{ l.color }};white-space:pre-wrap;word-break:break-word">{{ l.text }}</div>
+                    <div role="img" aria-label="{{ l.alt }}" style="display:{{ l.imgDisplay }};width:min(220px,64%);aspect-ratio:16/9;border-radius:6px;background-image:{{ l.bg }};background-size:cover;background-position:center;box-shadow:0 0 0 1px rgba(255,255,255,.18);margin:2px 0 6px;animation:thumbIn .35s cubic-bezier(.2,.8,.2,1) both"></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="ch-06" data-ch="6" aria-label="Channel 06, Made with" data-screen-label="06 Made With" style="position:relative;min-height:100%;scroll-snap-align:start;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));padding:clamp(56px,7cqw,96px) var(--pad-r,clamp(16px,6cqw,84px)) clamp(48px,6cqw,84px) clamp(16px,6cqw,84px);display:flex;flex-direction:column;gap:clamp(22px,3cqw,40px);border-top:1px solid var(--line,rgba(255,255,255,.12))">
+          <header style="display:flex;flex-direction:column;gap:10px;max-width:760px">
+            <div style="font-family:'VT323',monospace;font-size:22px;letter-spacing:.12em;color:var(--ink-dim,rgba(255,255,255,.6))">CH 06 · MADE WITH</div>
+            <h2 style="margin:0;font-size:clamp(34px,5.2cqw,72px);font-weight:200;letter-spacing:-.03em;line-height:1">Made with it</h2>
+            <p style="margin:0;font-size:clamp(15px,1.4cqw,18px);line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));text-wrap:pretty">Launchers, ports and add-ons people built on top, plus the themes. Nothing here is reviewed by the repo: read each project's README before you sideload it.</p>
+          </header>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(20px,3.4cqw,48px);align-items:center">
+            <div onTouchStart="{{ swipeStart }}" onTouchEnd="{{ swipeEnd }}" style="padding:clamp(10px,1.2cqw,16px);border-radius:22px;background:linear-gradient(180deg,#26262a,#121214);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 40px rgba(0,0,0,.4)">
+              <div style="position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background-color:{{ slideBg }};background-image:{{ slideWall }};background-size:cover;background-position:center;transition:background-color .3s">
+                <div style="position:absolute;left:6%;right:6%;bottom:38%;color:#fff;font-size:clamp(18px,2.8cqw,40px);font-weight:200;letter-spacing:-.02em;line-height:1.05;text-wrap:balance">{{ slideName }}</div>
+                <div style="position:absolute;left:50%;bottom:9%;transform:translateX(-50%);width:66%;display:flex;gap:4%;padding:2%;border-radius:12px;background:rgba(20,20,22,.82);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)">
+                  <sc-for list="{{ slideTiles }}" as="t" hint-placeholder-count="4">
+                    <div style="flex:1;aspect-ratio:16/9;border-radius:5px;background:{{ t.c }};box-shadow:{{ t.ring }};transform:{{ t.tf }}"></div>
+                  </sc-for>
+                </div>
+                <div style="position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,rgba(0,0,0,0) 1px 3px),radial-gradient(ellipse at center,rgba(0,0,0,0) 58%,rgba(0,0,0,.4))"></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div style="font-family:'VT323',monospace;font-size:20px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))">{{ slideKicker }}</div>
+              <h3 style="margin:0;font-size:clamp(24px,3cqw,40px);font-weight:300;line-height:1.1;letter-spacing:-.01em">{{ slideName }}</h3>
+              <p style="margin:0;font-size:16px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));text-wrap:pretty;min-height:4.5em">{{ slideWhat }}</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px 20px;font-size:14px"><span>{{ slideMeta }}</span><span>by <a href="{{ slideByUrl }}" target="_blank" rel="noopener">{{ slideBy }}</a></span></div>
+              <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+                <a href="{{ slideUrl }}" target="_blank" rel="noopener" style="display:flex;align-items:center;height:44px;padding:0 18px;border-radius:22px;border:0;background:var(--pill-bg,rgba(255,255,255,.12));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500">Open the project</a>
+                <sc-if value="{{ slideIsTheme }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ wearTheme }}" style="height:44px;padding:0 18px;border-radius:22px;border:0;background:var(--ink,#fff);color:var(--bg,#000);font-size:15px;font-weight:500">Wear this theme</button>
+                  <span style="font-family:'VT323',monospace;font-size:18px;color:var(--ink-dim,rgba(255,255,255,.6))">OR PRESS INPUT</span>
+                </sc-if>
+              </div>
+              <div style="display:flex;gap:10px;align-items:center;margin-top:6px">
+                <button onClick="{{ slidePrev }}" aria-label="Previous project" style="width:44px;height:44px;border-radius:50%;border:0;background:var(--card,rgba(255,255,255,.05));box-shadow:inset 0 0 0 1px var(--line,rgba(255,255,255,.12));font-size:18px">←</button>
+                <span style="font-family:'VT323',monospace;font-size:22px;letter-spacing:.06em;min-width:72px;text-align:center">{{ slideCount }}</span>
+                <button onClick="{{ slideNext }}" aria-label="Next project" style="width:44px;height:44px;border-radius:50%;border:0;background:var(--card,rgba(255,255,255,.05));box-shadow:inset 0 0 0 1px var(--line,rgba(255,255,255,.12));font-size:18px">→</button>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="ch-end" aria-label="End of transmission" style="position:relative;min-height:70%;scroll-snap-align:end;background:var(--bg,#000);color:var(--ink,rgba(255,255,255,.95));display:grid;place-items:center;border-top:1px solid var(--line,rgba(255,255,255,.12))">
+          <div ref="{{ endRef }}" style="display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding:24px">
+            <div style="font-family:'VT323',monospace;font-size:28px;letter-spacing:.14em;color:var(--ink-dim,rgba(255,255,255,.6))">END OF TRANSMISSION</div>
+            <button onClick="{{ onPower }}" style="height:44px;padding:0 20px;border-radius:22px;border:0;background:var(--pill-bg,rgba(255,255,255,.12));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500">Turn it off</button>
+          </div>
+        </section>
+      </div>
+      <div ref="{{ osdRef }}" aria-live="polite" style="position:absolute;top:clamp(6px,1cqw,14px);right:clamp(10px,1.6cqw,22px);z-index:5;font-family:'VT323',monospace;font-size:clamp(22px,3.2cqw,40px);line-height:1;letter-spacing:.06em;color:var(--osd,#CFFFCF);text-shadow:0 0 10px var(--osd-glow,rgba(140,255,140,.6)),1px 0 0 rgba(255,0,0,.25),-1px 0 0 rgba(0,160,255,.25);opacity:0;transition:opacity .3s;pointer-events:none">{{ osd }}</div>
+      <canvas ref="{{ staticRef }}" width="192" height="108" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;z-index:6;pointer-events:none"></canvas>
+      <div ref="{{ flashRef }}" aria-hidden="true" style="position:absolute;inset:0;background:#fff;opacity:0;z-index:7;pointer-events:none;transform-origin:center"></div>
+      <div ref="{{ offRef }}" style="position:absolute;inset:0;z-index:8;display:none;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,24px);padding:6cqw;background:radial-gradient(80% 70% at 50% 40%,#0c0c0e,#050506);color:rgba(255,255,255,.72);text-align:center;font-size:clamp(14px,1.6cqw,19px);font-weight:300;opacity:0">
+        <div style="display:flex;gap:clamp(14px,3cqw,40px);flex-wrap:wrap;justify-content:center;font-weight:400">
+          <a href="https://github.com/Gathin23/tv-vibehack" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://x.com/gathint/status/2111379569030939102" target="_blank" rel="noopener">The tweet</a>
+          <a href="https://github.com/Gathin23/tv-vibehack/blob/main/LICENSE" target="_blank" rel="noopener">MIT licence</a>
+        </div>
+        <p style="margin:0;max-width:34em;line-height:1.45;text-wrap:pretty">Started as one afternoon on my parents' TV. Built with Claude Code.</p>
+        <div style="font-family:'VT323',monospace;font-size:clamp(16px,1.8cqw,22px);opacity:.45;letter-spacing:.08em">POWER TURNS IT BACK ON</div>
+      </div>
+      <div aria-hidden="true" style="position:absolute;inset:0;z-index:9;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,rgba(0,0,0,0) 1px 3px)"></div>
+      <div aria-hidden="true" style="position:absolute;inset:0;z-index:9;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 58%,rgba(0,0,0,.42) 100%),linear-gradient(112deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,0) 38%)"></div>
+    </div>
+    <div style="position:absolute;left:0;right:0;bottom:0;height:max(64px,5vw);display:flex;align-items:center;justify-content:center;gap:16px;pointer-events:none">
+      <div style="font-size:10px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.22)">cleanyour.tv</div>
+      <div aria-hidden="true" style="width:6px;height:6px;border-radius:50%;background:var(--led,#4bff7a);box-shadow:0 0 6px var(--led,#4bff7a),0 0 1px #000"></div>
+    </div>
+  </div>
+  <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+    <div role="group" aria-label="Remote control" style="position:absolute;right:clamp(10px,2vw,28px);bottom:clamp(10px,2vw,28px);width:96px;padding:14px 10px 16px;border-radius:48px 48px 22px 22px;background:linear-gradient(180deg,#1d1d20,#0c0c0d);box-shadow:0 24px 50px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.09),0 0 0 1px rgba(0,0,0,.8);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:20">
+      <div style="display:grid;grid-template-columns:repeat(3,22px);gap:6px;justify-items:center;align-items:center">
+        <button aria-label="Power" onClick="{{ onPower }}" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);display:grid;place-items:center;padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)"><div style="width:7px;height:7px;border-radius:50%;background:#ff5252;box-shadow:0 0 5px #ff5252"></div></button>
+        <div></div>
+        <button aria-label="Input: switch site theme" onClick="{{ onInput }}" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:7px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.75);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">IN</button>
+      </div>
+      <div style="position:relative;width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#2b2b2f,#161618);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 2px 4px rgba(0,0,0,.6)">
+        <button aria-label="Up" onClick="{{ onUp }}" style="position:absolute;left:50%;top:4px;transform:translateX(-50%);width:22px;height:16px;border:0;background:transparent;font-size:8px;color:rgba(255,255,255,.7);padding:0">&#9650;</button>
+        <button aria-label="Down" onClick="{{ onDown }}" style="position:absolute;left:50%;bottom:4px;transform:translateX(-50%);width:22px;height:16px;border:0;background:transparent;font-size:8px;color:rgba(255,255,255,.7);padding:0">&#9660;</button>
+        <button aria-label="Left" onClick="{{ onLeft }}" style="position:absolute;top:50%;left:4px;transform:translateY(-50%);width:16px;height:22px;border:0;background:transparent;font-size:8px;color:rgba(255,255,255,.7);padding:0">&#9664;</button>
+        <button aria-label="Right" onClick="{{ onRight }}" style="position:absolute;top:50%;right:4px;transform:translateY(-50%);width:16px;height:22px;border:0;background:transparent;font-size:8px;color:rgba(255,255,255,.7);padding:0">&#9654;</button>
+        <button aria-label="OK" onClick="{{ onOk }}" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,#333338,#1b1b1e);box-shadow:0 2px 3px rgba(0,0,0,.6);font-size:8px;font-weight:500;color:rgba(255,255,255,.85);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translate(-50%,-50%) scale(.95)">OK</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,22px);gap:6px">
+        <button data-n="1" onClick="{{ onNum }}" aria-label="Channel 1" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:10px;color:rgba(255,255,255,.75);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">1</button>
+        <button data-n="2" onClick="{{ onNum }}" aria-label="Channel 2" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:10px;color:rgba(255,255,255,.75);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">2</button>
+        <button data-n="3" onClick="{{ onNum }}" aria-label="Channel 3" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:10px;color:rgba(255,255,255,.75);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">3</button>
+        <button data-n="4" onClick="{{ onNum }}" aria-label="Channel 4" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:10px;color:rgba(255,255,255,.75);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">4</button>
+        <button data-n="5" onClick="{{ onNum }}" aria-label="Channel 5" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:10px;color:rgba(255,255,255,.75);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">5</button>
+        <button data-n="6" onClick="{{ onNum }}" aria-label="Channel 6" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:10px;color:rgba(255,255,255,.75);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">6</button>
+        <button data-n="7" onClick="{{ onNum }}" aria-label="Channel 7" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:10px;color:rgba(255,255,255,.75);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">7</button>
+        <button data-n="8" onClick="{{ onNum }}" aria-label="Channel 8" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:10px;color:rgba(255,255,255,.75);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">8</button>
+        <button data-n="9" onClick="{{ onNum }}" aria-label="Channel 9" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:10px;color:rgba(255,255,255,.75);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">9</button>
+        <button aria-label="Menu: open GitHub" onClick="{{ onMenu }}" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:6px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.75);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">MENU</button>
+        <button data-n="0" onClick="{{ onNum }}" aria-label="Channel 0" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:10px;color:rgba(255,255,255,.75);padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">0</button>
+        <button aria-label="Mute: toggle sound" aria-pressed="{{ soundOn }}" onClick="{{ onMute }}" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#2a2a2e,#19191b);box-shadow:0 2px 3px rgba(0,0,0,.5);font-size:6px;font-weight:500;letter-spacing:.04em;color:var(--mute-ink,rgba(255,255,255,.75));padding:0" style-hover="filter:brightness(1.3)" style-active="transform:translateY(1px)">MUTE</button>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+    <div role="group" aria-label="Remote control" style="position:absolute;left:0;right:0;bottom:0;height:60px;padding:0 6px;background:#0d0d0e;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:4px;z-index:20">
+      <button aria-label="Power" onClick="{{ onPower }}" style="width:44px;height:44px;flex-shrink:0;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:#1a1a1d;display:grid;place-items:center;padding:0"><span style="width:9px;height:9px;border-radius:50%;background:#ff5252;box-shadow:0 0 6px #ff5252"></span></button>
+      <button aria-label="Input: switch site theme" onClick="{{ onInput }}" style="width:44px;height:44px;flex-shrink:0;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:#1a1a1d;font-size:10px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.8);padding:0">IN</button>
+      <div style="display:flex;flex:1;justify-content:center">
+        <sc-for list="{{ chDots }}" as="d" hint-placeholder-count="7">
+          <button aria-label="{{ d.label }}" onClick="{{ d.go }}" style="width:28px;height:44px;border:0;background:transparent;display:grid;place-items:center;padding:0"><span style="width:8px;height:8px;border-radius:50%;background:{{ d.bg }};box-shadow:{{ d.glow }}"></span></button>
+        </sc-for>
+      </div>
+      <button aria-label="Mute: toggle sound" aria-pressed="{{ soundOn }}" onClick="{{ onMute }}" style="width:44px;height:44px;flex-shrink:0;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:#1a1a1d;font-size:9px;font-weight:500;letter-spacing:.04em;color:var(--mute-ink,rgba(255,255,255,.8));padding:0">MUTE</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;bootDelay&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1500,&quot;min&quot;:400,&quot;max&quot;:4000,&quot;step&quot;:100,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Boot&quot;}}">
+const wait = (ms) => new Promise(r => setTimeout(r, ms));
+const REPO = 'Gathin23/tv-vibehack';
+const GH = 'https://github.com/' + REPO;
+const RAW = 'https://raw.githubusercontent.com/' + REPO + '/main/';
+const THEMES = {
+  black:  { label: 'PITCH BLACK', '--bg': '#000000', '--wall': 'none', '--ink': 'rgba(255,255,255,.95)', '--ink-dim': 'rgba(255,255,255,.6)', '--line': 'rgba(255,255,255,.12)', '--card': 'rgba(255,255,255,.05)', '--band': '#141416', '--band-rim': 'rgba(255,255,255,.12)', '--pill-bg': 'linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08))', '--pill-rim': 'rgba(255,255,255,.22)', '--glass-fill': 'linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.08))', '--glass-rim': 'rgba(255,255,255,.8)' },
+  aurora: { label: 'AURORA', '--bg': '#070A14', '--wall': "url('themes/aurora/wallpaper.jpg')", '--ink': 'rgba(255,255,255,.95)', '--ink-dim': 'rgba(255,255,255,.62)', '--line': 'rgba(255,255,255,.14)', '--card': 'rgba(255,255,255,.06)', '--band': 'rgba(16,18,30,.82)', '--band-rim': 'rgba(255,255,255,.14)', '--pill-bg': 'linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08))', '--pill-rim': 'rgba(255,255,255,.22)', '--glass-fill': 'linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.08))', '--glass-rim': 'rgba(255,255,255,.8)' },
+  paper:  { label: 'CREAM PAPER', '--bg': '#FDF3DD', '--wall': 'none', '--ink': '#090E12', '--ink-dim': 'rgba(9,14,18,.66)', '--line': 'rgba(9,14,18,.14)', '--card': 'rgba(9,14,18,.04)', '--band': '#F1E4C6', '--band-rim': 'rgba(9,14,18,.12)', '--pill-bg': 'rgba(9,14,18,.06)', '--pill-rim': 'rgba(9,14,18,.18)', '--glass-fill': 'linear-gradient(180deg,rgba(9,14,18,.10),rgba(9,14,18,.04))', '--glass-rim': 'rgba(9,14,18,.7)' },
+};
+const ORDER = ['black', 'aurora', 'paper'];
+const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+const NAMES = ['BOOT', 'THE STORY', 'ON AIR', 'THE COMMUNITY', 'SUPPORTED TVS', 'HOW TO', 'MADE WITH'];
+
+// Fallback copy of the examples/README.md table; the live file is parsed with the same code.
+const EXAMPLES_FALLBACK = [
+  '| `benq-e55-735/` | BenQ E55-735 (Changhong AI PONT, DVB96BQ) | Google TV 14 | Homwee store/help, Anoki ACR, Google TV recommendations; wireless-debugging pairing, setupwraith, deep-standby notes |',
+  '| `chiq-ai-pont/` | CHiQ AI PONT (DVB93CQ) | Android TV 11 | Anoki ACR, FAST channels, AI PONT, Homwee services |',
+  '| `google-chromecast-gtv-4k/` | Chromecast with Google TV 4K (sabrina) | Google TV 14 | Google telemetry and ad services, ambient mode, launcherx + setupwraith; wireless-debugging pairing, YouTube button remap |',
+  '| `hisense-smarttv-4k-ffm/` | Hisense SmartTV 4K FFM (huangshan, MediaTek) | Android TV 10 | ACR (evservice), VIDAA preload, store/hotel mode, OTA; smartsense must stay enabled |',
+  '| `insignia-ns55f301na25/` | Insignia 55" F30 4K Fire TV (NS-55F301NA25, AFTDCT31, duckie) | Fire OS 7 / Android 9 | Amazon ACR telemetry, Fire TV ads/shopping, Alexa, OTA updates; AirPlay and TIF HDMI inputs kept |',
+  '| `nvidia-shield-tv-pro-2019/` | NVIDIA SHIELD TV Pro 2019 (P2897, mdarcy) | Android TV 11 | NVIDIA telemetry, GameStream leftovers, sponsored rows, partner auto-installs |',
+  '| `oneplus-tv-dubai/` | OnePlus TV (D00, Dubai) | Google TV 14 | HeyTap/OnePlus extras, OnePlus Connect, Smart Home |',
+  '| `philips-smart-4k-google-tv/` | Philips Smart 4K TV (Skyworth, eleonas, MediaTek), India | Google TV 14 | Skyworth recommendations, after-sale/activation trackers, iCast; Chromecast, Assistant off by choice; wireless-debugging pairing, setupwraith |',
+  '| `rca-ai-pont/` | RCA AI PONT SA (Changhong, redwood, ISDB92RC; also sold as realme 40-inch) | Android 14 | Homwee store and installers, Anoki ACR, FAST channels; 1 GB |',
+  '| `sanyo-atv-r2/` | SANYO ATV R2 (SCBC, Realtek RTD285O) | Android TV 9 | S-Channels, E-SHOW demo, Vewd, TV Booster, SANYO OTA |',
+  '| `sony-bravia-4k-ur2/` | Sony BRAVIA 4K UR2 (BRAVIA_UR2_4K, MediaTek) | Android TV 10 | Samba TV, Sony promos/Select, demo mode; Assistant, Chromecast, unused streaming apps off by choice |',
+  '| `sony-xbr-x900e/` | Sony BRAVIA XBR-65X900E (2017, BRAVIA_ATV2) | Android TV 9 | Samba TV ACR, Sony Select, My BRAVIA promos, Discover, device agents; Chromecast, DLNA, mirroring off by choice |',
+  '| `tcl-g10-google-tv/` | TCL 55" 4K Google TV, 2023 (G10, G10_4K_US_NF) | Google TV 12 | TCL TV+, TCL Live, store demo, smartlink installer |',
+  '| `tcl-65c725/` | TCL 65C725 (Smart TV Pro, BeyondTV4) | Android TV 11 | TCL analytics/promos, Google recommendation rows; voice off, OTA off by choice |',
+  '| `tcl-ak30a5/` | TCL ak30a5 (China, Amlogic) | Android TV 9 | No Google services, TCL boot ad + analytics, no TvInputManager, installs via USB only; debloat only, third-party launchers cannot be installed on this firmware |',
+  '| `tcl-beyondtv/` | TCL BeyondTV (India) | Android TV 9 | TCL analytics, content feed, TCL app store, Google recommendation rows; Jio/Airtel/Hotstar apps untouched |',
+  '| `tcl-qm6k-google-tv/` | TCL QM6K Pro, 2025 (G08, MediaTek tcl9618) | Google TV 14 | Samba TV ACR (ttvs), TCL TV+, TCL Live, store/hotel demo; setupwraith must go for a custom launcher (also AU14, #23) |',
+  '| `tcl-g05-google-tv/` | TCL Smart TV Pro (G05, G05_4K_US, MediaTek MT5889) | Google TV 11 | TCL Channel, waterfall, ttvs BI, TGuard; Quick Panel off by choice; setupwraith returned after a reboot, launcher half unverified |',
+  '| `toshiba-fire-tv-aftha004/` | Toshiba Fire TV (AFTHA004, hazel) | Fire OS 7 / Android 9 | Amazon ACR, metrics, shopping, tutorials, Miracast sink; streaming preloads off by choice; debloat only |',
+  '| `xiaomi-mi-box-s/` | Xiaomi Mi Box S (MIBOX4, oneday), streaming box | Android TV 9 | PatchWall, Mi analytics, Alphonso ad tracking, MiLink; voice, casting, phone remote off by choice |',
+  '| `xiaomi-mitv-mooq0/` | Xiaomi Mi TV (MiTV-MOOQ0, croods) | Android TV 10 | PatchWall, Mi analytics, MiChannel, TV Manager, Alexa bridge; factory test app also claims HOME; notes from #81 |',
+  '| `xiaomi-mi-tv-4a/` | Xiaomi Mi TV 4A (MiTV-MOOQ1) | Android TV 10 | PatchWall, Mi analytics, SmartShare, MiLink |',
+  '| `xiaomi-mitv-aesp0/` | Xiaomi MiTV-AESP0 stick (aquaman, 1 GB) | Android TV 9 | No inputs; Home key sends ALL_APPS, needs `HOME_KEY_SERVICE=1`; Chromecast kept |',
+  '| `xiaomi-mitv-axso0/` | Xiaomi MiTV-AXSO0 (dangal; Mi TV 4C Pro 2019 / 4A Pro) | Android TV 9 | PatchWall, Glance ads, Mi TV+, Sensara, Mi analytics, MiLink; voice, Chromecast, unused streaming apps off by choice |',
+  '| `xiaomi-mitv-moor2/` | Xiaomi MiTV-MOOR2 (venom, MediaTek) | Google TV 11 | Mi ad row and PatchWall, Mi analytics, MiLink, store demo; setup wizard off so a third-party launcher can own Home |',
+  '| `xiaomi-tv-a-pro-2026/` | Xiaomi TV A Pro 75" 2026 (MiTV-MZTU0, river, MediaTek) | Google TV 14 | PatchWall/Mi Home tab, Mi analytics, TV Manager, updaters; setup wizard off, launcherx crash-loop notes |',
+].join('\n');
+
+function parseTVs(md) {
+  return md.split('\n').filter(l => /^\|\s*`[^`]+\/`\s*\|/.test(l)).map(l => {
+    const c = l.split('|').slice(1, -1).map(s => s.trim());
+    const folder = c[0].replace(/`/g, '').replace(/\/$/, '');
+    const tv = c[1], first = tv.split(/[\s(]/)[0];
+    const brand = first === 'Chromecast' ? 'Google' : first;
+    const paren = (tv.match(/\(([^,;)]+)/) || [])[1];
+    let model = tv.replace(/\s*\([^)]*\)/g, '').replace(/,\s*$/, '').trim();
+    if (brand !== 'Google' && model.startsWith(first + ' ')) model = model.slice(first.length + 1);
+    if (model.length < 9 && paren) model += ' · ' + paren;
+    return { folder, tv, brand, model, os: c[2].split('/')[0].trim(), notes: c[3].replace(/`/g, '') };
+  });
+}
+
+const RESULTS_FALLBACK = [
+  { handle: '@placeholder-one', quote: 'Placeholder quote. Swap in one line from the real post, in their words.', image: '/results/placeholder-1.png', link: GH + '/pulls?q=is%3Amerged', tv: 'TCL 65C725' },
+  { handle: '@placeholder-two', quote: 'Placeholder quote. Each entry is one line of JSON: handle, quote, image, link, tv.', image: '/results/placeholder-2.png', link: GH + '/pulls?q=is%3Amerged', tv: 'Xiaomi Mi Box S' },
+  { handle: '@placeholder-three', quote: 'Placeholder quote. Drop the screenshot in public/results/ and point image at it.', image: '/results/placeholder-3.png', link: GH + '/pulls?q=is%3Amerged', tv: 'Sony BRAVIA XBR-65X900E' },
+];
+
+const SHOWCASE = [
+  ['Stremio shelf, peek dock and calendar', 'A fork of the launcher with a Stremio poster shelf, a dock that peeks over playing content, a frosted settings panel and a calendar overlay', 'Android TV', 'benfirad', 'https://github.com/benfirad/tv-vibehack/tree/feature/stremio-peek-settings-upstream'],
+  ['Hisense restyle', 'A six-column restyle with an app menu, a Wi-Fi picker in the header, daily greetings and four glass finishes', 'Hisense SmartTV 4K FFM, Android 12', 'YouLop009', 'https://github.com/YouLop009/tv-vibehack/tree/style-modifications'],
+  ['webOS launcher', "The same Apple TV-style home rebuilt as a webOS web app for LG TVs, installed through LG's Developer Mode, with a Home-button watcher that runs on another device", 'LG OLED C6, webOS 26', 'OmkarK97', 'https://github.com/OmkarK97/tv-vibehack/tree/webos-launcher'],
+  ['fire-tv-cleanup', 'A fork aimed at Fire TV: debloat plus a launcher with a macOS-style dock', 'Fire TV', 'itsmeterrylin', 'https://github.com/itsmeterrylin/fire-tv-cleanup'],
+  ['Fire OS 6 Home watcher', "Brings the launcher up over Amazon's home on a Fire TV Stick 4K, since Fire OS won't let it be replaced", 'Fire TV Stick 4K, Fire OS 6', 'ljis120301', 'https://github.com/ljis120301/tv-vibehack/tree/fire-tv-support'],
+  ['Aurora screensaver and wallpaper', 'A wallpaper behind the launcher and an "Aurora Clock" screensaver with drifting scenes and on-TV screensaver options', 'Xiaomi MiTV-AXSO0, Android TV 9', 'rakshajag13', 'https://github.com/rakshajag13/tv-vibehack/tree/xiaomi-mitv-axso0-debloat-wallpaper'],
+  ['Control Center', 'A sleep timer, turn-off button, memory cleaner and sound-output switch behind the Settings pill, on top of a dock editor', 'Xiaomi MSSP3, Android TV 11', 'samdegan2311', 'https://github.com/samdegan2311/tv-vibehack/tree/pr/control-center'],
+  ['Navigation sounds', 'The launcher with its own soft click and select sounds, synthesised from a script', 'BenQ E55-735, Google TV 14', 'rocavence', 'https://github.com/rocavence/tv-vibehack/tree/nav-sounds'],
+  ['AirPlay receiver installer', 'A script that builds and installs an open-source AirPlay receiver next to the launcher, for iPhone mirroring', 'Xiaomi MiTV-AESP0, Android TV 9', 'nguyenduchoai', 'https://github.com/nguyenduchoai/tv-vibehack/tree/feat/airplay-receiver'],
+];
+const THEME_SLIDES = [
+  ['default', 'The built-in look written out as JSON, as a starting point for your own', 'black', 4],
+  ['aurora', 'A dark aurora wallpaper (teal and violet on navy, darker at the bottom) with a matching background colour', 'aurora', 4],
+  ['six-columns', 'Six smaller tiles per row and one grid row visible under the dock', 'black', 6],
+];
+const SLIDES = SHOWCASE.map((s, i) => ({ kind: 'show', name: s[0], what: s[1], meta: 'Built on ' + s[2], by: s[3], byUrl: 'https://github.com/' + s[3], url: s[4], wall: 'aurora', tiles: 4, kicker: `SHOWCASE ${String(i + 1).padStart(2, '0')} / ${String(SHOWCASE.length).padStart(2, '0')}` }))
+  .concat(THEME_SLIDES.map(t => ({ kind: 'theme', name: t[0] + '/', what: t[1], meta: 'In themes/' + t[0] + '/', by: 'tv-vibehack', byUrl: GH, url: GH + '/tree/main/themes/' + t[0], wall: t[2], tiles: t[3], site: t[2], kicker: 'THEME' })));
+const TILE_COLORS = ['#D13B3B', '#2256D9', '#1E9E5A', '#6B3FD1', '#C98A1B', '#2A8C9E'];
+
+// Placeholder shape. The Next.js build replaces this with hourly buckets from the stargazers API.
+const STAR_SERIES = (() => { const L = t => 1 / (1 + Math.exp(-(t - 15) / 4.5)); const a = L(0), b = L(48); const out = []; for (let h = 0; h <= 48; h++) { let v = (L(h) - a) / (b - a); v += Math.sin(h * 1.7) * 0.008 * (1 - v); out.push(Math.max(0, Math.min(1, v))); } return out; })();
+
+const TERM = {
+  mac: [
+    ['cmd', 'adb connect 192.168.1.50:5555'], ['out', 'connected to 192.168.1.50:5555'],
+    ['note', 'Accept "Allow USB debugging?" on the TV.'],
+    ['cmd', 'adb shell pm list packages > backup/packages.txt'], ['out', 'backup/  412 packages, settings, getprop, restore.sh'],
+    ['img', 'before.png', 'docs/stock-home.jpg', 'The stock home screen before'],
+    ['cmd', 'adb shell pm disable-user --user 0 com.vendor.recommendations'], ['out', 'Package com.vendor.recommendations new state: disabled-user'],
+    ['note', '37 more, five at a time, a screenshot after each batch.'],
+    ['cmd', './gradlew assembleDebug'], ['out', 'BUILD SUCCESSFUL in 41s'],
+    ['cmd', 'adb install -r app/build/outputs/apk/debug/app-debug.apk'], ['out', 'Success'],
+    ['cmd', 'adb exec-out screencap -p > home.png'],
+    ['img', 'home.png', 'docs/new-home.jpg', 'The new launcher after'],
+    ['note', 'To undo everything: sh backup/restore.sh'],
+  ],
+  win: [
+    ['cmd', 'adb connect 192.168.1.50:5555'], ['out', 'connected to 192.168.1.50:5555'],
+    ['note', 'Accept "Allow USB debugging?" on the TV.'],
+    ['cmd', 'adb shell pm list packages > backup\\packages.txt'], ['out', 'backup\\  412 packages, settings, getprop, restore.ps1'],
+    ['img', 'before.png', 'docs/stock-home.jpg', 'The stock home screen before'],
+    ['cmd', 'adb shell pm disable-user --user 0 com.vendor.recommendations'], ['out', 'Package com.vendor.recommendations new state: disabled-user'],
+    ['note', '37 more, five at a time, a screenshot after each batch.'],
+    ['cmd', '.\\gradlew.bat assembleDebug'], ['out', 'BUILD SUCCESSFUL in 41s'],
+    ['cmd', 'adb install -r app\\build\\outputs\\apk\\debug\\app-debug.apk'], ['out', 'Success'],
+    ['cmd', 'adb shell screencap -p /sdcard/home.png; adb pull /sdcard/home.png'],
+    ['img', 'home.png', 'docs/new-home.jpg', 'The new launcher after'],
+    ['note', 'To undo everything: powershell -File backup\\restore.ps1'],
+  ],
+};
+const termCost = (l) => l[0] === 'cmd' ? l[1].length + 6 : l[0] === 'img' ? 16 : 10;
+const TERM_TOTAL = { mac: TERM.mac.reduce((a, l) => a + termCost(l), 0), win: TERM.win.reduce((a, l) => a + termCost(l), 0) };
+
+const PROMPT_FALLBACK = 'Read and follow the prompt at ' + GH + '/blob/main/PROMPT.md\nMy TV model is: <MODEL NAME HERE>.';
+
+function classify(title) {
+  const t = title.toLowerCase();
+  if (/setupwraith|launcherx|google tv.*(fix|bug|home|crash)|(fix|bug).*google tv/.test(t)) return 'gtv';
+  if (/example|debloat|tv list|\b(tcl|xiaomi|mi box|sony|bravia|hisense|philips|oneplus|benq|chiq|rca|sanyo|nvidia|shield|toshiba|insignia|chromecast)\b/.test(t)) return 'tv';
+  if (/launcher|dock|glass|focus|tile|grid|clock|wallpaper|theme|ui\b/.test(t)) return 'launcher';
+  return 'other';
+}
+const GROUPS = [['started', 'started it'], ['tv', 'sent a TV list'], ['launcher', 'fixed the launcher'], ['gtv', 'found the Google TV bug'], ['other', 'made it better'], ['built', 'built something on it']];
+
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.r = {};
+    ['root','screen','scroll','launcher','ambient','dock','glass','clutter','miss','title','osd','static','flash','off','rowA','rowB','credits','scope','end'].forEach(k => this.r[k] = React.createRef());
+    this.state = {
+      osd: 'CH 00', theme: 'black', sound: false, power: true, booted: false, mobile: false, focus: 0,
+      clock: '', ampm: '', date: '', greeting: '',
+      counters: [
+        { key: 'stars', label: 'STARS', value: 2780, max: 5000, display: 0 },
+        { key: 'forks', label: 'FORKS', value: 331, max: 600, display: 0 },
+        { key: 'contributors', label: 'CONTRIBUTORS', value: 48, max: 120, display: 0 },
+        { key: 'tvs', label: 'TVS SUPPORTED', value: 26, max: 40, display: 0 },
+      ],
+      ch: 0, wiz: 0, os: 'mac', typed: 0, copied: false, slide: 0, q: '', info: null,
+      tvs: parseTVs(EXAMPLES_FALLBACK), prs: null, prCount: 100, results: RESULTS_FALLBACK, active: null,
+    };
+    this.bootId = 0; this.skipBoot = false; this.konami = []; this.tweens = {}; this.quietUntil = 0;
+    this.spring = { x: {p:0,v:0,t:0}, y: {p:0,v:0,t:0}, w: {p:10,v:0,t:10}, h: {p:10,v:0,t:10} };
+    this.glassRaf = null;
+    this.ax = 0; this.bx = 0; this.bInit = false; this.cy = 0; this.pause = { a: false, b: false, c: false }; this.resumeT = {};
+  }
+
+  componentDidMount() {
+    const theme = localStorage.getItem('cyt-theme');
+    const sound = localStorage.getItem('cyt-sound') === '1';
+    this.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.mq = matchMedia('(max-width: 1100px)');
+    this.onMq = () => { this.setPadR(); this.setState({ mobile: this.mq.matches }, () => this.retarget()); };
+    this.mq.addEventListener('change', this.onMq);
+    this.setState({ mobile: this.mq.matches, sound, theme: THEMES[theme] ? theme : 'black' }, () => this.applyTheme(this.state.theme));
+    this.setVar('--mute-ink', sound ? '#CFFFCF' : 'rgba(255,255,255,.75)'); this.setPadR();
+    this.tickClock(); this.clockTimer = setInterval(() => this.tickClock(), 20000);
+    this.onKey = (e) => this.key(e); window.addEventListener('keydown', this.onKey);
+    this.onResize = () => { this.retarget(); this.drawScope(this.scopeP || 0); }; window.addEventListener('resize', this.onResize);
+    this.fetchStats(); this.loadContent();
+    const sc = this.r.scroll.current;
+    this.io = new IntersectionObserver(es => es.forEach(e => this.onSection(e)), { root: sc, threshold: [0.5] });
+    sc.querySelectorAll('section[data-ch]').forEach(s => this.io.observe(s));
+    this.endIo = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && this.state.power && this.state.booted) this.powerOff(); }), { root: sc, threshold: [0.95] });
+    if (this.r.end.current) this.endIo.observe(this.r.end.current);
+    this.lastLoop = performance.now(); this.loopRaf = requestAnimationFrame(this.loop);
+    this.boot();
+  }
+  componentWillUnmount() {
+    clearInterval(this.clockTimer); clearInterval(this.typeT); window.removeEventListener('keydown', this.onKey); window.removeEventListener('resize', this.onResize);
+    this.mq.removeEventListener('change', this.onMq); cancelAnimationFrame(this.glassRaf); cancelAnimationFrame(this.loopRaf); cancelAnimationFrame(this.scopeRaf);
+    this.io && this.io.disconnect(); this.endIo && this.endIo.disconnect(); this.hum(false);
+  }
+
+  // ---- helpers
+  setPadR() { this.setVar('--pad-r', this.mq.matches ? 'clamp(16px,6cqw,84px)' : '156px'); }
+  setVar(k, v) { const el = this.r.root.current; if (el) el.style.setProperty(k, v); }
+  applyTheme(name) {
+    const t = THEMES[name]; Object.keys(t).forEach(k => { if (k.startsWith('--')) this.setVar(k, t[k]); });
+    const paper = name === 'paper';
+    this.setVar('--osd', paper ? '#0B3D1E' : '#CFFFCF'); this.setVar('--osd-glow', paper ? 'rgba(11,61,30,.25)' : 'rgba(140,255,140,.6)');
+  }
+  setTheme(name) { this.setState({ theme: name }); this.applyTheme(name); localStorage.setItem('cyt-theme', name); this.showOsd(THEMES[name].label, 1400); }
+  tickClock() {
+    const d = new Date(); const h = d.getHours();
+    const h12 = h % 12 || 12; const m = String(d.getMinutes()).padStart(2, '0');
+    const greeting = h < 5 ? 'Good night' : h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : h < 22 ? 'Good evening' : 'Good night';
+    this.setState({ clock: `${h12}:${m}`, ampm: h < 12 ? 'AM' : 'PM', greeting, date: d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) });
+  }
+  showOsd(text, ms = 1600) {
+    const el = this.r.osd.current; if (!el) return;
+    this.setState({ osd: text });
+    clearTimeout(this.osdT);
+    el.style.transition = 'none'; el.style.animation = 'none'; void el.offsetWidth;
+    el.style.opacity = '1'; if (!this.reduced) el.style.animation = 'osdFlicker .45s steps(1)';
+    this.osdT = setTimeout(() => { el.style.animation = 'none'; el.style.transition = 'opacity .3s'; el.style.opacity = '0'; }, ms);
+  }
+  drawStatic() {
+    const c = this.r.static.current; if (!c) return; const ctx = c.getContext('2d');
+    const img = ctx.createImageData(c.width, c.height); const d = img.data;
+    for (let i = 0; i < d.length; i += 4) { const v = (Math.random() * 255) | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
+    ctx.putImageData(img, 0, 0);
+  }
+  async cut(ms = 250) {
+    const c = this.r.static.current; if (!c || this.reduced) return;
+    c.style.opacity = '1'; this.noise(ms);
+    const end = performance.now() + ms;
+    const tick = () => { this.drawStatic(); if (performance.now() < end) requestAnimationFrame(tick); else c.style.opacity = '0'; };
+    tick(); await wait(ms);
+  }
+
+  // ---- audio (synthesised, off by default)
+  ac() { if (!this._ac) this._ac = new (window.AudioContext || window.webkitAudioContext)(); if (this._ac.state === 'suspended') this._ac.resume(); return this._ac; }
+  click() {
+    if (!this.state.sound) return; const ac = this.ac(), t = ac.currentTime;
+    const o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine';
+    o.frequency.setValueAtTime(1800, t); o.frequency.exponentialRampToValueAtTime(700, t + .04);
+    g.gain.setValueAtTime(.07, t); g.gain.exponentialRampToValueAtTime(.0001, t + .06);
+    o.connect(g).connect(ac.destination); o.start(t); o.stop(t + .07);
+  }
+  noise(ms) {
+    if (!this.state.sound) return; const ac = this.ac(); const n = (ac.sampleRate * ms / 1000) | 0;
+    const b = ac.createBuffer(1, n, ac.sampleRate); const d = b.getChannelData(0); for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    const s = ac.createBufferSource(); s.buffer = b; const g = ac.createGain(); g.gain.value = .035; s.connect(g).connect(ac.destination); s.start();
+  }
+  hum(on) {
+    if (on) {
+      if (!this.state.sound || !this.state.power || this.humNode) return; const ac = this.ac(), t = ac.currentTime;
+      const o = ac.createOscillator(); o.type = 'sine'; o.frequency.value = 60;
+      const o2 = ac.createOscillator(); o2.type = 'sine'; o2.frequency.value = 15625;
+      const g = ac.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.018, t + .8);
+      const g2 = ac.createGain(); g2.gain.value = .004;
+      o.connect(g).connect(ac.destination); o2.connect(g2).connect(ac.destination); o.start(); o2.start();
+      this.humNode = { o, o2, g, g2 };
+    } else if (this.humNode && this._ac) {
+      const { o, o2, g, g2 } = this.humNode, t = this._ac.currentTime;
+      g.gain.linearRampToValueAtTime(0, t + .25); g2.gain.linearRampToValueAtTime(0, t + .25); o.stop(t + .3); o2.stop(t + .3); this.humNode = null;
+    }
+  }
+
+  // ---- content (the Next.js build does these in server components with ISR)
+  async fetchStats() {
+    try {
+      const r = await fetch('https://api.github.com/repos/' + REPO); if (!r.ok) throw new Error();
+      const j = await r.json(); this.setCounter('stars', j.stargazers_count); this.setCounter('forks', j.forks_count);
+      const prs = [];
+      for (let p = 1; p <= 3; p++) {
+        const q = await fetch(`https://api.github.com/repos/${REPO}/pulls?state=closed&per_page=100&page=${p}`); if (!q.ok) break;
+        const list = await q.json(); list.forEach(x => { if (x.merged_at && x.user) prs.push({ login: x.user.login, avatar: x.user.avatar_url, title: x.title || '' }); }); if (list.length < 100) break;
+      }
+      if (prs.length) { this.setState({ prs, prCount: prs.length }); this.setCounter('contributors', new Set(prs.map(p => p.login)).size); }
+    } catch (e) { /* fallbacks stay */ }
+  }
+  loadContent() {
+    const get = async (u, json) => { const r = await fetch(u); if (!r.ok) throw new Error(); return json ? r.json() : r.text(); };
+    get('content/results.json', true).then(j => { if (Array.isArray(j) && j.length) this.setState({ results: j }); }).catch(() => {});
+    get(RAW + 'examples/README.md').then(md => { const tvs = parseTVs(md); if (tvs.length) { this.setState({ tvs }); this.setCounter('tvs', tvs.length); } }).catch(() => {});
+    get(RAW + 'PROMPT.md').then(t => { this.prompt = t; }).catch(() => {});
+  }
+  setCounter(key, value) {
+    if (typeof value !== 'number') return;
+    this.setState(s => ({ counters: s.counters.map(c => c.key === key ? { ...c, value } : c) }), () => { if (this.state.booted) this.countUp(key); });
+  }
+  countUp(key, ms = 1300) {
+    const c = this.state.counters.find(c => c.key === key); const from = c.display, to = c.value; const t0 = performance.now();
+    cancelAnimationFrame(this.tweens[key]);
+    const step = () => {
+      const k = Math.min(1, (performance.now() - t0) / ms); const e = 1 - Math.pow(1 - k, 3);
+      const display = Math.round(from + (to - from) * e);
+      this.setState(s => ({ counters: s.counters.map(x => x.key === key ? { ...x, display } : x) }));
+      if (k < 1) this.tweens[key] = requestAnimationFrame(step);
+    };
+    if (this.reduced) this.setState(s => ({ counters: s.counters.map(x => x.key === key ? { ...x, display: to } : x) })); else step();
+  }
+
+  // ---- glass highlight spring (stiffness 260, damping ratio .58)
+  tileRect(i) {
+    const dock = this.r.dock.current, L = this.r.launcher.current; if (!dock || !L) return null;
+    const t = dock.querySelector(`[data-tile="${i}"]`); if (!t) return null;
+    const a = t.getBoundingClientRect(), b = L.getBoundingClientRect(); const pad = 6;
+    return { x: a.left - b.left - pad, y: a.top - b.top - pad, w: a.width + pad * 2, h: a.height + pad * 2, color: t.dataset.color };
+  }
+  focusTile(i, snap = false) {
+    i = (i + 4) % 4; const rect = this.tileRect(i); if (!rect) return;
+    this.setState({ focus: i });
+    const dock = this.r.dock.current;
+    dock.querySelectorAll('[data-tile]').forEach(t => { const on = t.dataset.tile == i; t.style.transform = on ? 'scale(1.06)' : 'scale(1)'; t.querySelector('[data-name]').style.opacity = on ? '1' : '0'; });
+    this.setVar('--glow', rect.color + '66');
+    const s = this.spring; s.x.t = rect.x; s.y.t = rect.y; s.w.t = rect.w; s.h.t = rect.h;
+    const g = this.r.glass.current; g.style.opacity = '1';
+    if (snap || this.reduced) { ['x','y','w','h'].forEach(k => { s[k].p = s[k].t; s[k].v = 0; }); this.paintGlass(); return; }
+    if (!this.glassRaf) { this.lastT = performance.now(); this.glassRaf = requestAnimationFrame(this.stepGlass); }
+  }
+  retarget() { if (this.state.booted) this.focusTile(this.state.focus, true); }
+  paintGlass() { const s = this.spring, g = this.r.glass.current; if (!g) return; g.style.transform = `translate(${s.x.p}px,${s.y.p}px)`; g.style.width = s.w.p + 'px'; g.style.height = s.h.p + 'px'; }
+  stepGlass = (now) => {
+    const dt = Math.min(1 / 30, (now - this.lastT) / 1000); this.lastT = now;
+    const k = 260, c = 2 * 0.58 * Math.sqrt(k); let settled = true;
+    ['x','y','w','h'].forEach(key => { const s = this.spring[key]; const a = k * (s.t - s.p) - c * s.v; s.v += a * dt; s.p += s.v * dt; if (Math.abs(s.v) > .05 || Math.abs(s.t - s.p) > .1) settled = false; });
+    this.paintGlass();
+    if (settled) { ['x','y','w','h'].forEach(k => { this.spring[k].p = this.spring[k].t; this.spring[k].v = 0; }); this.paintGlass(); this.glassRaf = null; }
+    else this.glassRaf = requestAnimationFrame(this.stepGlass);
+  }
+
+  // ---- marquee + credits roll (direct DOM, only while their channel is on)
+  loop = (now) => {
+    const dt = Math.min(.05, (now - this.lastLoop) / 1000); this.lastLoop = now; const ch = this.state.ch;
+    if (!this.reduced && this.state.power) {
+      if (ch === 2) {
+        const a = this.r.rowA.current, b = this.r.rowB.current;
+        if (a) { const half = a.scrollWidth / 2; if (this.pause.a) this.ax = a.scrollLeft; else { this.ax += 30 * dt; if (this.ax >= half) this.ax -= half; a.scrollLeft = this.ax; } }
+        if (b) { const half = b.scrollWidth / 2; if (!this.bInit && half > 0) { this.bx = half; this.bInit = true; } if (this.pause.b) this.bx = b.scrollLeft; else { this.bx -= 22 * dt; if (this.bx <= 0) this.bx += half; b.scrollLeft = this.bx; } }
+      }
+      if (ch === 3) { const c = this.r.credits.current; if (c && !this.pause.c) { const h = c.scrollHeight / 2; this.cy += 26 * dt; if (h && this.cy >= h) this.cy -= h; c.style.transform = `translateY(${-this.cy}px)`; } }
+    }
+    this.loopRaf = requestAnimationFrame(this.loop);
+  }
+  setPause(k, v, later) { clearTimeout(this.resumeT[k]); if (later) this.resumeT[k] = setTimeout(() => { this.pause[k] = false; }, 2500); else this.pause[k] = v; }
+
+  // ---- oscilloscope
+  drawScope(p) {
+    const c = this.r.scope.current; if (!c) return; this.scopeP = p;
+    const dpr = Math.min(2, window.devicePixelRatio || 1); const w = c.clientWidth, h = c.clientHeight; if (!w || !h) return;
+    if (c.width !== Math.round(w * dpr) || c.height !== Math.round(h * dpr)) { c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); }
+    const x = c.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, h);
+    x.strokeStyle = 'rgba(140,255,140,.12)'; x.lineWidth = 1; x.shadowBlur = 0;
+    for (let i = 1; i < 8; i++) { x.beginPath(); x.moveTo(Math.round(i * w / 8) + .5, 0); x.lineTo(Math.round(i * w / 8) + .5, h); x.stroke(); }
+    for (let i = 1; i < 4; i++) { x.beginPath(); x.moveTo(0, Math.round(i * h / 4) + .5); x.lineTo(w, Math.round(i * h / 4) + .5); x.stroke(); }
+    const pts = STAR_SERIES, n = pts.length - 1, upto = p * n, pad = 10;
+    const px = i => pad + (w - pad * 2) * i / n, py = v => h - pad - (h - pad * 2) * v;
+    x.strokeStyle = '#9CFF9C'; x.lineWidth = 2; x.shadowColor = 'rgba(140,255,140,.9)'; x.shadowBlur = 8; x.lineJoin = 'round';
+    x.beginPath(); x.moveTo(px(0), py(pts[0])); let lx = px(0), ly = py(pts[0]);
+    for (let i = 1; i <= Math.ceil(upto); i++) { const f = Math.min(1, upto - (i - 1)); const v = pts[i - 1] + (pts[i] - pts[i - 1]) * f; lx = px(i - 1 + f); ly = py(v); x.lineTo(lx, ly); }
+    x.stroke(); x.fillStyle = '#E8FFE8'; x.beginPath(); x.arc(lx, ly, 3, 0, Math.PI * 2); x.fill();
+  }
+  animateScope() {
+    cancelAnimationFrame(this.scopeRaf);
+    if (this.reduced) return this.drawScope(1);
+    const t0 = performance.now();
+    const step = () => { const k = Math.min(1, (performance.now() - t0) / 1600); this.drawScope(1 - Math.pow(1 - k, 2)); if (k < 1) this.scopeRaf = requestAnimationFrame(step); };
+    step();
+  }
+
+  // ---- terminal
+  startTyping() {
+    clearInterval(this.typeT); this.typingStarted = true;
+    const total = TERM_TOTAL[this.state.os];
+    if (this.reduced) return this.setState({ typed: total });
+    this.setState({ typed: 0 });
+    this.typeT = setInterval(() => { const t = Math.min(total, this.state.typed + 2); this.setState({ typed: t }); if (t >= total) clearInterval(this.typeT); }, 30);
+  }
+  termView() {
+    let budget = this.state.typed; const out = [];
+    for (const l of TERM[this.state.os]) {
+      if (budget <= 0) break; const cost = termCost(l);
+      if (l[0] === 'cmd') { const n = Math.min(l[1].length, budget); out.push({ text: '$ ' + l[1].slice(0, n) + (budget < cost ? '▌' : ''), color: '#FFFFFF', img: '', alt: '' }); }
+      else if (budget >= cost) out.push(l[0] === 'img' ? { text: '  ' + l[1], color: 'rgba(216,245,218,.55)', img: l[2], alt: l[3] } : { text: (l[0] === 'note' ? '› ' : '  ') + l[1], color: l[0] === 'note' ? '#CFFFCF' : 'rgba(216,245,218,.6)', img: '', alt: '' });
+      budget -= cost;
+    }
+    return out.map(o => ({ ...o, imgDisplay: o.img ? 'block' : 'none', bg: o.img ? `url('${o.img}')` : 'none' }));
+  }
+
+  // ---- channels
+  onSection(e) {
+    if (!e.isIntersecting) return; const n = +e.target.dataset.ch; if (n === this.state.ch) return;
+    this.setState({ ch: n });
+    if (performance.now() > this.quietUntil && this.state.booted) { this.cut(250); this.showOsd(`CH 0${n}`); }
+    this.enter(n);
+  }
+  enter(n) { if (n === 1) this.animateScope(); if (n === 5 && !this.typingStarted) this.startTyping(); }
+  channel(n) {
+    this.click(); if (!this.state.power || n < 0) return;
+    if (!this.state.booted) this.skipBoot = true;
+    if (n > 6) { this.showOsd(`CH 0${n}  NO SIGNAL`); this.cut(250); return; }
+    const sc = this.r.scroll.current, target = sc.querySelector(`#ch-0${n}`); if (!target) return;
+    this.quietUntil = performance.now() + 900; this.showOsd(`CH 0${n}`);
+    if (this.reduced) { sc.animate([{ opacity: 1 }, { opacity: 0, offset: .5 }, { opacity: 1 }], { duration: 500 }); setTimeout(() => { sc.scrollTop = target.offsetTop; }, 250); }
+    else { this.cut(250); setTimeout(() => { sc.scrollTop = target.offsetTop; }, 110); }
+    if (n !== this.state.ch) { this.setState({ ch: n }); this.enter(n); }
+  }
+
+  // ---- boot: power on, parody home, cleanup, launcher
+  resetScene() {
+    const cl = this.r.clutter.current, g = this.r.glass.current, ti = this.r.title.current, dock = this.r.dock.current;
+    cl.getAnimations({ subtree: true }).forEach(a => a.cancel()); cl.style.opacity = '1'; cl.style.visibility = 'visible';
+    g.style.opacity = '0'; ti.style.opacity = '0'; ti.style.transition = 'none';
+    dock.querySelectorAll('[data-tile]').forEach(t => { t.style.opacity = '0'; t.style.transform = 'scale(1)'; t.querySelector('[data-name]').style.opacity = '0'; });
+    this.setState(s => ({ booted: false, ch: 0, counters: s.counters.map(c => ({ ...c, display: 0 })) }));
+  }
+  async boot() {
+    const id = ++this.bootId; const alive = () => this.bootId === id && this.state.power;
+    this.skipBoot = false; this.resetScene();
+    const cl = this.r.clutter.current, fl = this.r.flash.current, sc = this.r.scroll.current;
+    sc.scrollTop = 0; this.setVar('--led', '#4bff7a');
+    if (this.reduced) {
+      await wait(1400); if (!alive()) return;
+      cl.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, fill: 'forwards' });
+      await wait(600); return this.finalize(id);
+    }
+    fl.style.opacity = '1'; cl.style.opacity = '0';
+    await fl.animate([{ transform: 'scaleY(.004)', opacity: 1 }, { transform: 'scaleY(1)', opacity: 1, offset: .55 }, { transform: 'scaleY(1)', opacity: 0 }], { duration: 520, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' }).finished;
+    if (!alive()) return; fl.style.opacity = '0'; this.hum(true);
+    cl.style.opacity = '1';
+    await this.cut(250); if (!alive()) return;
+    this.showOsd('CH 00');
+    await wait(this.props.bootDelay ?? 1500); if (!alive()) return; if (this.skipBoot) return this.finalize(id);
+    const pop = cl.querySelector('[data-popup]'); this.click();
+    pop.animate([{ transform: 'translate(-50%,-50%) rotate(0deg)', opacity: 1 }, { transform: 'translate(-30%,-20%) rotate(14deg) scale(.9)', opacity: 1, offset: .35 }, { transform: 'translate(90%,120%) rotate(40deg) scale(.6)', opacity: 0 }], { duration: 480, easing: 'cubic-bezier(.5,0,.9,.4)', fill: 'forwards' });
+    await wait(380); if (!alive()) return; if (this.skipBoot) return this.finalize(id);
+    const zaps = Array.from(cl.querySelectorAll('[data-zap]')).sort((a, b) => a.dataset.zap - b.dataset.zap);
+    for (const el of zaps) {
+      this.click();
+      el.animate([{ filter: 'brightness(1)', transform: 'scale(1)', opacity: 1 }, { filter: 'brightness(5)', transform: 'scale(1.08)', opacity: 1, offset: .3 }, { filter: 'brightness(5)', transform: 'scale(1.1,.02)', opacity: 1, offset: .75 }, { filter: 'brightness(5)', transform: 'scale(0,.02)', opacity: 0 }], { duration: 300, easing: 'ease-in', fill: 'forwards' });
+      await wait(110); if (!alive()) return; if (this.skipBoot) return this.finalize(id);
+    }
+    await wait(220);
+    const rows = Array.from(cl.querySelectorAll('[data-row]')).sort((a, b) => a.dataset.row - b.dataset.row);
+    for (const el of rows) {
+      this.click();
+      el.animate([{ transform: 'scaleY(1)', opacity: 1 }, { transform: 'scaleY(.02)', opacity: .9, offset: .7 }, { transform: 'scaleY(0)', opacity: 0 }], { duration: 260, easing: 'cubic-bezier(.6,0,.9,.4)', fill: 'forwards' });
+      await wait(200); if (!alive()) return; if (this.skipBoot) return this.finalize(id);
+    }
+    await wait(150);
+    cl.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' });
+    await wait(300); if (!alive()) return;
+    cl.style.visibility = 'hidden';
+    const tiles = this.r.dock.current.querySelectorAll('[data-tile]');
+    tiles.forEach((t, i) => { t.style.opacity = '1'; t.animate([{ transform: 'translateY(18px) scale(.96)', opacity: 0 }, { transform: 'translateY(0) scale(1)', opacity: 1 }], { duration: 320, delay: i * 50, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' }); });
+    await wait(360); if (!alive()) return;
+    this.setState({ booted: true }); this.state.counters.forEach(c => this.countUp(c.key));
+    const ti = this.r.title.current; ti.style.transition = 'opacity .6s'; ti.style.opacity = '1';
+    for (const i of [0, 1, 2, 3, 0]) { this.focusTile(i); this.click(); await wait(i === 3 ? 420 : 300); if (!alive()) return; }
+  }
+  finalize(id) {
+    if (this.bootId !== id) return;
+    const cl = this.r.clutter.current, ti = this.r.title.current;
+    cl.getAnimations({ subtree: true }).forEach(a => a.cancel()); cl.style.opacity = '0'; cl.style.visibility = 'hidden';
+    this.r.dock.current.querySelectorAll('[data-tile]').forEach(t => { t.style.opacity = '1'; });
+    this.setState({ booted: true }, () => { this.state.counters.forEach(c => this.countUp(c.key)); this.focusTile(0, true); });
+    ti.style.transition = 'opacity .6s'; ti.style.opacity = '1'; this.hum(true);
+  }
+
+  // ---- power
+  async powerOff() {
+    if (!this.state.power) return;
+    this.bootId++; this.click(); this.hum(false); this.setState({ power: false, booted: false }); this.setVar('--led', '#ff3b3b');
+    const sc = this.r.scroll.current, off = this.r.off.current;
+    if (!this.reduced) {
+      await sc.animate([{ transform: 'scaleY(1)', filter: 'brightness(1)' }, { transform: 'scaleY(.006)', filter: 'brightness(2.5)' }], { duration: 300, easing: 'cubic-bezier(.7,0,.9,.4)', fill: 'forwards' }).finished;
+      await sc.animate([{ transform: 'scaleY(.006) scaleX(1)', filter: 'brightness(2.5)' }, { transform: 'scaleY(.006) scaleX(0)', filter: 'brightness(4)' }], { duration: 170, easing: 'ease-in', fill: 'forwards' }).finished;
+      await wait(250);
+    }
+    sc.style.visibility = 'hidden';
+    off.style.display = 'flex'; off.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500, fill: 'forwards' });
+  }
+  powerOn() {
+    const sc = this.r.scroll.current, off = this.r.off.current;
+    off.getAnimations().forEach(a => a.cancel()); off.style.display = 'none'; off.style.opacity = '0';
+    sc.getAnimations().forEach(a => a.cancel()); sc.style.visibility = ''; sc.style.transform = ''; sc.style.filter = '';
+    this.quietUntil = performance.now() + 1500;
+    this.setState({ power: true }, () => this.boot());
+  }
+
+  // ---- remote
+  cycleTheme() {
+    this.click();
+    const sl = SLIDES[this.state.slide];
+    if (this.state.ch === 6 && sl.kind === 'theme' && sl.site !== this.state.theme) return this.setTheme(sl.site);
+    this.setTheme(ORDER[(ORDER.indexOf(this.state.theme) + 1) % ORDER.length]);
+  }
+  toggleSound() {
+    const sound = !this.state.sound;
+    this.setState({ sound }, () => { localStorage.setItem('cyt-sound', sound ? '1' : '0'); this.setVar('--mute-ink', sound ? '#CFFFCF' : 'rgba(255,255,255,.75)'); if (sound) { this.ac(); this.click(); this.hum(true); } else this.hum(false); this.showOsd(sound ? 'SOUND ON' : 'MUTE', 1200); });
+  }
+  wizGo(i) { i = Math.max(0, Math.min(2, i)); if (i === this.state.wiz) return; this.click(); this.setState({ wiz: i }); }
+  slideGo(i) { this.click(); this.setState({ slide: (i + SLIDES.length) % SLIDES.length }); }
+  side(d) { const ch = this.state.ch; if (ch === 0) return this.move(d); if (ch === 5) return this.wizGo(this.state.wiz + d); if (ch === 6) return this.slideGo(this.state.slide + d); }
+  key(e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = (e.target && e.target.tagName) || ''; if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    this.konami.push(e.key); this.konami = this.konami.slice(-10); if (this.konami.join() === KONAMI.join()) { this.konami = []; return this.missIt(); }
+    if (/^[0-9]$/.test(e.key)) return this.channel(+e.key);
+    if (e.key === 'ArrowLeft') { e.preventDefault(); return this.side(-1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); return this.side(1); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); return this.channel(this.state.ch - 1); }
+    if (e.key === 'ArrowDown') { e.preventDefault(); return this.channel(Math.min(6, this.state.ch + 1)); }
+    if (e.key === 'Enter' && tag !== 'BUTTON' && tag !== 'A') return this.ok();
+    if (e.key === 'm' || e.key === 'M') return this.toggleSound();
+    if (e.key === 'i' || e.key === 'I') return this.cycleTheme();
+    if (e.key === 'p' || e.key === 'P') return this.state.power ? this.powerOff() : this.powerOn();
+  }
+  move(d) { if (!this.state.booted) { this.skipBoot = true; return; } this.click(); this.focusTile(this.state.focus + d); }
+  ok() {
+    if (!this.state.power) return this.powerOn(); if (!this.state.booted) { this.skipBoot = true; return; }
+    const ch = this.state.ch;
+    if (ch === 5) return this.wizGo(this.state.wiz + 1);
+    if (ch === 6) return this.slideGo(this.state.slide + 1);
+    this.channel(ch === 0 ? 5 : ch + 1);
+  }
+  async missIt() {
+    if (!this.state.booted) return; const cl = this.r.clutter.current, miss = this.r.miss.current;
+    if (this.state.ch !== 0) this.channel(0);
+    cl.getAnimations({ subtree: true }).forEach(a => a.cancel()); cl.style.visibility = 'visible'; cl.style.opacity = '0';
+    await this.cut(250); cl.style.opacity = '1'; miss.style.opacity = '1';
+    await wait(3000); miss.style.opacity = '0'; await this.cut(250); cl.style.opacity = '0'; cl.style.visibility = 'hidden';
+  }
+  async copyPrompt() {
+    this.click(); const text = this.prompt || PROMPT_FALLBACK;
+    try { await navigator.clipboard.writeText(text); }
+    catch (e) { const t = document.createElement('textarea'); t.value = text; t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (_) {} t.remove(); }
+    this.setState({ copied: true }); clearTimeout(this.copyT); this.copyT = setTimeout(() => this.setState({ copied: false }), 2600);
+  }
+
+  // ---- view models
+  wallRows() {
+    const res = this.state.results || []; if (!res.length) return [[], []];
+    const active = this.state.active;
+    const mk = (arr, tag) => arr.map((r, i) => {
+      const key = tag + i, on = active === key;
+      return { ...r, key, src: 'public' + r.image, op: on ? 1 : 0, pe: on ? 'auto' : 'none',
+        enter: () => this.setState({ active: key }), leave: () => this.setState(s => s.active === key ? { active: null } : null),
+        tap: (e) => { if (e.target.closest('a')) return; this.setState(s => ({ active: s.active === key ? null : key })); } };
+    });
+    if (this.reduced) return [mk(res, 's'), []];
+    let base = []; while (base.length < 6) base = base.concat(res);
+    const rev = base.slice().reverse();
+    return [mk(base.concat(base), 'a'), mk(rev.concat(rev), 'b')];
+  }
+  creditGroups() {
+    const prs = this.state.prs || [], seen = {}, groups = {};
+    const add = (g, login, avatar) => { groups[g] = groups[g] || []; const k = g + login; if (seen[k]) return; seen[k] = 1; groups[g].push({ login, url: 'https://github.com/' + login, avatar: (avatar || `https://github.com/${login}.png`) + (avatar ? '&s=64' : '?size=64') }); };
+    add('started', 'Gathin23');
+    prs.forEach(p => { if (p.login !== 'Gathin23') add(classify(p.title), p.login, p.avatar); });
+    SHOWCASE.forEach(s => add('built', s[3]));
+    const list = GROUPS.filter(([k]) => groups[k] && groups[k].length).map(([k, title]) => ({ title, people: groups[k] }));
+    return this.reduced ? list : list.concat(list);
+  }
+  guide() {
+    const tvs = this.state.tvs, q = this.state.q.trim().toLowerCase();
+    const hit = tvs.filter(t => !q || (t.brand + ' ' + t.tv + ' ' + t.os + ' ' + t.folder + ' ' + t.notes).toLowerCase().includes(q));
+    const by = {}; hit.forEach(t => { (by[t.brand] = by[t.brand] || []).push(t); });
+    const names = Object.keys(by).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+    const brands = names.map((name, i) => ({ name, count: by[name].length, border: i ? '1px solid var(--line,rgba(255,255,255,.12))' : '0',
+      models: by[name].map(t => ({ ...t, url: GH + '/tree/main/examples/' + t.folder, show: () => this.setState({ info: t }) })) }));
+    const info = (this.state.info && hit.includes(this.state.info)) ? this.state.info : hit[0];
+    const allBrands = new Set(tvs.map(t => t.brand)).size;
+    return { brands, info, count: q ? `${hit.length} OF ${tvs.length} TVS` : `${tvs.length} TVS · ${allBrands} BRANDS`, empty: !hit.length };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const [rowA, rowB] = this.wallRows();
+    const g = this.guide();
+    const sl = SLIDES[s.slide];
+    const stars = s.counters.find(c => c.key === 'stars').value;
+    return {
+      rootRef: this.r.root, screenRef: this.r.screen, scrollRef: this.r.scroll, launcherRef: this.r.launcher, ambientRef: this.r.ambient, dockRef: this.r.dock, glassRef: this.r.glass, clutterRef: this.r.clutter, missRef: this.r.miss, titleRef: this.r.title, osdRef: this.r.osd, staticRef: this.r.static, flashRef: this.r.flash, offRef: this.r.off,
+      rowARef: this.r.rowA, rowBRef: this.r.rowB, creditsRef: this.r.credits, scopeRef: this.r.scope, endRef: this.r.end,
+      osd: s.osd, clock: s.clock, ampm: s.ampm, date: s.date, greeting: s.greeting,
+      mobile: s.mobile, desktop: !s.mobile, soundOn: s.sound,
+      counters: s.counters.map(c => ({ ...c, display: c.display.toLocaleString('en-US'), pct: s.booted ? Math.min(100, c.value / c.max * 100) : 0 })),
+      onPower: () => s.power ? this.powerOff() : this.powerOn(),
+      onInput: () => this.cycleTheme(),
+      onMute: () => this.toggleSound(),
+      onMenu: () => { this.click(); window.open(GH, '_blank', 'noopener'); },
+      onOk: () => this.ok(),
+      onNum: (e) => this.channel(+e.currentTarget.dataset.n),
+      onUp: () => this.channel(s.ch - 1), onDown: () => this.channel(Math.min(6, s.ch + 1)), onLeft: () => this.side(-1), onRight: () => this.side(1),
+      hoverTile: (e) => { if (s.booted) this.focusTile(+e.currentTarget.dataset.tile); },
+      clickTile: (e) => { if (!s.booted) return; this.click(); const t = e.currentTarget; t.animate([{ transform: 'scale(1.06)' }, { transform: 'scale(.98)' }, { transform: 'scale(1.06)' }], { duration: 220, easing: 'ease-out' }); },
+      chDots: NAMES.map((n, i) => ({ label: `Channel ${i}, ${n.toLowerCase()}`, go: () => this.channel(i), bg: s.ch === i ? '#CFFFCF' : 'rgba(255,255,255,.28)', glow: s.ch === i ? '0 0 6px rgba(140,255,140,.7)' : 'none' })),
+      // CH 01
+      tickerAnim: this.reduced ? 'none' : 'tickerSlide 40s linear infinite',
+      starEnd: stars.toLocaleString('en-US'),
+      // CH 02
+      rowA, rowB, hasRowB: rowB.length > 0, wallWrap: this.reduced ? 'wrap' : 'nowrap',
+      pauseA: () => this.setPause('a', true), resumeA: () => this.setPause('a', false), resumeALater: () => this.setPause('a', false, true),
+      pauseB: () => this.setPause('b', true), resumeB: () => this.setPause('b', false), resumeBLater: () => this.setPause('b', false, true),
+      // CH 03
+      credits: this.creditGroups(), creditsOverflow: this.reduced ? 'auto' : 'hidden',
+      prCount: s.prCount.toLocaleString('en-US'), contribCount: s.counters.find(c => c.key === 'contributors').value.toLocaleString('en-US'),
+      pauseC: () => this.setPause('c', true), resumeC: () => this.setPause('c', false), resumeCLater: () => this.setPause('c', false, true),
+      // CH 04
+      q: s.q, onSearch: (e) => this.setState({ q: e.target.value, info: null }),
+      brands: g.brands, guideCount: g.count, epgCols: s.mobile ? 'minmax(0,1fr)' : 'minmax(120px,180px) minmax(0,1fr)',
+      infoTv: g.info ? g.info.tv : 'No match yet', infoMeta: g.info ? `${g.info.os.toUpperCase()} · examples/${g.info.folder}/` : '',
+      infoNotes: g.info ? g.info.notes : 'Try the brand or the model number from the sticker on the back.',
+      // CH 05
+      wizDots: [0, 1, 2].map(i => ({ label: `Step ${i + 1} of 3`, go: () => this.wizGo(i), w: s.wiz === i ? '28px' : '8px', op: s.wiz === i ? 1 : .35 })),
+      wizLabel: `${s.wiz + 1} / 3`, wiz0: s.wiz === 0, wiz1: s.wiz === 1, wiz2: s.wiz === 2,
+      wizBack: () => this.wizGo(s.wiz - 1), wizNext: () => s.wiz === 2 ? this.channel(6) : this.wizGo(s.wiz + 1),
+      backOp: s.wiz === 0 ? .4 : 1, nextLabel: s.wiz === 2 ? 'Done' : 'Next',
+      onCopy: () => this.copyPrompt(), copyLabel: s.copied ? 'Copied. Paste it in.' : 'Copy the prompt',
+      termLines: this.termView(), isMac: s.os === 'mac', isWin: s.os === 'win',
+      macBg: s.os === 'mac' ? 'rgba(255,255,255,.18)' : 'transparent', winBg: s.os === 'win' ? 'rgba(255,255,255,.18)' : 'transparent',
+      setMac: () => { if (s.os !== 'mac') this.setState({ os: 'mac' }, () => this.startTyping()); },
+      setWin: () => { if (s.os !== 'win') this.setState({ os: 'win' }, () => this.startTyping()); },
+      // CH 06
+      slideName: sl.name, slideWhat: sl.what, slideMeta: sl.meta, slideBy: sl.by, slideByUrl: sl.byUrl, slideUrl: sl.url, slideKicker: sl.kicker,
+      slideIsTheme: sl.kind === 'theme', slideCount: `${String(s.slide + 1).padStart(2, '0')} / ${SLIDES.length}`,
+      slideBg: sl.wall === 'aurora' ? '#070A14' : '#000000', slideWall: sl.wall === 'aurora' ? "url('themes/aurora/wallpaper.jpg')" : 'none',
+      slideTiles: TILE_COLORS.slice(0, sl.tiles).map((c, i) => ({ c, ring: i === 0 ? '0 0 0 1.5px rgba(255,255,255,.85),0 0 10px rgba(255,255,255,.3)' : 'none', tf: i === 0 ? 'scale(1.08)' : 'none' })),
+      slidePrev: () => this.slideGo(s.slide - 1), slideNext: () => this.slideGo(s.slide + 1),
+      wearTheme: () => { this.click(); this.setTheme(sl.site); },
+      swipeStart: (e) => { this.tx = e.touches[0].clientX; },
+      swipeEnd: (e) => { const dx = e.changedTouches[0].clientX - (this.tx || 0); if (Math.abs(dx) > 40) this.slideGo(s.slide + (dx < 0 ? 1 : -1)); },
+    };
+  }
+}
+</script>
+</body>
+</html>

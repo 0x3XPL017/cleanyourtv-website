@@ -1,0 +1,5 @@
+[
+  {"handle":"@placeholder-one","quote":"Placeholder quote. Swap in one line from the real post, in their words.","image":"/results/placeholder-1.png","link":"https://github.com/Gathin23/tv-vibehack/pulls?q=is%3Amerged","tv":"TCL 65C725"},
+  {"handle":"@placeholder-two","quote":"Placeholder quote. Each entry is one line of JSON: handle, quote, image, link, tv.","image":"/results/placeholder-2.png","link":"https://github.com/Gathin23/tv-vibehack/pulls?q=is%3Amerged","tv":"Xiaomi Mi Box S"},
+  {"handle":"@placeholder-three","quote":"Placeholder quote. Drop the screenshot in public/results/ and point image at it.","image":"/results/placeholder-3.png","link":"https://github.com/Gathin23/tv-vibehack/pulls?q=is%3Amerged","tv":"Sony BRAVIA XBR-65X900E"}
+]

@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# cleanyour.tv
 
-## Getting Started
+The website for [tv-vibehack](https://github.com/Gathin23/tv-vibehack): debloat any Android TV or Google TV over Wi-Fi and swap the ad-filled home screen for a clean launcher.
 
-First, run the development server:
+The whole site is one old television. Seven channels, a remote in the corner, static between channels, and a power button that actually turns it off.
 
-```bash
+| Channel | What is on |
+|---|---|
+| 00 Boot | The stock home screen, the clean-up, then the launcher with live stars, forks, contributors and TV count |
+| 01 The story | The tweet that started it and a 48-hour star oscilloscope |
+| 02 On air | Before-and-after screens from people who ran it (`content/results.json`) |
+| 03 The community | The credits roll: everyone whose pull request was merged, from the GitHub API |
+| 04 Supported TVs | The `examples/` table from the repo as an EPG grid, with search |
+| 05 How to | Three-step wizard, copy-the-prompt button, a terminal that types itself |
+| 06 Made with | Showcase projects from `SHOWCASE.md` and the themes from `themes/` |
+
+Keys: `0`–`6` change channel, arrows move, `Enter` is OK, `I` switches the site theme, `M` toggles sound, `P` is power. The Konami code does something too.
+
+## Run it
+
+```sh
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Content comes from the tv-vibehack repo and the GitHub API at build time and is re-fetched at most once an hour (ISR). Every value has a static fallback, so the site builds without network access and never depends on the public GitHub rate limit at request time.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Optional: set `GITHUB_TOKEN` in the environment (Vercel project settings, never in a file) to raise the API rate limit and turn on the real star history behind the oscilloscope. Without it the chart draws a placeholder curve.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Add a result screen
 
-## Learn More
+`content/results.json` is a list of `{ handle, quote, image, link, tv }`. Put the screenshot in `public/results/` and point `image` at it (`/results/name.png`). Keep the quote to one line, in the person's own words, with `link` going to their original post.
 
-To learn more about Next.js, take a look at the following resources:
+## Layout
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `app/` page, layout, fonts (Outfit and VT323 via `next/font`), global CSS
+- `components/TvSite.tsx` the television: one client component holding all channels, the remote and the effects
+- `lib/parse.ts` parsers shared by server and client; `lib/data.ts` the server loader with fallbacks; `lib/site.ts` static copy and helpers
+- `design/` the Claude Design prototype this was ported from
+- `public/docs/` the tweet card and the before/after screenshots; `public/themes/aurora/` the wallpaper
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT, like the main repo.
