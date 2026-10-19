@@ -38,7 +38,7 @@ export default class TvSite extends React.Component<Props, State> {
   reduced = false; mq!: MediaQueryList; onMq!: () => void; onKey!: (e: KeyboardEvent) => void; onResize!: () => void;
   clockTimer!: ReturnType<typeof setInterval>; typeT!: ReturnType<typeof setInterval>; osdT!: ReturnType<typeof setTimeout>; copyT!: ReturnType<typeof setTimeout>;
   io!: IntersectionObserver; typingStarted = false; tx = 0;
-  pull = 0; pullAt = 0; pullY = 0; onWheel!: (e: WheelEvent) => void; onTouchS!: (e: TouchEvent) => void; onTouchM!: (e: TouchEvent) => void; onTouchE!: () => void;
+  resumeCh = 0; pull = 0; pullAt = 0; pullY = 0; onWheel!: (e: WheelEvent) => void; onTouchS!: (e: TouchEvent) => void; onTouchM!: (e: TouchEvent) => void; onTouchE!: () => void;
   gaugeRef = React.createRef<HTMLDivElement>(); gaugeTextRef = React.createRef<HTMLDivElement>();
   _ac: AudioContext | null = null; humNode: { o: OscillatorNode; o2: OscillatorNode; g: GainNode; g2: GainNode } | null = null;
 
@@ -64,6 +64,8 @@ export default class TvSite extends React.Component<Props, State> {
   componentDidMount() {
     let theme: string | null = null, sound = false;
     try { theme = localStorage.getItem("cyt-theme"); sound = localStorage.getItem("cyt-sound") === "1"; } catch { /* private mode */ }
+    // A refresh lands back on the channel that was showing, without the boot sequence.
+    try { const n = Number(sessionStorage.getItem("cyt-ch")); if (n >= 1 && n <= 6) this.resumeCh = n; } catch { /* ignore */ }
     this.reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.mq = matchMedia("(max-width: 1100px)");
     this.onMq = () => { this.setPadR(); this.setState({ mobile: this.mq.matches }, () => this.retarget()); };
@@ -267,7 +269,7 @@ export default class TvSite extends React.Component<Props, State> {
   // ---- channels
   onSection(e: IntersectionObserverEntry) {
     if (!e.isIntersecting) return; const n = Number((e.target as HTMLElement).dataset.ch); if (n === this.state.ch) return;
-    this.setState({ ch: n });
+    this.setState({ ch: n }); this.remember(n);
     // Scrolling between channels only updates the corner label; static is kept for the remote and number keys.
     if (performance.now() > this.quietUntil && this.state.booted) this.showOsd(`CH 0${n}`, 1200, false);
     this.enter(n);
@@ -282,7 +284,9 @@ export default class TvSite extends React.Component<Props, State> {
     if (this.reduced) { sc.animate([{ opacity: 1 }, { opacity: 0, offset: 0.5 }, { opacity: 1 }], { duration: 500 }); setTimeout(() => { sc.scrollTop = target.offsetTop; }, 250); }
     else { this.cut(250); setTimeout(() => { sc.scrollTop = target.offsetTop; }, 110); }
     if (n !== this.state.ch) { this.setState({ ch: n }); this.enter(n); }
+    this.remember(n);
   }
+  remember(n: number) { try { sessionStorage.setItem("cyt-ch", String(n)); } catch { /* ignore */ } }
 
   // ---- boot: power on, parody home, cleanup, launcher
   resetScene() {
@@ -297,6 +301,13 @@ export default class TvSite extends React.Component<Props, State> {
     this.skipBoot = false; this.resetScene();
     const cl = this.r.clutter.current!, fl = this.r.flash.current!, sc = this.r.scroll.current!;
     sc.scrollTop = 0; this.setVar("--led", "#4bff7a");
+    const resume = this.resumeCh; this.resumeCh = 0;
+    if (resume) {
+      this.finalize(id);
+      const target = sc.querySelector<HTMLElement>(`#ch-0${resume}`); if (target) sc.scrollTop = target.offsetTop;
+      this.quietUntil = performance.now() + 1500; this.setState({ ch: resume }); this.enter(resume);
+      return;
+    }
     if (this.reduced) {
       await wait(1400); if (!alive()) return;
       cl.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, fill: "forwards" });
