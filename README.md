@@ -6,12 +6,12 @@ The whole site is one old television. Seven channels, a remote in the corner, st
 
 | Channel | What is on |
 |---|---|
-| 00 Boot | The stock home screen, the clean-up, then the launcher with live stars, forks, contributors and TV count |
+| 00 Boot | The stock home screen, the clean-up, then the launcher with live stars, forks and contributors |
 | 01 The story | The tweet that started it and a 48-hour star oscilloscope |
 | 02 On air | Before-and-after screens from people who ran it (`content/results.json`) |
+| 03 How to | Three-step wizard, copy-the-prompt button, a terminal that types itself |
 | 04 The community | The credits roll: everyone whose pull request was merged, from the GitHub API |
 | 05 Supported TVs | The `examples/` table from the repo as an EPG grid, with search |
-| 03 How to | Three-step wizard, copy-the-prompt button, a terminal that types itself |
 | 06 Made with | Showcase projects from `SHOWCASE.md` and the themes from `themes/` |
 
 Keys: `0`–`6` change channel, arrows move, `Enter` is OK, `I` switches the site theme, `M` toggles sound, `P` is power. The Konami code does something too.
