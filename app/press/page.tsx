@@ -25,7 +25,7 @@ const page: CSSProperties = {
   fontWeight: 300,
   WebkitFontSmoothing: "antialiased",
 };
-const wrap: CSSProperties = { maxWidth: 880, margin: "0 auto", padding: "40px 20px 120px", fontSize: 17, lineHeight: 1.5 };
+const wrap: CSSProperties = { maxWidth: 1160, margin: "0 auto", padding: "40px 20px 120px", fontSize: 17, lineHeight: 1.5 };
 const kicker: CSSProperties = { margin: "0 0 20px", fontSize: 15, letterSpacing: 2, textTransform: "uppercase", color: "#9a9a9a" };
 const green = { color: "#cfffcf", borderBottomColor: "rgba(207,255,207,.35)" };
 const anchor = (g: string) => g.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -62,14 +62,23 @@ export default function Press() {
             <h2 style={{ fontSize: 26, fontWeight: 400, margin: "48px 0 6px", letterSpacing: -0.2 }}>
               {g.group} <span style={{ color: "#7a7a7a", fontSize: 18 }}>{g.items.length}</span>
             </h2>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {g.items.map(([outlet, headline, date, url]) => (
-                <li key={url} className="press-row">
-                  <span style={{ fontWeight: 400, color: "#fff" }}>{outlet}</span>
-                  <span className="press-head">
-                    <a href={url} target="_blank" rel="noopener" style={green}>{headline}</a>
-                  </span>
-                  <span style={{ color: "#8b8b8b", whiteSpace: "nowrap" }}>{date}</span>
+            <ul className="press-grid">
+              {g.items.map(([outlet, headline, date, url, thumb, icon]) => (
+                <li key={url}>
+                  <a href={url} target="_blank" rel="noopener" className="press-card">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img className="press-thumb" src={cdn(`/press/thumbs/${thumb}.jpg`)} alt="" width={640} height={360} loading="lazy" decoding="async" />
+                    <span className="press-body">
+                      <span className="press-outlet">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={cdn(`/press/icons/${icon}.png`)} alt="" width={22} height={22} loading="lazy" decoding="async" />
+                        <span className="press-outlet-name">{outlet}</span>
+                      </span>
+                      <span className="press-title">{headline}</span>
+                      <span className="press-date">{date}</span>
+                      <span className="sr-only"> (opens in a new tab)</span>
+                    </span>
+                  </a>
                 </li>
               ))}
             </ul>
