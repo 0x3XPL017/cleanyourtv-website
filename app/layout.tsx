@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Outfit, VT323 } from "next/font/google";
+import { Fredoka, Outfit, VT323 } from "next/font/google";
 import "./globals.css";
 
 const outfit = Outfit({ subsets: ["latin"], weight: ["200", "300", "400", "500"], variable: "--font-outfit", display: "swap" });
+const fredoka = Fredoka({ subsets: ["latin"], weight: "600", variable: "--font-fredoka", display: "swap" });
 const vt323 = VT323({ subsets: ["latin"], weight: "400", variable: "--font-vt323", display: "swap" });
 
 export const metadata: Metadata = {
@@ -26,7 +27,7 @@ export const viewport: Viewport = { themeColor: "#050505", width: "device-width"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${outfit.variable} ${vt323.variable}`}>
+    <html lang="en" className={`${outfit.variable} ${fredoka.variable} ${vt323.variable}`}>
       <body>{children}</body>
     </html>
   );

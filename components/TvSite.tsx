@@ -642,7 +642,25 @@ export default class TvSite extends React.Component<Props, State> {
         </div>
         <div ref={this.r.title} className="m-title" style={S("position:absolute;left:0;right:0;top:0;bottom:clamp(90px,16cqw,200px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,28px);padding:clamp(60px,9cqw,110px) 5cqw 0;text-align:center;opacity:0;pointer-events:none;color:var(--ink,rgba(255,255,255,.95))")}>
           <div style={S("display:flex;flex-direction:column;align-items:center;gap:clamp(6px,.8cqw,12px)")}>
-            <h1 className="m-h1" style={S("margin:0;font-size:clamp(40px,min(8.5cqw,12vh),112px);font-weight:200;letter-spacing:-.03em;line-height:.95;text-wrap:balance")}>clean your TV</h1>
+            <h1 className="m-h1" aria-label="CleanYourTV" style={S("margin:0;display:flex;align-items:center;gap:.22em;font-family:var(--font-fredoka),'Fredoka',sans-serif;font-size:clamp(40px,min(8cqw,11vh),104px);font-weight:600;letter-spacing:-.01em;line-height:1;white-space:nowrap")}>
+              <svg aria-hidden="true" viewBox="10 7 44 51" style={S("height:1.05em;width:auto;flex:none;margin-top:-.08em")}>
+                <path d="M26 20 L19 9 M38 20 L45 9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="none" />
+                <circle cx="19" cy="9" r="2.6" fill="currentColor" />
+                <circle cx="45" cy="9" r="2.6" fill="currentColor" />
+                <rect x="10" y="20" width="44" height="32" rx="8" fill="currentColor" />
+                <rect x="15" y="25" width="34" height="22" rx="4" fill="var(--brand,#cfffcf)" />
+                <rect x="15" y="25" width="34" height="22" rx="4" fill="url(#h1g)" />
+                <rect x="20" y="53" width="7" height="4" rx="2" fill="currentColor" />
+                <rect x="37" y="53" width="7" height="4" rx="2" fill="currentColor" />
+                <defs>
+                  <linearGradient id="h1g" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor="#ffffff" stopOpacity=".35" />
+                    <stop offset=".45" stopColor="#ffffff" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <span>CleanYour<span style={S("color:var(--brand,#cfffcf)")}>TV</span></span>
+            </h1>
             <p className="m-tag" style={S("margin:0;font-size:clamp(15px,2.1cqw,26px);font-weight:300;opacity:.8")}>Your TV, minus the ads.</p>
             <p className="m-sub" style={S("margin:0;max-width:60em;font-size:clamp(13px,1.2cqw,16px);line-height:1.45;opacity:.75;text-wrap:balance")}>For Android TV and Google TV: an AI coding assistant removes the ads over Wi-Fi. No root, nothing uninstalled, free and open source.</p>
           </div>
