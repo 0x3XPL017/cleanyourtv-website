@@ -425,5 +425,40 @@
     "image": "/results/hjcinelli.jpg",
     "link": "https://x.com/hjcinelli/status/2112310608003547147",
     "tv": "LG webOS, 200% better"
+  },
+  {
+    "handle": "@alguem_aroucha",
+    "quote": "Did my own version. Fun stuff",
+    "image": "/results/alguem_aroucha.jpg",
+    "link": "https://x.com/alguem_aroucha/status/2112377532515545502",
+    "tv": "Their own version"
+  },
+  {
+    "handle": "@TechmenID",
+    "quote": "Mantap, android tv rilisan 2019 bisa dibikin clean dan lebih sat set 👍",
+    "image": "/results/techmenid.jpg",
+    "link": "https://x.com/TechmenID/status/2112376813519593757",
+    "tv": "2019 Android TV, snappy now"
+  },
+  {
+    "handle": "@tokifyi",
+    "quote": "this is crazy just told claude code to “turn on the tv. open netflix on toki and play ai is gone wild” and it actually did it. this is nuts",
+    "image": "/results/tokifyi-2.jpg",
+    "link": "https://x.com/tokifyi/status/2112357160734896250",
+    "tv": "Claude Code plays Netflix on cue"
+  },
+  {
+    "handle": "@picosuarez",
+    "quote": "no me pregunten cómo, pero lo hice.",
+    "image": "/results/picosuarez.jpg",
+    "link": "https://x.com/picosuarez/status/2112264537663537548",
+    "tv": "Don't ask how, but done"
+  },
+  {
+    "handle": "@brunotrinchao",
+    "quote": "Agora minha MiBox de 2015 roda liso",
+    "image": "/results/brunotrinchao.jpg",
+    "link": "https://x.com/brunotrinchao/status/2112298076383658215",
+    "tv": "2015 Mi Box runs smooth"
   }
 ]
