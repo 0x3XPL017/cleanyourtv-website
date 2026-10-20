@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties, ReactNode } from "react";
-import { cdn } from "@/lib/site";
+import { PRESS, cdn } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "(Re)introducing CleanYourTV",
@@ -26,7 +26,6 @@ export const metadata: Metadata = {
   },
 };
 
-const PRESS: [string, string, string][] = [["techcrunch", "TechCrunch", "https://techcrunch.com/2026/10/19/people-are-using-ai-to-make-their-smart-tvs-dumb-again/"], ["mashable", "Mashable", "https://mashable.com/tech/smart-tv-ads-claude-code-ai-cleanup"], ["itsfoss", "It's FOSS", "https://itsfoss.com/news/debloat-smart-tv/"], ["techaeris", "Techaeris", "https://techaeris.com/2026/10/18/android-tv-debloat-tvos-style-makeover/"], ["techtimes", "Tech Times", "https://www.techtimes.co.uk/ai-smart-tv-bloatware-performance-fix-1809233"], ["gadgetreview", "Gadget Review", "https://tech.yahoo.com/ai/meta-ai/articles/developers-using-ai-strip-ads-185856468.html"], ["techpp", "TechPP", "https://techpp.com/2026/10/18/speed-up-android-tv-claude-code/"], ["frandroid", "Frandroid", "https://www.frandroid.com/android/google-tv/3290159_google-tv-lent-et-envahi-par-les-pubs-le-projet-tv-vibehack-corrige-tout-ca-grace-a-lia-jai-tente-lexperience"], ["xboxygen", "Xboxygen", "https://www.xboxygen.com/News/371393-sa-tv-xiaomi-affichait-des-pubs-partout-il-donne-son-modele-a-claude-code-qui-refait-toute-linterface"], ["itavisen", "ITavisen", "https://itavisen.no/2026/10/19/vibekodet-bort-reklame-smart-tv/"], ["pplware", "Pplware", "https://pplware.sapo.pt/inteligencia-artificial/nem-as-smart-tv-escaparam-a-febre-do-vibe-coding-a-televisao-a-medida-de-cada-utilizador/"], ["insmart", "Insmart", "https://insmart.cz/android-tv-bez-reklam-ai-claude-code/"], ["detikinet", "detikINET", "https://inet.detik.com/consumer/d-8713172/kesal-tv-xiaomi-banyak-iklan-pria-ini-sulap-jadi-apple-tv-pakai-ai"], ["iphonemod", "iPhoneMod", "https://www.iphonemod.net/clean-your-tv-android-tv-debloat-launcher.html"]];
 
 const page: CSSProperties = {
   height: "100dvh",

@@ -4,12 +4,13 @@
 import React from "react";
 import { GH } from "@/lib/parse";
 import type { SiteData } from "@/lib/parse";
-import { GROUPS, KONAMI, NAMES, ORDER, S, SHOWCASE_IMAGES, cdn, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
+import { GROUPS, KONAMI, NAMES, ORDER, PRESS, S, SHOWCASE_IMAGES, cdn, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
 import type { ThemeName } from "@/lib/site";
 
 const TWEET = "https://x.com/gathint/status/2111379569030939102";
 const COFFEE = "https://buymeacoffee.com/gathint";
-const BOOT_DELAY = 1500;
+const BOOT_DELAY = 700;
+const PH = "https://www.producthunt.com/products/cleanyourtv";
 
 type Counter = { key: string; label: string; value: number; max: number; display: number };
 type Slide = { kind: "show" | "theme"; name: string; what: string; meta: string; by: string; byUrl: string; url: string; wall: "aurora" | "black"; tiles: number; site?: ThemeName; kicker: string; image?: string };
@@ -39,7 +40,7 @@ export default class TvSite extends React.Component<Props, State> {
   reduced = false; mq!: MediaQueryList; onMq!: () => void; onKey!: (e: KeyboardEvent) => void; onResize!: () => void;
   clockTimer!: ReturnType<typeof setInterval>; typeT!: ReturnType<typeof setInterval>; osdT!: ReturnType<typeof setTimeout>; copyT!: ReturnType<typeof setTimeout>;
   io!: IntersectionObserver; typingStarted = false; tx = 0;
-  resumeCh = 0; instant = false; pull = 0; pullAt = 0; pullY = 0; onWheel!: (e: WheelEvent) => void; onTouchS!: (e: TouchEvent) => void; onTouchM!: (e: TouchEvent) => void; onTouchE!: () => void;
+  resumeCh = 0; instant = false; pull = 0; pullAt = 0; pullY = 0; bottomAt = 0; onWheel!: (e: WheelEvent) => void; onTouchS!: (e: TouchEvent) => void; onTouchM!: (e: TouchEvent) => void; onTouchE!: () => void;
   gaugeRef = React.createRef<HTMLDivElement>(); gaugeTextRef = React.createRef<HTMLDivElement>();
   _ac: AudioContext | null = null; humNode: { o: OscillatorNode; o2: OscillatorNode; g: GainNode; g2: GainNode } | null = null;
 
@@ -94,7 +95,12 @@ export default class TvSite extends React.Component<Props, State> {
     this.io = new IntersectionObserver((es) => es.forEach((e) => this.onSection(e)), { root: sc, threshold: [0.5] });
     sc.querySelectorAll("section[data-ch]").forEach((s) => this.io.observe(s));
     // Turning the set off takes a deliberate pull: sit at the very bottom and keep scrolling.
-    this.onWheel = (e) => { if (e.deltaY > 0 && this.atBottom()) this.addPull(Math.min(e.deltaY, 60) / 1100); };
+    // The momentum of the scroll that reached the bottom does not count; only scrolling after a short rest does.
+    this.onWheel = (e) => {
+      if (!(e.deltaY > 0 && this.atBottom())) { this.bottomAt = 0; return; }
+      const now = performance.now(); if (!this.bottomAt) this.bottomAt = now;
+      if (now - this.bottomAt > 900) this.addPull(Math.min(e.deltaY, 60) / 1100);
+    };
     this.onTouchS = (e) => { this.pullY = e.touches[0].clientY; };
     this.onTouchM = (e) => { const dy = this.pullY - e.touches[0].clientY; if (dy > 0 && this.atBottom()) this.setPull(dy / 320); };
     this.onTouchE = () => { if (this.pull < 1) this.setPull(0); };
@@ -291,7 +297,7 @@ export default class TvSite extends React.Component<Props, State> {
   enter(n: number) { if (n === 1) this.animateScope(); if (n === 3 && !this.typingStarted) this.startTyping(); }
   channel(n: number) {
     this.click(); if (!this.state.power || n < 0) return;
-    if (!this.state.booted) this.skipBoot = true;
+    if (!this.state.booted) this.finalize(++this.bootId);
     if (n > 5) { this.showOsd(`CH 0${n}  NO SIGNAL`); this.cut(250); return; }
     const sc = this.r.scroll.current!, target = sc.querySelector<HTMLElement>(`#ch-0${n}`); if (!target) return;
     this.quietUntil = performance.now() + 900; this.showOsd(`CH 0${n}`);
@@ -348,14 +354,14 @@ export default class TvSite extends React.Component<Props, State> {
     for (const el of zaps) {
       this.click();
       el.animate([{ filter: "brightness(1)", transform: "scale(1)", opacity: 1 }, { filter: "brightness(5)", transform: "scale(1.08)", opacity: 1, offset: 0.3 }, { filter: "brightness(5)", transform: "scale(1.1,.02)", opacity: 1, offset: 0.75 }, { filter: "brightness(5)", transform: "scale(0,.02)", opacity: 0 }], { duration: 300, easing: "ease-in", fill: "forwards" });
-      await wait(110); if (!alive()) return; if (this.skipBoot) return this.finalize(id);
+      await wait(60); if (!alive()) return; if (this.skipBoot) return this.finalize(id);
     }
     await wait(220);
     const rows = Array.from(cl.querySelectorAll<HTMLElement>("[data-row]")).sort((a, b) => Number(a.dataset.row) - Number(b.dataset.row));
     for (const el of rows) {
       this.click();
       el.animate([{ transform: "scaleY(1)", opacity: 1 }, { transform: "scaleY(.02)", opacity: 0.9, offset: 0.7 }, { transform: "scaleY(0)", opacity: 0 }], { duration: 260, easing: "cubic-bezier(.6,0,.9,.4)", fill: "forwards" });
-      await wait(200); if (!alive()) return; if (this.skipBoot) return this.finalize(id);
+      await wait(120); if (!alive()) return; if (this.skipBoot) return this.finalize(id);
     }
     await wait(150);
     cl.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: "forwards" });
@@ -368,6 +374,8 @@ export default class TvSite extends React.Component<Props, State> {
     const ti = this.r.title.current!; ti.style.transition = "opacity .6s"; ti.style.opacity = "1";
     for (const i of [0, 1, 2, 3, 0]) { this.focusTile(i); this.click(); await wait(i === 3 ? 420 : 300); if (!alive()) return; }
   }
+  // Skipping ends the boot now rather than at its next checkpoint: a new boot id stops the running sequence.
+  skip() { if (this.state.booted || !this.state.power) return; this.click(); this.finalize(++this.bootId); }
   finalize(id: number) {
     if (this.bootId !== id) return;
     const cl = this.r.clutter.current!, ti = this.r.title.current!;
@@ -442,9 +450,9 @@ export default class TvSite extends React.Component<Props, State> {
     if (e.key === "i" || e.key === "I") return this.cycleTheme();
     if (e.key === "p" || e.key === "P") return this.state.power ? this.powerOff() : this.powerOn();
   }
-  move(d: number) { if (!this.state.booted) { this.skipBoot = true; return; } this.click(); this.focusTile(this.state.focus + d); }
+  move(d: number) { if (!this.state.booted) return this.skip(); this.click(); this.focusTile(this.state.focus + d); }
   ok() {
-    if (!this.state.power) return this.powerOn(); if (!this.state.booted) { this.skipBoot = true; return; }
+    if (!this.state.power) return this.powerOn(); if (!this.state.booted) return this.skip();
     const ch = this.state.ch;
     if (ch === 3) return this.wizGo(this.state.wiz + 1);
     if (ch === 5) return this.slideGo(this.state.slide + 1);
@@ -468,9 +476,10 @@ export default class TvSite extends React.Component<Props, State> {
   wallRows() {
     const res = this.props.data.results; if (!res.length) return [[], []] as const;
     const active = this.state.active;
-    const mk = (arr: typeof res, tag: string) => arr.map((r, i) => {
+    // The marquee repeats each row once; the repeat is hidden from screen readers and the tab order.
+    const mk = (arr: typeof res, tag: string, dupFrom = arr.length) => arr.map((r, i) => {
       const key = tag + i, on = active === key;
-      return { ...r, key, op: on ? 1 : 0, pe: on ? "auto" : "none",
+      return { ...r, key, dup: i >= dupFrom, op: on ? 1 : 0, pe: on ? "auto" : "none",
         enter: () => this.setState({ active: key }), leave: () => this.setState((s) => (s.active === key ? { active: null } : null)),
         tap: (e: React.MouseEvent) => { if ((e.target as HTMLElement).closest("a")) return; this.setState((s) => ({ active: s.active === key ? null : key })); } };
     });
@@ -478,7 +487,7 @@ export default class TvSite extends React.Component<Props, State> {
     let a: typeof res = res, b: typeof res = [];
     if (res.length >= 12) { const h = Math.ceil(res.length / 2); a = res.slice(0, h); b = res.slice(h); }
     else { let base: typeof res = []; while (base.length < 6) base = base.concat(res); a = base; b = base.slice().reverse(); }
-    return [mk(a.concat(a), "a"), mk(b.concat(b), "b")] as const;
+    return [mk(a.concat(a), "a", a.length), mk(b.concat(b), "b", b.length)] as const;
   }
   creditGroups() {
     const prs = this.props.data.prs, seen: Record<string, 1> = {}, groups: Record<string, { login: string; url: string; avatar: string }[]> = {};
@@ -486,8 +495,9 @@ export default class TvSite extends React.Component<Props, State> {
     add("started", "Gathin23");
     prs.forEach((p) => { if (p.login !== "Gathin23") add(classify(p.title), p.login, p.avatar); });
     this.props.data.showcase.forEach((s) => { if (s.by) add("built", s.by); });
-    const list = GROUPS.filter(([k]) => groups[k] && groups[k].length).map(([k, title]) => ({ title, people: groups[k] }));
-    return this.reduced ? list : list.concat(list);
+    const list = GROUPS.filter(([k]) => groups[k] && groups[k].length).map(([k, title]) => ({ title, people: groups[k], dup: false }));
+    // The roll repeats the list once; the repeat stays out of the tab order and the accessibility tree.
+    return this.reduced ? list : list.concat(list.map((g) => ({ ...g, dup: true })));
   }
   // ---- render
   render() {
@@ -527,7 +537,7 @@ export default class TvSite extends React.Component<Props, State> {
                 <a href={COFFEE} target="_blank" rel="noopener">Buy me a coffee</a>
               </div>
               <p style={S("margin:0;max-width:34em;line-height:1.45;text-wrap:pretty")}>Started as one afternoon on my parents&apos; TV. Built with Claude Code.</p>
-              <div style={S("font-family:'VT323',monospace;font-size:clamp(16px,1.8cqw,22px);opacity:.45;letter-spacing:.08em")}>POWER TURNS IT BACK ON</div>
+              <button onClick={() => this.powerOn()} className="hov-white" style={S("height:44px;padding:0 20px;border-radius:22px;border:0;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);font-family:'VT323',monospace;font-size:clamp(18px,1.8cqw,22px);letter-spacing:.08em")}>TURN IT BACK ON</button>
             </div>
             {/* The CRT layers read as texture on the boot channel and as murk over text, so they fade once you scroll. */}
             <div aria-hidden="true" className="m-crt" style={{ ...S("position:absolute;inset:0;z-index:9;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,rgba(0,0,0,0) 1px 3px);transition:opacity .6s"), opacity: s.ch === 0 ? 1 : 0.25 }} />
@@ -557,7 +567,7 @@ export default class TvSite extends React.Component<Props, State> {
     const hoverTile = (e: React.MouseEvent<HTMLDivElement>) => { if (this.state.booted) this.focusTile(Number(e.currentTarget.dataset.tile)); };
     const clickTile = (e: React.MouseEvent<HTMLDivElement>) => { if (!this.state.booted) return; this.click(); e.currentTarget.animate([{ transform: "scale(1.06)" }, { transform: "scale(.98)" }, { transform: "scale(1.06)" }], { duration: 220, easing: "ease-out" }); };
     return (
-      <section id="ch-00" data-ch="0" aria-label="Channel 00, Boot" className="m-hero" style={S("position:relative;height:100%;scroll-snap-align:start;overflow:hidden")}>
+      <section id="ch-00" data-ch="0" aria-label="Channel 00, Boot" className="m-hero" onClick={() => this.skip()} style={S("position:relative;height:100%;scroll-snap-align:start;overflow:hidden")}>
         <div ref={this.r.launcher} style={S("position:absolute;inset:0;background-color:var(--bg,#000);background-image:var(--wall,none);background-size:cover;background-position:center;color:var(--ink,rgba(255,255,255,.95))")}>
           <div ref={this.r.ambient} style={S("position:absolute;inset:0;background:radial-gradient(55% 50% at 30% 42%,var(--glow,rgba(0,0,0,0)) 0%,rgba(0,0,0,0) 70%);transition:opacity .6s;opacity:.9;pointer-events:none")} />
           <div className="m-hero-top" style={S("position:absolute;left:4.2cqw;right:4.2cqw;top:clamp(44px,5.6cqw,72px);display:flex;justify-content:space-between;align-items:flex-end;gap:12px")}>
@@ -633,14 +643,15 @@ export default class TvSite extends React.Component<Props, State> {
         </div>
         <div ref={this.r.title} className="m-title" style={S("position:absolute;left:0;right:0;top:0;bottom:clamp(90px,16cqw,200px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,28px);padding:clamp(60px,9cqw,110px) 5cqw 0;text-align:center;opacity:0;pointer-events:none;color:var(--ink,rgba(255,255,255,.95))")}>
           <div style={S("display:flex;flex-direction:column;align-items:center;gap:clamp(6px,.8cqw,12px)")}>
-            <h1 className="m-h1" style={S("margin:0;font-size:clamp(40px,8.5cqw,112px);font-weight:200;letter-spacing:-.03em;line-height:.95;text-wrap:balance")}>clean your TV</h1>
+            <h1 className="m-h1" style={S("margin:0;font-size:clamp(40px,min(8.5cqw,12vh),112px);font-weight:200;letter-spacing:-.03em;line-height:.95;text-wrap:balance")}>clean your TV</h1>
             <p className="m-tag" style={S("margin:0;font-size:clamp(15px,2.1cqw,26px);font-weight:300;opacity:.8")}>Your TV, minus the ads.</p>
+            <p className="m-sub" style={S("margin:0;max-width:60em;font-size:clamp(13px,1.2cqw,16px);line-height:1.45;opacity:.75;text-wrap:balance")}>For Android TV and Google TV: an AI coding assistant removes the ads over Wi-Fi. No root, nothing uninstalled, free and open source.</p>
           </div>
           <div className="m-counters" style={S("width:min(86cqw,760px);display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:clamp(8px,1.4cqw,18px) clamp(14px,2.4cqw,32px);font-family:'VT323',monospace;font-size:clamp(18px,2.1cqw,28px);line-height:1")}>
             {counters.map((c) => (
               <div key={c.key} style={S("display:flex;flex-direction:column;gap:5px;text-align:left")}>
                 <div style={S("display:flex;justify-content:space-between;gap:8px")}><span style={S("opacity:.7;letter-spacing:.06em")}>{c.label}</span><span>{c.text}</span></div>
-                <div style={S("position:relative;height:clamp(9px,1cqw,13px);background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);opacity:1")}>
+                <div className="m-gauge" style={S("position:relative;height:clamp(9px,1cqw,13px);background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);opacity:1")}>
                   <div style={S("position:absolute;inset:0;background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);opacity:.22")} />
                   <div style={{ ...S("position:absolute;left:0;top:0;bottom:0;background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);transition:width 1.4s cubic-bezier(.2,.8,.2,1)"), width: c.pct + "%" }} />
                 </div>
@@ -648,13 +659,21 @@ export default class TvSite extends React.Component<Props, State> {
             ))}
           </div>
           <div className="m-btns" style={S("display:flex;gap:10px;flex-wrap:wrap;justify-content:center")}>
-            <button onClick={() => this.ok()} className="hov-white act-shrink" style={S("pointer-events:auto;height:42px;padding:0 22px;border-radius:21px;border:0;background:var(--pill-bg,linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500;letter-spacing:.01em;color:inherit;transition:background .2s,transform .2s")}>Press OK to start</button>
-            <a href={GH} target="_blank" rel="noopener" onClick={() => this.click()} className="hov-white act-shrink" style={S("pointer-events:auto;display:flex;align-items:center;gap:8px;height:42px;padding:0 20px;border-radius:21px;border:0;background:var(--pill-bg,linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500;letter-spacing:.01em;color:inherit;transition:background .2s,transform .2s")}>
+            <button onClick={() => this.channel(3)} className="act-shrink" style={S("pointer-events:auto;height:44px;padding:0 24px;border-radius:22px;border:0;background:var(--ink,#fff);color:var(--bg,#000);font-size:15px;font-weight:500;letter-spacing:.01em;transition:transform .2s")}>Set up your TV</button>
+            <a href={GH} target="_blank" rel="noopener" onClick={() => this.click()} className="hov-white act-shrink" style={S("pointer-events:auto;display:flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:22px;border:0;background:var(--pill-bg,linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500;letter-spacing:.01em;color:inherit;transition:background .2s,transform .2s")}>
               <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" /></svg>
-              GitHub
+              Star on GitHub
+            </a>
+            {/* Launch week: the Product Hunt badge sits with the buttons. */}
+            <a href={PH} target="_blank" rel="noopener" className="no-border" style={S("pointer-events:auto;display:flex;align-items:center;justify-content:center;line-height:0")}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1286319&theme=dark" alt="CleanYourTV on Product Hunt" width={204} height={44} style={S("width:204px;height:44px;display:block")} />
             </a>
           </div>
         </div>
+        {s.mounted && !s.booted && s.power && (
+          <button onClick={(e) => { e.stopPropagation(); this.skip(); }} className="hov-white" style={S("position:absolute;left:clamp(12px,2cqw,28px);bottom:clamp(12px,2cqw,28px);z-index:3;height:44px;padding:0 18px;border-radius:22px;border:0;background:rgba(0,0,0,.55);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);color:#fff;font-family:'VT323',monospace;font-size:22px;letter-spacing:.08em")}>SKIP INTRO ▸▸</button>
+        )}
       </section>
     );
   }
@@ -679,6 +698,16 @@ export default class TvSite extends React.Component<Props, State> {
     return (
       <section id="ch-01" data-ch="1" aria-label="Channel 01, The story" className="m-section" style={this.sectionStyle()}>
         {this.header("CH 01 · THE STORY", "One afternoon, one tweet.", "It started on one TV. Then other people tried it on theirs.")}
+        <div style={S("display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px")}>
+          <span style={S("font-family:'VT323',monospace;font-size:20px;letter-spacing:.12em;color:var(--ink-dim,rgba(255,255,255,.6))")}>FEATURED IN</span>
+          {PRESS.slice(0, 6).map(([slug, name, url]) => (
+            <a key={slug} href={url} target="_blank" rel="noopener" title={name} className="no-border" style={S("line-height:0")}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={cdn(`/press/${slug}.png`)} alt={name} height={28} loading="lazy" style={S("height:28px;width:auto;display:block")} />
+            </a>
+          ))}
+          <a href="/blog/reintroducing-cleanyourtv" style={S("font-size:14px;color:var(--ink-dim,rgba(255,255,255,.8))")}>and {PRESS.length - 6} more, in the launch post</a>
+        </div>
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(18px,3cqw,40px)")}>
           <div style={S("position:relative;border-radius:16px;overflow:hidden;background:#0B0F16;color:rgba(255,255,255,.95);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);display:flex;flex-direction:column;min-height:clamp(320px,32cqw,440px)")}>
             <div style={S("display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font-family:'VT323',monospace;font-size:20px;letter-spacing:.1em")}>
@@ -726,7 +755,7 @@ export default class TvSite extends React.Component<Props, State> {
   renderWall() {
     const [rowA, rowB] = this.wallRows();
     const fig = (it: (typeof rowA)[number], wide: boolean) => (
-      <figure key={it.key} onMouseEnter={it.enter} onMouseLeave={it.leave} onClick={it.tap} style={S(`flex-shrink:0;width:${wide ? "clamp(230px,24cqw,320px)" : "clamp(210px,21cqw,280px)"};margin:0;display:flex;flex-direction:column;gap:10px;cursor:pointer`)}>
+      <figure key={it.key} aria-hidden={it.dup || undefined} onMouseEnter={it.enter} onMouseLeave={it.leave} onClick={it.tap} style={S(`flex-shrink:0;width:${wide ? "clamp(230px,24cqw,320px)" : "clamp(210px,21cqw,280px)"};margin:0;display:flex;flex-direction:column;gap:10px;cursor:pointer`)}>
         <div style={S("padding:8px;border-radius:14px;background:linear-gradient(180deg,#26262a,#141416);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 24px rgba(0,0,0,.35)")}>
           <div style={S("position:relative;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000")}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -734,12 +763,12 @@ export default class TvSite extends React.Component<Props, State> {
             <div style={S("position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0 1px,rgba(0,0,0,0) 1px 3px),radial-gradient(ellipse at center,rgba(0,0,0,0) 60%,rgba(0,0,0,.3))")} />
             <div style={{ ...S("position:absolute;inset:0;background:rgba(6,6,8,.9);color:#fff;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;transition:opacity .2s"), opacity: it.op, pointerEvents: it.pe as "auto" | "none" }}>
               <p style={S("margin:0;font-size:14px;line-height:1.4;text-wrap:pretty")}>{it.quote}</p>
-              <a href={it.link} target="_blank" rel="noopener" style={S("align-self:flex-start;font-size:13px")}>See the original</a>
+              <a href={it.link} target="_blank" rel="noopener" tabIndex={-1} style={S("align-self:flex-start;font-size:13px")}>See the original</a>
             </div>
           </div>
         </div>
         <figcaption style={S("display:flex;flex-direction:column;gap:2px;padding:0 4px")}>
-          <div style={S("display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px")}><span style={S("font-weight:500")}>{it.handle}</span><span style={S("font-family:'VT323',monospace;font-size:17px;color:var(--ink-dim,rgba(255,255,255,.6));white-space:nowrap;overflow:hidden;text-overflow:ellipsis")}>{it.tv}</span></div>
+          <div style={S("display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px")}><a href={it.link} target="_blank" rel="noopener" tabIndex={it.dup ? -1 : 0} className="no-border" style={S("font-weight:500")}>{it.handle}</a><span style={S("font-family:'VT323',monospace;font-size:17px;color:var(--ink-dim,rgba(255,255,255,.6));white-space:nowrap;overflow:hidden;text-overflow:ellipsis")}>{it.tv}</span></div>
           <div style={S("font-size:14px;color:var(--ink-dim,rgba(255,255,255,.6));white-space:nowrap;overflow:hidden;text-overflow:ellipsis")}>{it.quote}</div>
         </figcaption>
       </figure>
@@ -748,11 +777,11 @@ export default class TvSite extends React.Component<Props, State> {
       <section id="ch-02" data-ch="2" aria-label="Channel 02, On air" className="m-section" style={this.sectionStyle()}>
         {this.header("CH 02 · ON AIR", "On air", "Screens from people who ran it on their own TV. Hover or tap one to read the rest.")}
         <div style={S("display:flex;flex-direction:column;gap:clamp(18px,2.4cqw,30px)")}>
-          <div ref={this.r.rowA} onMouseEnter={() => this.setPause("a", true)} onMouseLeave={() => this.setPause("a", false)} onTouchStart={() => this.setPause("a", true)} onTouchEnd={() => this.setPause("a", false, true)} className="m-row" style={{ ...S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:18px;border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))"), flexWrap: this.reduced ? "wrap" : "nowrap" }}>
+          <div ref={this.r.rowA} onMouseEnter={() => this.setPause("a", true)} onMouseLeave={() => this.setPause("a", false)} onTouchStart={() => this.setPause("a", true)} onTouchEnd={() => this.setPause("a", false, true)} onFocus={() => this.setPause("a", true)} onBlur={() => this.setPause("a", false)} className="m-row" style={{ ...S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:18px;border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))"), flexWrap: this.reduced ? "wrap" : "nowrap" }}>
             {rowA.map((it) => fig(it, true))}
           </div>
           {rowB.length > 0 && (
-            <div ref={this.r.rowB} onMouseEnter={() => this.setPause("b", true)} onMouseLeave={() => this.setPause("b", false)} onTouchStart={() => this.setPause("b", true)} onTouchEnd={() => this.setPause("b", false, true)} className="m-row" style={S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:18px;border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))")}>
+            <div ref={this.r.rowB} onMouseEnter={() => this.setPause("b", true)} onMouseLeave={() => this.setPause("b", false)} onTouchStart={() => this.setPause("b", true)} onTouchEnd={() => this.setPause("b", false, true)} onFocus={() => this.setPause("b", true)} onBlur={() => this.setPause("b", false)} className="m-row" style={S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:18px;border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))")}>
               {rowB.map((it) => fig(it, false))}
             </div>
           )}
@@ -771,10 +800,10 @@ export default class TvSite extends React.Component<Props, State> {
           <div style={{ ...S("position:relative;height:clamp(340px,40cqw,540px);scrollbar-width:none;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)"), overflowY: this.reduced ? "auto" : "hidden" }}>
             <div ref={this.r.credits} style={S("display:flex;flex-direction:column;align-items:center;will-change:transform")}>
               {this.creditGroups().map((g, gi) => (
-                <div key={g.title + gi} style={S("display:flex;flex-direction:column;align-items:center;gap:12px;padding:28px 0")}>
+                <div key={g.title + gi} aria-hidden={g.dup || undefined} style={S("display:flex;flex-direction:column;align-items:center;gap:12px;padding:28px 0")}>
                   <div style={S("font-family:'VT323',monospace;font-size:22px;letter-spacing:.14em;color:var(--ink-dim,rgba(255,255,255,.6));text-transform:uppercase")}>{g.title}</div>
                   {g.people.map((p) => (
-                    <a key={p.login} href={p.url} target="_blank" rel="noopener" title={p.url} onMouseEnter={() => this.setPause("c", true)} onMouseLeave={() => this.setPause("c", false)} onTouchStart={() => this.setPause("c", true)} onTouchEnd={() => this.setPause("c", false, true)} className="hov-card" style={S("display:flex;align-items:center;gap:10px;font-size:18px;font-weight:400;border:0;padding:2px 8px;border-radius:999px")}>
+                    <a key={p.login} href={p.url} target="_blank" rel="noopener" title={p.url} tabIndex={g.dup ? -1 : undefined} onMouseEnter={() => this.setPause("c", true)} onMouseLeave={() => this.setPause("c", false)} onFocus={() => this.setPause("c", true)} onBlur={() => this.setPause("c", false)} onTouchStart={() => this.setPause("c", true)} onTouchEnd={() => this.setPause("c", false, true)} className="hov-card" style={S("display:flex;align-items:center;gap:10px;font-size:18px;font-weight:400;border:0;padding:2px 8px;border-radius:999px")}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={p.avatar} alt="" width={28} height={28} loading="lazy" style={S("width:28px;height:28px;border-radius:50%;background:var(--card,rgba(255,255,255,.06))")} />
                       <span>{p.login}</span>
