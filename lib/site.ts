@@ -153,3 +153,11 @@ export const SHOWCASE_IMAGES: Record<string, string> = {
   samdegan2311: "/showcase/samdegan2311.jpg",
   rakshajag13: "/showcase/rakshajag13.jpg",
 };
+
+/**
+ * Site images (wall photos, showcase shots, press logos, blog figures) are served from jsDelivr's free
+ * mirror of this public repo instead of Vercel, so a traffic spike does not use up the CDN-request quota.
+ * Pages, scripts and Open Graph images still come from Vercel.
+ */
+export const CDN_BASE = "https://cdn.jsdelivr.net/gh/Gathin23/cleanyourtv-website@main/public";
+export const cdn = (path: string): string => (path && path.startsWith("/") ? CDN_BASE + path : path);

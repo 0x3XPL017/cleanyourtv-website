@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties, ReactNode } from "react";
+import { cdn } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "(Re)introducing CleanYourTV",
@@ -70,14 +71,14 @@ export default function Article() {
         <h1 style={{ fontSize: 44, lineHeight: 1.1, fontWeight: 400, margin: "12px 0 10px", letterSpacing: -0.5 }}>(Re)introducing CleanYourTV</h1>
         <p style={{ ...p, fontSize: 22, color: "#bdbdbd", fontStyle: "italic" }}>Three days ago I fixed my parents&rsquo; TV. Then the internet fixed theirs.</p>
 
-        <img src="/blog/cover.png" alt="CleanYourTV. Your TV, minus the ads." style={img} width={1600} height={900} />
+        <img src={cdn("/blog/cover.png")} alt="CleanYourTV. Your TV, minus the ads." style={img} width={1600} height={900} />
 
         <p style={{ ...p, padding: "16px 20px", background: "#111417", borderRadius: 12, fontSize: 18 }}>
           <B>TL;DR:</B> A prompt that debloats any Android TV or Google TV over Wi-Fi and gives it an Apple TV-style home. No root, nothing uninstalled, one line undoes it. One tweet, three days, and it now has a name and a site: <A href="https://cleanyour.tv"><B>cleanyour.tv</B></A>. Skip to &ldquo;Try it&rdquo; at the bottom if you just want your TV back.
         </p>
 
         <h2 style={h2}>Three days, in numbers</h2>
-        <img src="/blog/stats.png" alt="X: 4.8M views, 26.5K likes, 1.4K reposts, 660 comments. GitHub: 3,494 stars, 412 forks, 118 PRs, 36 contributors, as of 19 October" style={img} width={1600} height={900} />
+        <img src={cdn("/blog/stats.png")} alt="X: 4.8M views, 26.5K likes, 1.4K reposts, 660 comments. GitHub: 3,494 stars, 412 forks, 118 PRs, 36 contributors, as of 19 October" style={img} width={1600} height={900} />
         <p style={p}>
           That card is from Monday night and already behind. The ones that did not fit on it: tested lists for 66 TV models across 25 brands, two of them projectors. Fourteen languages. 45,000 repo visitors. 61 screens people sent. Fifteen launchers and add-ons built on top. One launcher, 300 KB. Zero things uninstalled from anyone&rsquo;s TV.
         </p>
@@ -86,7 +87,7 @@ export default function Article() {
         <div style={{ display: "flex", flexWrap: "wrap", gap: "14px 26px", alignItems: "center", margin: "0 0 20px" }}>
           {PRESS.map(([slug, name, url]) => (
             <a key={slug} href={url} title={name} style={{ borderBottom: "none", lineHeight: 0 }}>
-              <img src={`/press/${slug}.png`} alt={name} style={{ height: 34, width: "auto", display: "block" }} />
+              <img src={cdn(`/press/${slug}.png`)} alt={name} style={{ height: 34, width: "auto", display: "block" }} />
             </a>
           ))}
         </div>
@@ -101,7 +102,7 @@ export default function Article() {
         <p style={p}>Then the pull requests started, and they have not stopped. 146 merged in three days.</p>
         <p style={p}>The replies were the best bit, because people did not say &ldquo;nice&rdquo;, they did it. On a Sony from 2017. On a Hisense that booted into recovery once, then behaved. On a Samsung projector that runs Samsung&rsquo;s own version of adb, and someone made that work too.</p>
         <p style={p}>A grandmother now has a TV that does not shout at her. Someone pinned two Tamil serials to the dock so his wife gets there faster. Someone&rsquo;s Fire TV &ldquo;now looks like a Wii&rdquo;. Someone turned theirs into a library bookshelf where every app is a book. Someone put live Polymarket odds on theirs, which I did not ask for and completely respect.</p>
-        <img src="/blog/collage.png" alt="Forty TVs people sent, each with the launcher on it" style={img} width={1600} height={900} />
+        <img src={cdn("/blog/collage.png")} alt="Forty TVs people sent, each with the launcher on it" style={img} width={1600} height={900} />
 
         <h2 style={h2}>What it actually is</h2>
         <p style={p}>Honestly, it is a prompt. One markdown file you paste into Claude Code, or any coding assistant that can run a shell. It tells the assistant how to talk to an Android TV over Wi-Fi, what to back up first, and how to find the junk on <em>your</em> model instead of trusting someone else&rsquo;s list.</p>

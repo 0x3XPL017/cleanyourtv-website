@@ -4,7 +4,7 @@
 import React from "react";
 import { GH } from "@/lib/parse";
 import type { SiteData } from "@/lib/parse";
-import { GROUPS, KONAMI, NAMES, ORDER, S, SHOWCASE_IMAGES, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
+import { GROUPS, KONAMI, NAMES, ORDER, S, SHOWCASE_IMAGES, cdn, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
 import type { ThemeName } from "@/lib/site";
 
 const TWEET = "https://x.com/gathint/status/2111379569030939102";
@@ -684,13 +684,13 @@ export default class TvSite extends React.Component<Props, State> {
               <article style={S("width:100%;max-width:480px;background:#FFFFFF;color:#0F1419;border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;box-shadow:0 18px 40px rgba(0,0,0,.5);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif")}>
                 <div style={S("display:flex;gap:10px;align-items:center")}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/docs/avatar.jpg" alt="" width={40} height={40} style={S("width:40px;height:40px;border-radius:50%;background:#E6E6E6")} />
+                  <img src={cdn("/docs/avatar.jpg")} alt="" width={40} height={40} style={S("width:40px;height:40px;border-radius:50%;background:#E6E6E6")} />
                   <div style={S("display:flex;flex-direction:column;line-height:1.25")}><span style={S("font-weight:700;font-size:15px")}>Gathin</span><span style={S("font-size:14px;color:#536471")}>@gathint</span></div>
                 </div>
                 <p style={S("margin:0;font-size:15px;line-height:1.4;white-space:pre-line;text-wrap:pretty")}>{tw.text}</p>
                 <a href={TWEET} target="_blank" rel="noopener" className="no-border" style={S("display:block;border-radius:12px;overflow:hidden;background:#000")}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/docs/tweet-photo.jpg" alt="Before: the stock home with a sponsored ad. After: the clean launcher." style={S("width:100%;height:auto;display:block;aspect-ratio:16/9;object-fit:cover")} />
+                  <img src={cdn("/docs/tweet-photo.jpg")} alt="Before: the stock home with a sponsored ad. After: the clean launcher." style={S("width:100%;height:auto;display:block;aspect-ratio:16/9;object-fit:cover")} />
                 </a>
                 <div style={S("display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px;color:#536471")}>
                   <span><b style={S("color:#0F1419;font-weight:700")}>{tw.likes.toLocaleString("en-US")}</b> likes · <b style={S("color:#0F1419;font-weight:700")}>{tw.replies.toLocaleString("en-US")}</b> replies</span>
@@ -725,7 +725,7 @@ export default class TvSite extends React.Component<Props, State> {
         <div style={S("padding:8px;border-radius:14px;background:linear-gradient(180deg,#26262a,#141416);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 24px rgba(0,0,0,.35)")}>
           <div style={S("position:relative;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000")}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={it.image} alt={"Before and after on " + it.tv} loading="lazy" style={S("width:100%;height:100%;object-fit:cover;display:block")} />
+            <img src={cdn(it.image)} alt={"Before and after on " + it.tv} loading="lazy" style={S("width:100%;height:100%;object-fit:cover;display:block")} />
             <div style={S("position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0 1px,rgba(0,0,0,0) 1px 3px),radial-gradient(ellipse at center,rgba(0,0,0,0) 60%,rgba(0,0,0,.3))")} />
             <div style={{ ...S("position:absolute;inset:0;background:rgba(6,6,8,.9);color:#fff;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;transition:opacity .2s"), opacity: it.op, pointerEvents: it.pe as "auto" | "none" }}>
               <p style={S("margin:0;font-size:14px;line-height:1.4;text-wrap:pretty")}>{it.quote}</p>
@@ -889,7 +889,7 @@ export default class TvSite extends React.Component<Props, State> {
             <div style={{ ...S("position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background-size:cover;background-position:center;transition:background-color .3s"), backgroundColor: sl.wall === "aurora" ? "#070A14" : "#000000", backgroundImage: sl.wall === "aurora" ? "url('/themes/aurora/wallpaper.jpg')" : "none" }}>
               {sl.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={sl.image} alt={sl.name + " on a TV"} style={S("position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block")} />
+                <img src={cdn(sl.image)} alt={sl.name + " on a TV"} style={S("position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block")} />
               ) : sl.kind === "theme" ? (
                 <>
                   <div style={S("position:absolute;left:6%;right:6%;bottom:38%;color:#fff;font-size:clamp(18px,2.8cqw,40px);font-weight:200;letter-spacing:-.02em;line-height:1.05;text-wrap:balance")}>{sl.name}</div>
