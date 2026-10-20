@@ -837,6 +837,7 @@ export default class TvSite extends React.Component<Props, State> {
               <div style={S("display:flex;flex-direction:column;gap:16px")}>
                 <h3 style={S("margin:0;font-size:clamp(24px,2.6cqw,34px);font-weight:300")}>On your computer</h3>
                 <p style={S("margin:0;font-size:16px;line-height:1.5")}>Paste the prompt into Claude Code, or another coding assistant with shell access. Put your TV model on the line that asks for it.</p>
+                <p style={S("margin:0;font-size:14px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6))")}>Suggested: Claude Code on <a href="https://pc.0g.ai" target="_blank" rel="noopener">0G Private Computer</a>, one API key for 100+ models. Claude Code with an Anthropic plan, Codex or Gemini CLI work too.</p>
                 <a href={GH} target="_blank" rel="noopener" style={S("align-self:center;font-size:15px")}>Open the repo</a>
               </div>
             )}
