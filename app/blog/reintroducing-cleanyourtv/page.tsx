@@ -133,7 +133,7 @@ export default function Article() {
         </ol>
         <p style={p}>About fifteen minutes. If your TV is not on the list, the prompt finds the bloat itself, and sending the list afterwards saves the next person the trouble.</p>
         <p style={p}><A href="https://github.com/Gathin23/cleanyourtv">Star the repo</A> if it helped. Send a screenshot if it worked. If it saved you from buying a new TV, there is a <A href="https://buymeacoffee.com/gathint">coffee button</A>.</p>
-        <p style={p}>Thank you to the 70 people whose pull requests were merged, the many more who sent lists in the replies, and to my parents, who still do not know what any of this is but like that the ad is gone.</p>
+        <p style={p}>Thank you to the 88 people whose pull requests were merged, the many more who sent lists in the replies, and to my parents, who still do not know what any of this is but like that the ad is gone.</p>
         <p style={{ ...p, color: "#9a9a9a", fontStyle: "italic" }}>Gathin, 20 October 2026</p>
       </article>
     </main>
