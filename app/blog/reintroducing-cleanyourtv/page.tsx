@@ -77,7 +77,7 @@ export default function Article() {
         <h2 style={h2}>Three days, in numbers</h2>
         <img src="/blog/stats.png" alt="X: 4.8M views, 26.5K likes, 1.4K reposts, 660 comments. GitHub: 3,494 stars, 412 forks, 118 PRs, 36 contributors, as of 19 October" style={img} width={1600} height={900} />
         <p style={p}>
-          That card is from Monday night and already behind. The ones that did not fit on it: 66 TVs with tested lists across 25 brands, two of them projectors. Fourteen languages. 45,000 repo visitors. 61 screens people sent. Fifteen launchers and add-ons built on top. One launcher, 300 KB. Zero things uninstalled from anyone&rsquo;s TV.
+          That card is from Monday night and already behind. The ones that did not fit on it: tested lists for 66 TV models across 25 brands, two of them projectors. Fourteen languages. 45,000 repo visitors. 61 screens people sent. Fifteen launchers and add-ons built on top. One launcher, 300 KB. Zero things uninstalled from anyone&rsquo;s TV.
         </p>
 
         <h2 style={h2}>Featured in</h2>
@@ -116,7 +116,7 @@ export default function Article() {
 
         <h2 style={h2}>What changed since Saturday</h2>
         <ul style={{ paddingLeft: 22, margin: "0 0 20px" }}>
-          <li style={li}><B>From 1 TV to 66.</B> Xiaomi, TCL, Sony, Hisense, Philips, Panasonic, Skyworth, Vu, OnePlus, NVIDIA Shield, Chromecast, Fire TV, BenQ, CHiQ, RCA, SANYO, Toshiba, Insignia, Hitachi, Thomson, Redmi, PRISM+, AiPro2K. Twenty-five brands, every list written by the person who did it.</li>
+          <li style={li}><B>From 1 TV model to 66.</B> Xiaomi, TCL, Sony, Hisense, Philips, Panasonic, Skyworth, Vu, OnePlus, NVIDIA Shield, Chromecast, Fire TV, BenQ, CHiQ, RCA, SANYO, Toshiba, Insignia, Hitachi, Thomson, Redmi, PRISM+, AiPro2K. Twenty-five brands, every list written by the person who did it.</li>
           <li style={li}><B>Projectors.</B> XGIMI by <X h="zarubaf" />, Stellamore by <X h="aravinddass" />, with the keystone and autofocus services marked &ldquo;never disable&rdquo;.</li>
           <li style={li}><B>Fire TV.</B> Debloat works on Fire OS 6 and 7 now. Amazon&rsquo;s ads go, Amazon&rsquo;s home stays.</li>
           <li style={li}><B>Themes.</B> A <code>config.json</code> and a wallpaper, pushed to the TV, changes the whole look. No rebuild.</li>
