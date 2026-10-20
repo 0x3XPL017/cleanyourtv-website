@@ -83,7 +83,7 @@ export default function Article() {
         <h2 style={h2}>How it started</h2>
         <p style={p}>My parents&rsquo; TV showed an ad before you could reach Netflix. A full-screen one, for a bank, on a TV they had paid for. So on Friday afternoon I sat down with Claude Code and gave it the model number.</p>
         <p style={p}>It found the TV on the Wi-Fi, listed everything running on it, and we went through the list together. Twenty-five Xiaomi packages later the ads, the telemetry and the &ldquo;Discover&rdquo; tab were gone. Then it wrote a new home screen: black background, four big tiles, a clock. My mum said &ldquo;oh, that&rsquo;s nice&rdquo; and that was the whole review.</p>
-        <p style={p}>I tweeted the before and after at 2:21 PM and went to make tea.</p>
+        <p style={p}>I <A href="https://x.com/gathint/status/2111379569030939102">tweeted the before and after</A> at 2:21 PM and went to make tea.</p>
 
         <h2 style={h2}>The part I did not plan</h2>
         <p style={p}>By the time the tea was done the tweet was moving. By the next morning it had 20,000 likes and the repo had 2,000 stars. Forty-five thousand people have since read a README about TV bloatware, on a weekend. On Sunday <A href="https://techcrunch.com/2026/10/19/people-are-using-ai-to-make-their-smart-tvs-dumb-again/">TechCrunch wrote it up</A>.</p>
