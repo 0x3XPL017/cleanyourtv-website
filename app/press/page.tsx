@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { PRESS, cdn } from "@/lib/site";
 import { COVERAGE, COVERAGE_COUNTRIES, COVERAGE_TOTAL } from "@/lib/press";
+import CountryJump from "@/components/CountryJump";
 
 const description = `${COVERAGE_TOTAL} articles about CleanYourTV from ${COVERAGE_COUNTRIES} countries, from TechCrunch and Mashable to GIGAZINE and Xataka.`;
 
@@ -52,13 +53,9 @@ export default function Press() {
           ))}
         </div>
 
-        <nav aria-label="Countries" style={{ display: "flex", flexWrap: "wrap", gap: 8, margin: "0 0 12px" }}>
-          {COVERAGE.map((g) => (
-            <a key={g.group} href={`#${anchor(g.group)}`} className="press-chip">
-              {g.group} <span style={{ color: "#8b8b8b" }}>{g.items.length}</span>
-            </a>
-          ))}
-        </nav>
+        <div style={{ margin: "0 0 12px" }}>
+          <CountryJump groups={COVERAGE.map((g) => ({ id: anchor(g.group), label: g.group, count: g.items.length }))} />
+        </div>
 
         {COVERAGE.map((g) => (
           <section key={g.group} id={anchor(g.group)} style={{ scrollMarginTop: 24 }}>
