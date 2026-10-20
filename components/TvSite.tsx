@@ -17,7 +17,7 @@ type Slide = { kind: "show" | "theme"; name: string; what: string; meta: string;
 type Spring = { p: number; v: number; t: number };
 type Axis = "x" | "y" | "w" | "h";
 
-type Props = { data: SiteData };
+type Props = { data: SiteData; pressTotal: number };
 type State = {
   osd: string; theme: ThemeName; sound: boolean; power: boolean; booted: boolean; mobile: boolean; mounted: boolean; focus: number;
   clock: string; ampm: string; date: string; greeting: string;
@@ -670,11 +670,11 @@ export default class TvSite extends React.Component<Props, State> {
               <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1286319&theme=dark" alt="CleanYourTV on Product Hunt" width={204} height={44} style={S("width:204px;height:44px;display:block")} />
             </a>
           </div>
-          {/* The press, scrolling under the buttons; hover pauses it, reduced motion keeps it still. */}
+          {/* The press, scrolling under the buttons; hover pauses it, reduced motion keeps it still. The link after it opens the full list on /press; the duration grows with the list so the speed stays put. */}
           <div className="m-press" style={S("pointer-events:auto;width:min(90cqw,900px);display:flex;align-items:center;gap:clamp(10px,1.4cqw,18px)")}>
             <span style={S("flex-shrink:0;font-family:'VT323',monospace;font-size:clamp(18px,1.8cqw,22px);font-weight:700;letter-spacing:.14em;color:var(--ink,#fff)")}>FEATURED IN</span>
             <div style={S("flex:1;min-width:0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)")}>
-              <div className="press-track" style={{ ...S("display:flex;width:max-content"), animation: this.state.mounted && this.reduced ? "none" : "tickerSlide 50s linear infinite" }}>
+              <div className="press-track" style={{ ...S("display:flex;width:max-content"), animation: this.state.mounted && this.reduced ? "none" : `tickerSlide ${PRESS.length * 3.6}s linear infinite` }}>
                 {[0, 1].map((k) => (
                   <div key={k} aria-hidden={k === 1 ? true : undefined} style={S("display:flex;align-items:center;gap:clamp(20px,2.6cqw,34px);padding-right:clamp(20px,2.6cqw,34px)")}>
                     {PRESS.map(([slug, name, url]) => (
@@ -687,6 +687,7 @@ export default class TvSite extends React.Component<Props, State> {
                 ))}
               </div>
             </div>
+            <a href="/press" aria-label={`All ${this.props.pressTotal} articles about CleanYourTV`} className="hov-bright no-border" style={S("flex-shrink:0;font-family:'VT323',monospace;font-size:clamp(18px,1.8cqw,22px);letter-spacing:.08em;white-space:nowrap;color:var(--ink-dim,rgba(255,255,255,.8))")}>+{this.props.pressTotal - PRESS.length}<span className="press-more-word"> MORE</span> ▸</a>
           </div>
         </div>
         {s.mounted && !s.booted && s.power && (

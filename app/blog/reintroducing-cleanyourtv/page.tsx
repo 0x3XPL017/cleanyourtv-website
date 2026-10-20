@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties, ReactNode } from "react";
 import { PRESS, cdn } from "@/lib/site";
+import { COVERAGE_COUNTRIES, COVERAGE_TOTAL } from "@/lib/press";
 
 export const metadata: Metadata = {
   title: "(Re)introducing CleanYourTV",
@@ -90,6 +91,9 @@ export default function Article() {
             </a>
           ))}
         </div>
+        <p style={p}>
+          <A href="/press">And {COVERAGE_TOTAL - PRESS.length} more: all {COVERAGE_TOTAL} articles from {COVERAGE_COUNTRIES} countries &rarr;</A>
+        </p>
 
         <h2 style={h2}>How it started</h2>
         <p style={p}>My parents&rsquo; TV showed an ad before you could reach Netflix. A full-screen one, for a bank, on a TV they had paid for. So on Saturday afternoon I sat down with Claude Code and gave it the model number.</p>
