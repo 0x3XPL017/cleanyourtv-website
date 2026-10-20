@@ -831,20 +831,23 @@ export default class TvSite extends React.Component<Props, State> {
     return (
       <section id="ch-05" data-ch="5" aria-label="Channel 05, The community" className="m-section" style={this.sectionStyle()}>
         {this.header("CH 05 · THE COMMUNITY", "The credits", "Every TV on the list got there because someone wrote it down for the next person. Thank you.")}
-        <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(24px,4cqw,56px);align-items:center")}>
+        <div className="m-credits-grid" style={S("display:grid;gap:clamp(24px,4cqw,56px);align-items:center")}>
           <div style={S("border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16));padding:0 16px")}>
-          <div style={{ ...S("position:relative;height:clamp(340px,40cqw,540px);scrollbar-width:none;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)"), overflowY: this.reduced ? "auto" : "hidden" }}>
+          <div style={{ ...S("position:relative;height:clamp(280px,min(40cqw,calc(100vh - 430px)),540px);scrollbar-width:none;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 16%,#000 84%,transparent 100%)"), overflowY: this.reduced ? "auto" : "hidden" }}>
             <div ref={this.r.credits} style={S("display:flex;flex-direction:column;align-items:center;will-change:transform")}>
               {this.creditGroups().map((g, gi) => (
-                <div key={g.title + gi} aria-hidden={g.dup || undefined} style={S("display:flex;flex-direction:column;align-items:center;gap:12px;padding:28px 0")}>
+                <div key={g.title + gi} aria-hidden={g.dup || undefined} style={S("display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px 0")}>
                   <div style={S("font-family:'VT323',monospace;font-size:22px;letter-spacing:.14em;color:var(--ink-dim,rgba(255,255,255,.6));text-transform:uppercase")}>{g.title}</div>
+                  {/* Names run side by side and wrap, so the box fills up instead of one name per line. */}
+                  <div style={S("display:flex;flex-wrap:wrap;justify-content:center;gap:10px 14px;max-width:100%")}>
                   {g.people.map((p) => (
-                    <a key={p.login} href={p.url} target="_blank" rel="noopener" title={p.url} tabIndex={g.dup ? -1 : undefined} onMouseEnter={() => this.setPause("c", true)} onMouseLeave={() => this.setPause("c", false)} onFocus={() => this.setPause("c", true)} onBlur={() => this.setPause("c", false)} onTouchStart={() => this.setPause("c", true)} onTouchEnd={() => this.setPause("c", false, true)} className="hov-card" style={S("display:flex;align-items:center;gap:10px;font-size:18px;font-weight:400;border:0;padding:2px 8px;border-radius:999px")}>
+                    <a key={p.login} href={p.url} target="_blank" rel="noopener" title={p.url} tabIndex={g.dup ? -1 : undefined} onMouseEnter={() => this.setPause("c", true)} onMouseLeave={() => this.setPause("c", false)} onFocus={() => this.setPause("c", true)} onBlur={() => this.setPause("c", false)} onTouchStart={() => this.setPause("c", true)} onTouchEnd={() => this.setPause("c", false, true)} className="hov-card" style={S("display:flex;align-items:center;gap:8px;font-size:16px;font-weight:400;border:0;padding:4px 12px 4px 4px;border-radius:999px;background:var(--card,rgba(255,255,255,.05))")}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={p.avatar} alt="" width={28} height={28} loading="lazy" style={S("width:28px;height:28px;border-radius:50%;background:var(--card,rgba(255,255,255,.06))")} />
+                      <img src={p.avatar} alt="" width={26} height={26} loading="lazy" style={S("width:26px;height:26px;border-radius:50%;background:var(--card,rgba(255,255,255,.06))")} />
                       <span>{p.login}</span>
                     </a>
                   ))}
+                  </div>
                 </div>
               ))}
             </div>
