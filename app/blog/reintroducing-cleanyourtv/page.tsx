@@ -4,7 +4,7 @@ import type { CSSProperties, ReactNode } from "react";
 export const metadata: Metadata = {
   title: "(Re)introducing CleanYourTV",
   description:
-    "Three days ago I fixed my parents' TV with a prompt. Then the internet fixed theirs: 54 TVs, 23 brands, 12 languages, one 280 KB launcher, nothing uninstalled.",
+    "Three days ago I fixed my parents' TV with a prompt. Then the internet fixed theirs: 66 TVs, 25 brands, 14 languages, one 300 KB launcher, nothing uninstalled.",
   alternates: { canonical: "https://cleanyour.tv/blog/reintroducing-cleanyourtv" },
   openGraph: {
     type: "article",
@@ -77,7 +77,7 @@ export default function Article() {
         <h2 style={h2}>Three days, in numbers</h2>
         <img src="/blog/stats.png" alt="X: 4.8M views, 26.5K likes, 1.4K reposts, 660 comments. GitHub: 3,494 stars, 412 forks, 118 PRs, 36 contributors, as of 19 October" style={img} width={1600} height={900} />
         <p style={p}>
-          That card is from Sunday night and already behind. The ones that did not fit on it: 54 TVs with tested lists across 23 brands, two of them projectors. Twelve languages. 45,000 repo visitors. 52 screens people sent. Twelve launchers and add-ons built on top. One launcher, 280 KB. Zero things uninstalled from anyone&rsquo;s TV.
+          That card is from Sunday night and already behind. The ones that did not fit on it: 66 TVs with tested lists across 25 brands, two of them projectors. Fourteen languages. 45,000 repo visitors. 61 screens people sent. Fifteen launchers and add-ons built on top. One launcher, 300 KB. Zero things uninstalled from anyone&rsquo;s TV.
         </p>
 
         <h2 style={h2}>How it started</h2>
@@ -87,7 +87,7 @@ export default function Article() {
 
         <h2 style={h2}>The part I did not plan</h2>
         <p style={p}>By the time the tea was done the tweet was moving. By the next morning it had 20,000 likes and the repo had 2,000 stars. Forty-five thousand people have since read a README about TV bloatware, on a weekend. On Sunday <A href="https://techcrunch.com/2026/10/19/people-are-using-ai-to-make-their-smart-tvs-dumb-again/">TechCrunch wrote it up</A>.</p>
-        <p style={p}>Then the pull requests started, and they have not stopped. More than a hundred merged in three days.</p>
+        <p style={p}>Then the pull requests started, and they have not stopped. 146 merged in three days.</p>
         <p style={p}>The replies were the best bit, because people did not say &ldquo;nice&rdquo;, they did it. On a Sony from 2017. On a Hisense that booted into recovery once, then behaved. On a Samsung projector that runs Samsung&rsquo;s own version of adb, and someone made that work too.</p>
         <p style={p}>A grandmother now has a TV that does not shout at her. Someone pinned two Tamil serials to the dock so his wife gets there faster. Someone&rsquo;s Fire TV &ldquo;now looks like a Wii&rdquo;. Someone turned theirs into a library bookshelf where every app is a book. Someone put live Polymarket odds on theirs, which I did not ask for and completely respect.</p>
         <img src="/blog/collage.png" alt="Forty TVs people sent, each with the launcher on it" style={img} width={1600} height={900} />
@@ -99,21 +99,21 @@ export default function Article() {
 
         <h2 style={h2}>What changed since Friday</h2>
         <ul style={{ paddingLeft: 22, margin: "0 0 20px" }}>
-          <li style={li}><B>From 1 TV to 54.</B> Xiaomi, TCL, Sony, Hisense, Philips, Panasonic, Skyworth, Vu, OnePlus, NVIDIA Shield, Chromecast, Fire TV, BenQ, CHiQ, RCA, SANYO, Toshiba, Insignia, Hitachi, Thomson, Redmi. Twenty-three brands, every list written by the person who did it.</li>
+          <li style={li}><B>From 1 TV to 66.</B> Xiaomi, TCL, Sony, Hisense, Philips, Panasonic, Skyworth, Vu, OnePlus, NVIDIA Shield, Chromecast, Fire TV, BenQ, CHiQ, RCA, SANYO, Toshiba, Insignia, Hitachi, Thomson, Redmi, PRISM+, AiPro2K. Twenty-five brands, every list written by the person who did it.</li>
           <li style={li}><B>Projectors.</B> XGIMI by <X h="zarubaf" />, Stellamore by <X h="aravinddass" />, with the keystone and autofocus services marked &ldquo;never disable&rdquo;.</li>
           <li style={li}><B>Fire TV.</B> Debloat works on Fire OS 6 and 7 now. Amazon&rsquo;s ads go, Amazon&rsquo;s home stays.</li>
           <li style={li}><B>Themes.</B> A <code>config.json</code> and a wallpaper, pushed to the TV, changes the whole look. No rebuild.</li>
           <li style={li}><B>Module cards.</B> Any app can declare its own tile. The launcher asks you once, &ldquo;Keep hidden&rdquo; by default. Built by <X h="udhaykumarbala" />, who also shipped an NES library as the first module.</li>
-          <li style={li}><B>12 languages.</B> Russian by <X h="angelwzr" />, French by <X h="ScaryFr92" />, then Serbian, Polish, Arabic and Turkish in a single day, next to Thai, Chinese, Catalan, Spanish and German.</li>
+          <li style={li}><B>14 languages.</B> Russian by <X h="angelwzr" />, French by <X h="ScaryFr92" />, then Serbian, Polish, Arabic, Turkish, Portuguese and Hebrew in two days, next to Thai, Chinese, Catalan, Spanish and German.</li>
           <li style={li}><B>The Google TV crash loop, fixed.</B> The setup wizard was grabbing Home and crashing the system every 200 ms. The installer now checks and rolls back.</li>
           <li style={li}><B>Reduced motion</B> for TVs whose GPU cannot keep up, and a highlight that stopped crawling on 2019 MediaTek sets, by <X h="occcat" />.</li>
           <li style={li}><B>Windows.</B> Every script has a PowerShell twin.</li>
           <li style={li}><B>No adb needed.</B> macOS silently blocks Google&rsquo;s <code>adb</code>. <code>tools/tv.py</code> is a pure-Python client that does not care.</li>
           <li style={li}><B>Live tiles</B> when apps come and go, by <X h="angelwzr" />. Ethernet icon by <X h="sonalder-darlene" />. A VPN badge that turns red when the VPN dies, by <X h="zarubaf" />.</li>
-          <li style={li}><B>A 280 KB launcher.</B> No network, no services, built for 1 GB sets.</li>
+          <li style={li}><B>A 300 KB launcher.</B> No network, no services, built for 1 GB sets.</li>
           <li style={li}><B>A Clock screensaver</B> that drifts so nothing burns in.</li>
           <li style={li}><B>One-command restore.</B> Tested on my parents&rsquo; TV, both directions.</li>
-          <li style={li}><B>Twelve things built on top.</B> A webOS port by <X h="OmkarK97" />, a Hisense restyle by <X h="YouLop009" />, a Stremio shelf by <X h="benfirad" />, a Control Center by <X h="samdegan2311" />, an aurora screensaver by <X h="rakshajag13" />, click sounds by <X h="rocavence" />, AirPlay by <X h="nguyenduchoai" />, Fire TV launchers by <X h="itsmeterrylin" />, <X h="ljis120301" /> and <X h="ivantrj" />, a TCL fork by <X h="eddysangalli" />, a Sony China fork by <X h="roninriddle" />.</li>
+          <li style={li}><B>Fifteen things built on top.</B> A webOS port by <X h="OmkarK97" />, a Hisense restyle by <X h="YouLop009" />, a Stremio shelf by <X h="benfirad" />, a Control Center by <X h="samdegan2311" />, an aurora screensaver by <X h="rakshajag13" />, click sounds by <X h="rocavence" />, AirPlay by <X h="nguyenduchoai" />, Fire TV launchers by <X h="itsmeterrylin" />, <X h="ljis120301" /> and <X h="ivantrj" />, a TCL fork by <X h="eddysangalli" />, a Sony China fork by <X h="roninriddle" />, a Xiaomi glass home by <X h="majnioui" />, rotating wallpapers by <X h="Alafazam" />, and a library bookshelf by <X h="gcockfoster" />.</li>
           <li style={li}><B>A website, a name, a domain.</B> cleanyour.tv.</li>
         </ul>
 
