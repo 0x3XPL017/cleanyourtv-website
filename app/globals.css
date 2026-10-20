@@ -228,16 +228,6 @@ button:focus-visible {
   .m-section h2 {
     font-size: clamp(32px, 9vw, 40px) !important;
   }
-  .m-row {
-    padding: 12px !important;
-    gap: 12px !important;
-    scroll-snap-type: x mandatory;
-  }
-  .m-row > figure {
-    width: 72vw !important;
-    max-width: 300px;
-    scroll-snap-align: start;
-  }
   .m-end {
     min-height: 60% !important;
   }
@@ -285,6 +275,156 @@ button:focus-visible {
   .m-section {
     padding-top: 40px !important;
     gap: 22px !important;
+  }
+}
+
+/* CH 02 On air: one big screen that changes every few seconds, and the wall of every TV beside it.
+   --oa-h is the height the pair may take; the big screen is sized from it so the channel fits one screen. */
+.onair {
+  --oa-h: clamp(300px, calc(100vh - 470px), 640px);
+  display: grid;
+  grid-template-columns: minmax(0, min(calc((var(--oa-h) - 120px) * 16 / 9 + 28px), 66%)) minmax(0, 1fr);
+  gap: clamp(18px, 2.6cqw, 36px);
+}
+.onair-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+/* The wall scrolls inside the panel, so the panel takes the big screen's height instead of the wall's. */
+.onair-well {
+  position: relative;
+  flex: 1;
+  min-height: 140px;
+}
+.onair-wall {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  grid-auto-rows: max-content;
+  align-content: start;
+  gap: 10px;
+  padding: 4px 4px 28px;
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 44px), transparent);
+  mask-image: linear-gradient(180deg, #000 calc(100% - 44px), transparent);
+}
+.onair-thumb {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.onair-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  opacity: 0.72;
+  transition: opacity 0.18s ease;
+}
+.onair-thumb:hover {
+  transform: translateY(-2px);
+}
+.onair-thumb:hover img,
+.onair-thumb[aria-current] img {
+  opacity: 1;
+}
+.onair-thumb[aria-current] {
+  box-shadow: 0 0 0 2px var(--osd, #cfffcf), 0 0 14px var(--osd-glow, rgba(140, 255, 140, 0.6));
+}
+.onair-thumb:focus-visible {
+  outline-offset: 3px;
+}
+.onair-quote {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  min-height: calc(2 * 1.45em);
+}
+/* A new picture comes up the way an old set warms up. */
+.onair-in {
+  animation: onairIn 0.5s ease-out;
+}
+@keyframes onairIn {
+  from {
+    opacity: 0;
+    filter: brightness(2.2) contrast(0.7);
+    transform: scaleY(0.96);
+  }
+}
+.onair-dot {
+  animation: onairDot 1.6s ease-in-out infinite;
+}
+@keyframes onairDot {
+  50% {
+    opacity: 0.25;
+  }
+}
+@media (min-width: 1101px) and (max-height: 800px) {
+  .onair {
+    --oa-h: clamp(280px, calc(100vh - 380px), 640px);
+  }
+}
+/* Phones and tablets: the big screen on top, the wall as a two-row strip that swipes sideways. */
+@media (max-width: 1100px) {
+  .onair {
+    display: flex;
+    flex-direction: column;
+  }
+  .onair-well {
+    position: static;
+    min-height: 0;
+  }
+  .onair-wall {
+    position: relative;
+    inset: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    grid-template-columns: none;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+    grid-auto-columns: clamp(104px, 30%, 168px);
+    padding: 4px 28px 4px 4px;
+    scroll-snap-type: x proximity;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
+  }
+  .onair-thumb {
+    scroll-snap-align: start;
+  }
+  /* the TV caption gets its own line under the handle */
+  .onair-meta {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .onair-tv {
+    order: 3;
+    flex-basis: 100% !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .onair-in,
+  .onair-dot {
+    animation: none;
+  }
+  .onair-thumb,
+  .onair-thumb img {
+    transition: none;
+  }
+  .onair-thumb:hover {
+    transform: none;
   }
 }
 

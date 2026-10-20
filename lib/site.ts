@@ -171,3 +171,5 @@ export const SHOWCASE_IMAGES: Record<string, string> = {
  */
 export const CDN_BASE = "https://cdn.jsdelivr.net/gh/Gathin23/cleanyourtv-website@main/public";
 export const cdn = (path: string): string => (path && path.startsWith("/") ? CDN_BASE + path : path);
+/** The On air wall's small copy of a photo: public/results/thumbs/, 320x180, centre-cropped. */
+export const thumb = (path: string): string => path.replace(/^\/results\//, "/results/thumbs/");

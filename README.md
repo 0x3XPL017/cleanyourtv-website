@@ -8,7 +8,7 @@ The whole site is one old television. Six channels, a remote in the corner, stat
 |---|---|
 | 00 Boot | The stock home screen, the clean-up, then the launcher with live stars, forks and contributors |
 | 01 The story | The tweet that started it and a 48-hour star oscilloscope |
-| 02 On air | Before-and-after screens from people who ran it (`content/results.json`) |
+| 02 On air | A big screen that cycles through the photos from people who ran it, beside a wall of every one (`content/results.json`) |
 | 03 How to | Three-step wizard, copy-the-prompt button, a terminal that types itself |
 | 04 The community | The credits roll: everyone whose pull request was merged, from the GitHub API |
 | 05 Made with | Showcase projects from `SHOWCASE.md` and the themes from `themes/` |
@@ -29,6 +29,8 @@ Optional: set `GITHUB_TOKEN` in the environment (Vercel project settings, never 
 ## Add a result screen
 
 `content/results.json` is a list of `{ handle, quote, image, link, tv }`. Put the screenshot in `public/results/` and point `image` at it (`/results/name.png`). Keep the quote to one line, in the person's own words, with `link` going to their original post.
+
+The wall shows a small copy from `public/results/thumbs/` (same file name, 320x180, centre-cropped) and falls back to the full photo if there is none. To make one on a Mac: `sips -Z 320 public/results/name.jpg --out public/results/thumbs/name.jpg` is close enough; a Pillow `ImageOps.fit(img, (320, 180))` at quality 70 is what the existing ones use.
 
 ## Layout
 

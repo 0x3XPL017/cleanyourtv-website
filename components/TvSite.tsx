@@ -4,13 +4,14 @@
 import React from "react";
 import { GH } from "@/lib/parse";
 import type { SiteData } from "@/lib/parse";
-import { GROUPS, KONAMI, NAMES, ORDER, PRESS, S, SHOWCASE_IMAGES, cdn, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
+import { GROUPS, KONAMI, NAMES, ORDER, PRESS, S, SHOWCASE_IMAGES, cdn, thumb, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
 import type { ThemeName } from "@/lib/site";
 
 const TWEET = "https://x.com/gathint/status/2111379569030939102";
 const COFFEE = "https://buymeacoffee.com/gathint";
 const BOOT_DELAY = 700;
 const PH = "https://www.producthunt.com/products/cleanyourtv";
+const FEAT_SECS = 6;
 
 type Counter = { key: string; label: string; value: number; max: number; display: number };
 type Slide = { kind: "show" | "theme"; name: string; what: string; meta: string; by: string; byUrl: string; url: string; wall: "aurora" | "black"; tiles: number; site?: ThemeName; kicker: string; image?: string };
@@ -22,10 +23,10 @@ type State = {
   osd: string; theme: ThemeName; sound: boolean; power: boolean; booted: boolean; mobile: boolean; mounted: boolean; focus: number;
   clock: string; ampm: string; date: string; greeting: string;
   counters: Counter[];
-  ch: number; wiz: number; os: "mac" | "win"; typed: number; copied: boolean; slide: number; active: string | null;
+  ch: number; wiz: number; os: "mac" | "win"; typed: number; copied: boolean; slide: number; feat: number; held: boolean;
 };
 
-const REF_KEYS = ["root", "screen", "scroll", "launcher", "ambient", "dock", "glass", "clutter", "miss", "title", "osd", "flash", "off", "rowA", "rowB", "credits", "end"] as const;
+const REF_KEYS = ["root", "screen", "scroll", "launcher", "ambient", "dock", "glass", "clutter", "miss", "title", "osd", "flash", "off", "featBar", "wall", "credits", "end"] as const;
 type RefKey = (typeof REF_KEYS)[number];
 
 export default class TvSite extends React.Component<Props, State> {
@@ -36,7 +37,7 @@ export default class TvSite extends React.Component<Props, State> {
   bootId = 0; skipBoot = false; konami: string[] = []; tweens: Record<string, number> = {}; quietUntil = 0;
   spring: Record<Axis, Spring> = { x: { p: 0, v: 0, t: 0 }, y: { p: 0, v: 0, t: 0 }, w: { p: 10, v: 0, t: 10 }, h: { p: 10, v: 0, t: 10 } };
   glassRaf = 0; loopRaf = 0; scopeRaf = 0; lastT = 0; lastLoop = 0; scopeP = 0;
-  ax = 0; bx = 0; bInit = false; cy = 0; pause = { a: false, b: false, c: false }; resumeT: Record<string, ReturnType<typeof setTimeout>> = {};
+  featT = 0; cy = 0; pause = { c: false, w: false }; resumeT: Record<string, ReturnType<typeof setTimeout>> = {};
   reduced = false; mq!: MediaQueryList; onMq!: () => void; onKey!: (e: KeyboardEvent) => void; onResize!: () => void;
   clockTimer!: ReturnType<typeof setInterval>; typeT!: ReturnType<typeof setInterval>; osdT!: ReturnType<typeof setTimeout>; copyT!: ReturnType<typeof setTimeout>;
   io!: IntersectionObserver; typingStarted = false; tx = 0;
@@ -64,7 +65,7 @@ export default class TvSite extends React.Component<Props, State> {
         { key: "forks", label: "FORKS", value: d.forks, max: Math.max(600, d.forks * 1.4), display: 0 },
         { key: "contributors", label: "CONTRIBUTORS", value: d.contributors, max: Math.max(120, d.contributors * 1.6), display: 0 },
       ],
-      ch: 0, wiz: 0, os: "mac", typed: 0, copied: false, slide: 0, active: null,
+      ch: 0, wiz: 0, os: "mac", typed: 0, copied: false, slide: 0, feat: 0, held: false,
     };
   }
 
@@ -227,21 +228,20 @@ export default class TvSite extends React.Component<Props, State> {
     else this.glassRaf = requestAnimationFrame(this.stepGlass);
   };
 
-  // ---- marquee + credits roll (direct DOM, only while their channel is on)
+  // ---- On air rotation + credits roll (direct DOM, only while their channel is on)
   loop = (now: number) => {
     const dt = Math.min(0.05, (now - this.lastLoop) / 1000); this.lastLoop = now; const ch = this.state.ch;
     if (!this.reduced && this.state.power) {
-      if (ch === 2) {
-        const a = this.r.rowA.current, b = this.r.rowB.current;
-        if (a) { const half = a.scrollWidth / 2; if (this.pause.a) this.ax = a.scrollLeft; else { this.ax += 30 * dt; if (this.ax >= half) this.ax -= half; a.scrollLeft = this.ax; } }
-        if (b) { const half = b.scrollWidth / 2; if (!this.bInit && half > 0) { this.bx = half; this.bInit = true; } if (this.pause.b) this.bx = b.scrollLeft; else { this.bx -= 22 * dt; if (this.bx <= 0) this.bx += half; b.scrollLeft = this.bx; } }
+      if (ch === 2 && this.props.data.results.length > 1) {
+        if (!this.state.held && !this.pause.w) { this.featT += dt; if (this.featT >= FEAT_SECS) this.featGo(this.state.feat + 1, true); }
+        const bar = this.r.featBar.current; if (bar) bar.style.transform = `scaleX(${Math.min(1, this.featT / FEAT_SECS)})`;
       }
       if (this.pull > 0 && now - this.pullAt > 160) this.setPull(this.pull - dt * 0.7);
       if (ch === 5) { const c = this.r.credits.current; if (c && !this.pause.c) { const h = c.scrollHeight / 2; this.cy += 26 * dt; if (h && this.cy >= h) this.cy -= h; c.style.transform = `translateY(${-this.cy}px)`; } }
     }
     this.loopRaf = requestAnimationFrame(this.loop);
   };
-  setPause(k: "a" | "b" | "c", v: boolean, later?: boolean) { clearTimeout(this.resumeT[k]); if (later) this.resumeT[k] = setTimeout(() => { this.pause[k] = false; }, 2500); else this.pause[k] = v; }
+  setPause(k: "c" | "w", v: boolean, later?: boolean) { clearTimeout(this.resumeT[k]); if (later) this.resumeT[k] = setTimeout(() => { this.pause[k] = false; }, 2500); else this.pause[k] = v; }
 
   // ---- oscilloscope
   drawScope(p: number) {
@@ -294,7 +294,7 @@ export default class TvSite extends React.Component<Props, State> {
     if (performance.now() > this.quietUntil && this.state.booted) this.showOsd(`CH 0${n}`, 1200, false);
     this.enter(n);
   }
-  enter(n: number) { if (n === 1) this.animateScope(); if (n === 3 && !this.typingStarted) this.startTyping(); }
+  enter(n: number) { if (n === 1) this.animateScope(); if (n === 2) { this.featT = 0; this.preload(this.state.feat + 1); } if (n === 3 && !this.typingStarted) this.startTyping(); }
   channel(n: number) {
     this.click(); if (!this.state.power || n < 0) return;
     if (!this.state.booted) this.finalize(++this.bootId);
@@ -435,7 +435,7 @@ export default class TvSite extends React.Component<Props, State> {
   }
   wizGo(i: number) { i = Math.max(0, Math.min(2, i)); if (i === this.state.wiz) return; this.click(); this.setState({ wiz: i }); }
   slideGo(i: number) { const n = this.slides.length; if (!n) return; this.click(); this.setState({ slide: ((i % n) + n) % n }); }
-  side(d: number) { const ch = this.state.ch; if (ch === 0) return this.move(d); if (ch === 3) return this.wizGo(this.state.wiz + d); if (ch === 4) return this.slideGo(this.state.slide + d); }
+  side(d: number) { const ch = this.state.ch; if (ch === 0) return this.move(d); if (ch === 2) return this.featGo(this.state.feat + d); if (ch === 3) return this.wizGo(this.state.wiz + d); if (ch === 4) return this.slideGo(this.state.slide + d); }
   key(e: KeyboardEvent) {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const tag = ((e.target as HTMLElement | null)?.tagName) || ""; if (tag === "INPUT" || tag === "TEXTAREA") return;
@@ -473,21 +473,20 @@ export default class TvSite extends React.Component<Props, State> {
   }
 
   // ---- view models
-  wallRows() {
-    const res = this.props.data.results; if (!res.length) return [[], []] as const;
-    const active = this.state.active;
-    // The marquee repeats each row once; the repeat is hidden from screen readers and the tab order.
-    const mk = (arr: typeof res, tag: string, dupFrom = arr.length) => arr.map((r, i) => {
-      const key = tag + i, on = active === key;
-      return { ...r, key, dup: i >= dupFrom, op: on ? 1 : 0, pe: on ? "auto" : "none",
-        enter: () => this.setState({ active: key }), leave: () => this.setState((s) => (s.active === key ? { active: null } : null)),
-        tap: (e: React.MouseEvent) => { if ((e.target as HTMLElement).closest("a")) return; this.setState((s) => ({ active: s.active === key ? null : key })); } };
-    });
-    if (this.reduced) return [mk(res, "s"), []] as const;
-    let a: typeof res = res, b: typeof res = [];
-    if (res.length >= 12) { const h = Math.ceil(res.length / 2); a = res.slice(0, h); b = res.slice(h); }
-    else { let base: typeof res = []; while (base.length < 6) base = base.concat(res); a = base; b = base.slice().reverse(); }
-    return [mk(a.concat(a), "a", a.length), mk(b.concat(b), "b", b.length)] as const;
+  // The big screen on the On air wall; auto-advances pass auto so the remote click stays quiet.
+  featGo(i: number, auto = false) {
+    const res = this.props.data.results, n = res.length; if (!n) return; if (!auto) this.click();
+    const feat = ((i % n) + n) % n; this.featT = 0;
+    this.setState({ feat }, () => { this.showThumb(feat); this.preload(feat + 1); });
+  }
+  preload(i: number) { const res = this.props.data.results; const r = res[i % res.length]; if (r) new Image().src = cdn(r.image); }
+  // Keeps the featured thumbnail in view inside the wall (never the page), and carries keyboard focus along with it.
+  showThumb(i: number) {
+    const w = this.r.wall.current; const t = w?.querySelector<HTMLElement>(`[data-feat="${i}"]`); if (!w || !t) return;
+    if (w.contains(document.activeElement)) t.focus({ preventScroll: true });
+    const behavior: ScrollBehavior = this.reduced ? "auto" : "smooth";
+    if (w.scrollWidth > w.clientWidth + 1) { if (t.offsetLeft < w.scrollLeft || t.offsetLeft + t.offsetWidth > w.scrollLeft + w.clientWidth) w.scrollTo({ left: t.offsetLeft - 8, behavior }); }
+    else if (t.offsetTop < w.scrollTop || t.offsetTop + t.offsetHeight > w.scrollTop + w.clientHeight) w.scrollTo({ top: t.offsetTop - 8, behavior });
   }
   creditGroups() {
     const prs = this.props.data.prs, seen: Record<string, 1> = {}, groups: Record<string, { login: string; url: string; avatar: string }[]> = {};
@@ -762,39 +761,67 @@ export default class TvSite extends React.Component<Props, State> {
   }
 
   renderWall() {
-    const [rowA, rowB] = this.wallRows();
-    const fig = (it: (typeof rowA)[number], wide: boolean) => (
-      <figure key={it.key} aria-hidden={it.dup || undefined} onMouseEnter={it.enter} onMouseLeave={it.leave} onClick={it.tap} style={S(`flex-shrink:0;width:${wide ? "clamp(230px,24cqw,320px)" : "clamp(210px,21cqw,280px)"};margin:0;display:flex;flex-direction:column;gap:10px;cursor:pointer`)}>
-        <div style={S("padding:8px;border-radius:14px;background:linear-gradient(180deg,#26262a,#141416);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 24px rgba(0,0,0,.35)")}>
-          <div style={S("position:relative;aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000")}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={cdn(it.image)} alt={"Before and after on " + it.tv} loading="lazy" style={S("width:100%;height:100%;object-fit:cover;display:block")} />
-            <div style={S("position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0 1px,rgba(0,0,0,0) 1px 3px),radial-gradient(ellipse at center,rgba(0,0,0,0) 60%,rgba(0,0,0,.3))")} />
-            <div style={{ ...S("position:absolute;inset:0;background:rgba(6,6,8,.9);color:#fff;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;transition:opacity .2s"), opacity: it.op, pointerEvents: it.pe as "auto" | "none" }}>
-              <p style={S("margin:0;font-size:14px;line-height:1.4;text-wrap:pretty")}>{it.quote}</p>
-              <a href={it.link} target="_blank" rel="noopener" tabIndex={-1} style={S("align-self:flex-start;font-size:13px")}>See the original</a>
-            </div>
-          </div>
-        </div>
-        <figcaption style={S("display:flex;flex-direction:column;gap:2px;padding:0 4px")}>
-          <div style={S("display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:14px")}><a href={it.link} target="_blank" rel="noopener" tabIndex={it.dup ? -1 : 0} className="no-border" style={S("font-weight:500")}>{it.handle}</a><span style={S("font-family:'VT323',monospace;font-size:17px;color:var(--ink-dim,rgba(255,255,255,.6));white-space:nowrap;overflow:hidden;text-overflow:ellipsis")}>{it.tv}</span></div>
-          <div style={S("font-size:14px;color:var(--ink-dim,rgba(255,255,255,.6));white-space:nowrap;overflow:hidden;text-overflow:ellipsis")}>{it.quote}</div>
-        </figcaption>
-      </figure>
-    );
+    const s = this.state, res = this.props.data.results, n = res.length, it = res[s.feat] || res[0];
+    const rotating = !this.reduced && !s.held && n > 1;
+    const round = "width:40px;height:40px;flex-shrink:0;border-radius:50%;border:0;padding:0;display:grid;place-items:center;background:var(--card,rgba(255,255,255,.05));box-shadow:inset 0 0 0 1px var(--line,rgba(255,255,255,.12));font-size:15px";
+    const hold = (v: boolean) => () => this.setPause("w", v);
     return (
       <section id="ch-02" data-ch="2" aria-label="Channel 02, On air" className="m-section" style={this.sectionStyle()}>
-        {this.header("CH 02 · ON AIR", "On air", "Screens from people who ran it on their own TV. Hover or tap one to read the rest.")}
-        <div style={S("display:flex;flex-direction:column;gap:clamp(18px,2.4cqw,30px)")}>
-          <div ref={this.r.rowA} onMouseEnter={() => this.setPause("a", true)} onMouseLeave={() => this.setPause("a", false)} onTouchStart={() => this.setPause("a", true)} onTouchEnd={() => this.setPause("a", false, true)} onFocus={() => this.setPause("a", true)} onBlur={() => this.setPause("a", false)} className="m-row" style={{ ...S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:18px;border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))"), flexWrap: this.reduced ? "wrap" : "nowrap" }}>
-            {rowA.map((it) => fig(it, true))}
-          </div>
-          {rowB.length > 0 && (
-            <div ref={this.r.rowB} onMouseEnter={() => this.setPause("b", true)} onMouseLeave={() => this.setPause("b", false)} onTouchStart={() => this.setPause("b", true)} onTouchEnd={() => this.setPause("b", false, true)} onFocus={() => this.setPause("b", true)} onBlur={() => this.setPause("b", false)} className="m-row" style={S("display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;padding:18px;border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))")}>
-              {rowB.map((it) => fig(it, false))}
+        {this.header("CH 02 · ON AIR", "On air", `${n} TVs from people who ran it on their own set. Pick one to put it on the big screen.`)}
+        {it && (
+          <div className="onair" onMouseEnter={hold(true)} onMouseLeave={hold(false)} onFocus={hold(true)} onBlur={hold(false)} onTouchStart={hold(true)} onTouchEnd={() => this.setPause("w", false, true)}>
+            <figure style={S("margin:0;min-width:0;padding:clamp(8px,1cqw,14px);border-radius:22px;background:linear-gradient(180deg,#26262a,#121214);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 40px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:10px;color:rgba(255,255,255,.95)")}>
+              <div style={S("position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000")}>
+                {/* The same photo, blurred, fills the bars around portrait shots; the browser reuses the download. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={cdn(it.image)} alt="" aria-hidden="true" style={S("position:absolute;inset:-10%;width:120%;height:120%;object-fit:cover;filter:blur(24px) brightness(.42) saturate(1.2)")} />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img key={s.feat} src={cdn(it.image)} alt={`${it.handle}'s TV: ${it.tv}`} className="onair-in" style={S("position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block")} />
+                <div aria-hidden="true" style={S("position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.12) 0 1px,rgba(0,0,0,0) 1px 3px),radial-gradient(ellipse at center,rgba(0,0,0,0) 60%,rgba(0,0,0,.4))")} />
+                <div aria-hidden="true" style={S("position:absolute;top:12px;left:12px;display:flex;align-items:center;gap:7px;padding:0 9px;background:#C8102E;color:#fff;font-family:'VT323',monospace;font-size:19px;letter-spacing:.1em;line-height:26px")}>
+                  <span className={rotating ? "onair-dot" : undefined} style={S("width:7px;height:7px;border-radius:50%;background:#fff")} />ON AIR
+                </div>
+                <div aria-hidden="true" style={S("position:absolute;top:8px;right:14px;font-family:'VT323',monospace;font-size:clamp(22px,2.4cqw,32px);letter-spacing:.06em;color:#CFFFCF;text-shadow:0 0 10px rgba(140,255,140,.6),0 1px 2px rgba(0,0,0,.8)")}>{String(s.feat + 1).padStart(2, "0")}</div>
+              </div>
+              <figcaption aria-live={rotating ? "off" : "polite"} style={S("display:flex;flex-direction:column;gap:6px;padding:0 6px;min-width:0")}>
+                <div className="onair-meta" style={S("display:flex;align-items:baseline;gap:2px 12px;min-width:0")}>
+                  <span style={S("font-size:18px;font-weight:500;white-space:nowrap")}>{it.handle}</span>
+                  <span className="onair-tv" style={S("flex:1;min-width:0;font-family:'VT323',monospace;font-size:19px;letter-spacing:.04em;color:rgba(255,255,255,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis")}>{it.tv}</span>
+                  <a href={it.link} target="_blank" rel="noopener" style={S("flex-shrink:0;font-size:14px")}>See the post ↗</a>
+                </div>
+                <p className="onair-quote" style={S("margin:0;font-size:15px;line-height:1.45;color:rgba(255,255,255,.82);text-wrap:pretty")}>“{it.quote}”</p>
+              </figcaption>
+              <div aria-hidden="true" style={S("height:2px;margin:0 6px 2px;border-radius:1px;background:rgba(255,255,255,.1);overflow:hidden")}>
+                <div ref={this.r.featBar} style={{ ...S("height:100%;background:#CFFFCF;box-shadow:0 0 6px rgba(140,255,140,.7);transform-origin:left;transform:scaleX(0)"), opacity: rotating ? 1 : 0 }} />
+              </div>
+            </figure>
+            <div className="onair-side" style={S("padding:clamp(14px,1.6cqw,22px);border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16));gap:14px")}>
+              <div style={S("display:flex;align-items:center;gap:8px")}>
+                <div style={S("flex:1;min-width:0;display:flex;flex-direction:column;line-height:1")}>
+                  <span style={S("font-family:'VT323',monospace;font-size:20px;letter-spacing:.1em;color:var(--ink-dim,rgba(255,255,255,.6))")}>THE WALL</span>
+                  <span style={S("font-family:'VT323',monospace;font-size:26px;letter-spacing:.06em")}>{String(s.feat + 1).padStart(2, "0")} / {n}</span>
+                </div>
+                <button onClick={() => this.featGo(s.feat - 1)} aria-label="Previous TV" style={S(round)}>←</button>
+                {!this.reduced && n > 1 && (
+                  <button onClick={() => { this.click(); this.featT = 0; this.setState({ held: !s.held }); }} aria-label={s.held ? "Play the wall" : "Pause the wall"} style={S(round)}>
+                    {s.held ? <span aria-hidden="true" style={S("margin-left:3px;width:0;height:0;border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent currentColor")} /> : <span aria-hidden="true" style={S("width:10px;height:12px;border-left:3px solid currentColor;border-right:3px solid currentColor")} />}
+                  </button>
+                )}
+                <button onClick={() => this.featGo(s.feat + 1)} aria-label="Next TV" style={S(round)}>→</button>
+              </div>
+              <div className="onair-well">
+                <div ref={this.r.wall} role="group" aria-label={`All ${n} TVs`} className="onair-wall">
+                  {res.map((r, i) => (
+                    <button key={r.image} data-feat={i} tabIndex={i === s.feat ? 0 : -1} aria-current={i === s.feat || undefined} aria-label={`${r.handle}, ${r.tv}`} onClick={() => this.featGo(i)} className="onair-thumb">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={cdn(thumb(r.image))} alt="" width={320} height={180} loading="lazy" decoding="async" onError={(e) => { const im = e.currentTarget; if (!im.dataset.full) { im.dataset.full = "1"; im.src = cdn(r.image); } }} />
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </section>
     );
   }
