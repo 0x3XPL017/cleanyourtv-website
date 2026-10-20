@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   },
 };
 
+const PRESS: [string, string, string][] = [["techcrunch", "TechCrunch", "https://techcrunch.com/2026/10/19/people-are-using-ai-to-make-their-smart-tvs-dumb-again/"], ["mashable", "Mashable", "https://mashable.com/tech/smart-tv-ads-claude-code-ai-cleanup"], ["itsfoss", "It's FOSS", "https://itsfoss.com/news/debloat-smart-tv/"], ["techaeris", "Techaeris", "https://techaeris.com/2026/10/18/android-tv-debloat-tvos-style-makeover/"], ["techtimes", "Tech Times", "https://www.techtimes.co.uk/ai-smart-tv-bloatware-performance-fix-1809233"], ["gadgetreview", "Gadget Review", "https://tech.yahoo.com/ai/meta-ai/articles/developers-using-ai-strip-ads-185856468.html"], ["techpp", "TechPP", "https://techpp.com/2026/10/18/speed-up-android-tv-claude-code/"], ["frandroid", "Frandroid", "https://www.frandroid.com/android/google-tv/3290159_google-tv-lent-et-envahi-par-les-pubs-le-projet-tv-vibehack-corrige-tout-ca-grace-a-lia-jai-tente-lexperience"], ["xboxygen", "Xboxygen", "https://www.xboxygen.com/News/371393-sa-tv-xiaomi-affichait-des-pubs-partout-il-donne-son-modele-a-claude-code-qui-refait-toute-linterface"], ["itavisen", "ITavisen", "https://itavisen.no/2026/10/19/vibekodet-bort-reklame-smart-tv/"], ["pplware", "Pplware", "https://pplware.sapo.pt/inteligencia-artificial/nem-as-smart-tv-escaparam-a-febre-do-vibe-coding-a-televisao-a-medida-de-cada-utilizador/"], ["insmart", "Insmart", "https://insmart.cz/android-tv-bez-reklam-ai-claude-code/"], ["detikinet", "detikINET", "https://inet.detik.com/consumer/d-8713172/kesal-tv-xiaomi-banyak-iklan-pria-ini-sulap-jadi-apple-tv-pakai-ai"], ["iphonemod", "iPhoneMod", "https://www.iphonemod.net/clean-your-tv-android-tv-debloat-launcher.html"]];
+
 const page: CSSProperties = {
   height: "100dvh",
   overflowY: "auto",
@@ -81,21 +83,13 @@ export default function Article() {
         </p>
 
         <h2 style={h2}>Featured in</h2>
-        <p style={{ ...p, lineHeight: 2 }}>
-          <A href="https://techcrunch.com/2026/10/19/people-are-using-ai-to-make-their-smart-tvs-dumb-again/">TechCrunch</A> &nbsp;·&nbsp; 
-          <A href="https://mashable.com/tech/smart-tv-ads-claude-code-ai-cleanup">Mashable</A> &nbsp;·&nbsp; 
-          <A href="https://itsfoss.com/news/debloat-smart-tv/">It’s FOSS</A> &nbsp;·&nbsp; 
-          <A href="https://techaeris.com/2026/10/18/android-tv-debloat-tvos-style-makeover/">Techaeris</A> &nbsp;·&nbsp; 
-          <A href="https://www.techtimes.co.uk/ai-smart-tv-bloatware-performance-fix-1809233">Tech Times</A> &nbsp;·&nbsp; 
-          <A href="https://techpp.com/2026/10/18/speed-up-android-tv-claude-code/">TechPP</A> &nbsp;·&nbsp; 
-          <A href="https://www.frandroid.com/android/google-tv/3290159_google-tv-lent-et-envahi-par-les-pubs-le-projet-tv-vibehack-corrige-tout-ca-grace-a-lia-jai-tente-lexperience">Frandroid</A> &nbsp;·&nbsp; 
-          <A href="https://www.xboxygen.com/News/371393-sa-tv-xiaomi-affichait-des-pubs-partout-il-donne-son-modele-a-claude-code-qui-refait-toute-linterface">Xboxygen</A> &nbsp;·&nbsp; 
-          <A href="https://itavisen.no/2026/10/19/vibekodet-bort-reklame-smart-tv/">ITavisen</A> &nbsp;·&nbsp; 
-          <A href="https://pplware.sapo.pt/inteligencia-artificial/nem-as-smart-tv-escaparam-a-febre-do-vibe-coding-a-televisao-a-medida-de-cada-utilizador/">Pplware</A> &nbsp;·&nbsp; 
-          <A href="https://insmart.cz/android-tv-bez-reklam-ai-claude-code/">Insmart</A> &nbsp;·&nbsp; 
-          <A href="https://inet.detik.com/consumer/d-8713172/kesal-tv-xiaomi-banyak-iklan-pria-ini-sulap-jadi-apple-tv-pakai-ai">detikINET</A> &nbsp;·&nbsp; 
-          <A href="https://www.iphonemod.net/clean-your-tv-android-tv-debloat-launcher.html">iPhoneMod</A>
-        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "14px 26px", alignItems: "center", margin: "0 0 20px" }}>
+          {PRESS.map(([slug, name, url]) => (
+            <a key={slug} href={url} title={name} style={{ borderBottom: "none", lineHeight: 0 }}>
+              <img src={`/press/${slug}.png`} alt={name} style={{ height: 34, width: "auto", display: "block" }} />
+            </a>
+          ))}
+        </div>
 
         <h2 style={h2}>How it started</h2>
         <p style={p}>My parents&rsquo; TV showed an ad before you could reach Netflix. A full-screen one, for a bank, on a TV they had paid for. So on Saturday afternoon I sat down with Claude Code and gave it the model number.</p>
