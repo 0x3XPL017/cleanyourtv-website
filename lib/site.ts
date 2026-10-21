@@ -165,6 +165,16 @@ export const SHOWCASE_IMAGES: Record<string, string> = {
   majnioui: "/showcase/majnioui.jpg",
   alafazam: "/showcase/alafazam.jpg",
   griffincockfoster56: "/showcase/griffincockfoster56.jpg",
+  egyjs: "/showcase/egyjs.jpg",
+  glidiandev: "/showcase/glidiandev.jpg",
+  oliverjwroberts: "/showcase/oliverjwroberts.jpg",
+  thayford: "/showcase/thayford.jpg",
+  jolan94: "/showcase/jolan94.jpg",
+  gethari: "/showcase/gethari.jpg",
+  hoangtran0410: "/showcase/hoangtran0410.jpg",
+  faustinoaq: "/showcase/faustinoaq.jpg",
+  "0x006e": "/showcase/0x006e.jpg",
+  sethihq: "/showcase/sethihq.jpg",
 };
 
 /**
