@@ -18,6 +18,8 @@ export const COVERAGE: PressGroup[] = [
       ["XDA", "People are now vibe-coding their smart TVs to strip them of ads and unwanted features", "19 Oct", "https://www.xda-developers.com/people-are-now-vibe-coding-their-smart-tvs-to-strip-them-of-ads-and-unwanted-features/", "xda-3f14b7", "xda"],
       ["Phandroid", "Smart TV Owners Are Using AI to Strip the Ads Off Their Sets", "20 Oct", "https://phandroid.com/2026/10/20/smart-tv-owners-are-using-ai-to-strip-the-ads-off-their-sets/", "phandroid-5c45ff", "phandroid"],
       ["Techaeris", "Android TV Debloat Gets a Free tvOS-Style Makeover", "18 Oct", "https://techaeris.com/2026/10/18/android-tv-debloat-tvos-style-makeover/", "techaeris-4f631f", "techaeris"],
+      ["Tom's Guide", "People are using AI to turn their smart TVs into dumb TVs — and you might want to do the same", "20 Oct", "https://www.tomsguide.com/ai/people-are-using-ai-to-turn-their-smart-tvs-into-dumb-tvs-and-you-might-want-to-do-the-same", "tomsguide-e2174b", "tomsguide"],
+      ["Decrypt", "People Are Vibe Coding the Ads Out of Their Smart TVs: Here's How", "20 Oct", "https://decrypt.co/381456/vibe-coding-ads-out-smart-tvs-heres-how", "decrypt-16b75f", "decrypt"],
       ["Gadget Review (on Yahoo Tech)", "Developers Are Using AI to Strip Ads and Tracking From Smart TVs", "19 Oct", "https://tech.yahoo.com/ai/meta-ai/articles/developers-using-ai-strip-ads-185856468.html", "gadgetreview-57a196", "gadgetreview"],
     ],
   },
@@ -25,6 +27,7 @@ export const COVERAGE: PressGroup[] = [
     group: "United Kingdom",
     country: true,
     items: [
+      ["TechRadar", "‘Your TV should do what you paid for’: People are so sick of ads, trackers and bloat in their smart TVs that they're using AI to vibe code them away", "20 Oct", "https://www.techradar.com/entertainment/streaming/your-tv-should-do-what-you-paid-for-people-are-vibe-coding-apps-to-banish-ads-from-their-smart-tvs-and-android-tv-and-its-catching-on", "techradar-e955f1", "techradar"],
       ["Tech Times", "Man Asks AI with a Simple Prompt 'Can You Hack This?' to Fix His TV: Now Everyone Wants to Copy Him", "19 Oct", "https://www.techtimes.co.uk/ai-smart-tv-bloatware-performance-fix-1809233", "techtimes-c99e97", "techtimes"],
     ],
   },
