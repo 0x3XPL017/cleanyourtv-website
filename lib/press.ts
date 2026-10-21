@@ -21,6 +21,7 @@ export const COVERAGE: PressGroup[] = [
       ["Tom's Guide", "People are using AI to turn their smart TVs into dumb TVs — and you might want to do the same", "20 Oct", "https://www.tomsguide.com/ai/people-are-using-ai-to-turn-their-smart-tvs-into-dumb-tvs-and-you-might-want-to-do-the-same", "tomsguide-e2174b", "tomsguide"],
       ["Decrypt", "People Are Vibe Coding the Ads Out of Their Smart TVs: Here's How", "20 Oct", "https://decrypt.co/381456/vibe-coding-ads-out-smart-tvs-heres-how", "decrypt-16b75f", "decrypt"],
       ["Gadget Review (on Yahoo Tech)", "Developers Are Using AI to Strip Ads and Tracking From Smart TVs", "19 Oct", "https://tech.yahoo.com/ai/meta-ai/articles/developers-using-ai-strip-ads-185856468.html", "gadgetreview-57a196", "gadgetreview"],
+      ["HighTechDad", "Tech Brief: People Are Using AI Coding Agents to Strip Ads and Tracking Off Their Smart TVs", "20 Oct", "https://www.hightechdad.com/tech-briefs/people-are-using-ai-coding-agents-to-strip-ads-and-tracking-off-their-smart-tvs/", "hightechdad-2bee7d", "hightechdad"],
     ],
   },
   {
@@ -97,6 +98,7 @@ export const COVERAGE: PressGroup[] = [
     group: "Italy",
     country: true,
     items: [
+      ["la Repubblica", "Smart tv, l'IA usata per disattivare pubblicità e tracciamento", "20 Oct", "https://www.repubblica.it/tecnologia/2026/10/20/news/smart_tv_l_ia_usata_per_disattivare_pubblicita_e_tracciamento-425660075/", "repubblica-11f50e", "repubblica"],
       ["Macitynet", "La smart TV è lenta e piena di pubblicità? C’è chi usa l’AI per ripulirla", "20 Oct", "https://www.macitynet.it/rendere-le-tv-meno-smart/", "macitynet-8975f6", "macitynet"],
     ],
   },
@@ -119,6 +121,13 @@ export const COVERAGE: PressGroup[] = [
     country: true,
     items: [
       ["Insmart", "Android TV bez reklam s AI a Claude Code", "19 Oct", "https://insmart.cz/android-tv-bez-reklam-ai-claude-code/", "insmart-943c1f", "insmart"],
+    ],
+  },
+  {
+    group: "Ukraine",
+    country: true,
+    items: [
+      ["Mediasat", "Smart TV owners turn to Claude Code to remove ads", "20 Oct", "https://mediasat.info/en/2026/10/20/smart-tv-owners-turn-to-claude-code-to-remove-ads/", "mediasat-e46bb7", "mediasat"],
     ],
   },
   {
@@ -217,6 +226,9 @@ export const COVERAGE: PressGroup[] = [
       ["Nyongesa Sande", "People Are Using AI to Remove Smart TV Clutter and Take Back Their Home Screens", "19 Oct", "https://www.nyongesasande.com/ai-smart-tv-hacks-remove-ads-and-simplify-home-screens/", "nyongesasande-3ada96", "nyongesasande"],
       ["MiscW", "Clean Your TV: The GitHub Project Using Claude Code to Strip Smart TV Ads", "20 Oct", "https://www.miscw.com/clean-your-tv-the-github-project-using-claude-code-to-strip-smart-tv-ads-154800.html", "miscw-edd0ec", "miscw"],
       ["MiscW", "What Is cleanyourtv? The AI Tool Stripping Ads From Smart TVs", "20 Oct", "https://www.miscw.com/what-is-cleanyourtv-the-ai-tool-stripping-ads-from-smart-tvs-154802.html", "miscw-9e5090", "miscw"],
+      ["AwesomeFOSS (YouTube)", "CleanYourTV: 6,000 Stars in 3 Days to Kill Smart TV Ads", "20 Oct", "https://www.youtube.com/watch?v=-u2FuQZ9HsU", "youtube-d2ebdb", "youtube"],
+      ["vc.ru (Aleksandr Biryukov)", "CleanYourTV — AI DIY проект, который убирает рекламу и стилизует вашу TV OS", "20 Oct", "https://vc.ru/id553757/3205401-cleanyourtv-proekt-dlya-udaleniya-reklamy-i-kustomizatsii-android-tv", "vc-70f8b6", "vc"],
+      ["Prism Labs (YouTube)", "CleanYourTV Strips Ads From 54 Smart TVs Free", "19 Oct", "https://www.youtube.com/watch?v=lHonkeutGvg", "youtube-b7f6aa", "youtube"],
     ],
   },
 ];
