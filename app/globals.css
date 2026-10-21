@@ -186,13 +186,11 @@ button:focus-visible {
     gap: 12px !important;
     top: 22px !important;
   }
-  .m-pills > div {
-    height: 32px !important;
-    padding: 0 14px !important;
-    font-size: 13px !important;
+  .m-pills {
+    display: none !important;
   }
   .m-title {
-    padding: 120px 20px 0 !important;
+    padding: 96px 20px 0 !important;
     gap: 22px !important;
     bottom: 120px !important;
     /* safe centring: in short viewports (in-app browsers) the hero starts under the top bar instead of riding up over it */
@@ -248,7 +246,7 @@ button:focus-visible {
     display: none !important;
   }
   .m-title {
-    padding-top: 104px !important;
+    padding-top: 88px !important;
     gap: 14px !important;
     bottom: 104px !important;
   }
@@ -270,7 +268,7 @@ button:focus-visible {
     display: none !important;
   }
   .m-title {
-    padding-top: 112px !important;
+    padding-top: 88px !important;
     gap: 12px !important;
   }
   .m-btns > * {
