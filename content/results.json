@@ -768,5 +768,75 @@
     "image": "/results/wingedpanther.jpg",
     "link": "https://x.com/wingedpanther/status/2112617777689497844",
     "tv": "built a desktop app for it, Mi Box"
+  },
+  {
+    "handle": "@imhouzi",
+    "quote": "Sony 原生的音量调节提示太碍事了，他们的设计师肯定没用过自己家的电视，总是会遮住字幕。 借助 Codex 花了半个小时不到，就实现了免 root 替换音量条，毫无违和感。",
+    "image": "/results/imhouzi.jpg",
+    "link": "https://x.com/imhouzi/status/2112587265927160153",
+    "tv": "Sony, a cleaner volume bar"
+  },
+  {
+    "handle": "@frxncof",
+    "quote": "Bueno escalo bastante rapido. Ya puedo controlar las luces del living. Objetivo seria que cambien en base al color predominante",
+    "image": "/results/frxncof-2.jpg",
+    "link": "https://x.com/frxncof/status/2112745884408545739",
+    "tv": "now the TV runs the living room lights"
+  },
+  {
+    "handle": "@vaarsstudio",
+    "quote": "Ok so I did the TV hack thing too… But built it to sync between mulitple Andriod TV's Syncs the continue watching on apps that dont support with the use of…",
+    "image": "/results/vaarsstudio.jpg",
+    "link": "https://x.com/vaarsstudio/status/2112803493434282386",
+    "tv": "synced across several Android TVs"
+  },
+  {
+    "handle": "@Joydivi58861798",
+    "quote": "vamo ver",
+    "image": "/results/joydivi58861798-2.jpg",
+    "link": "https://x.com/Joydivi58861798/status/2112548211869331725",
+    "tv": "old TCL, round two"
+  },
+  {
+    "handle": "@SumeetBadgujar",
+    "quote": "It's coming together. With a few hours of tweaking and adding features, I'm closer to the clean,comfy UI. Lots of customization available. Faster app and app…",
+    "image": "/results/sumeetbadgujar.jpg",
+    "link": "https://x.com/SumeetBadgujar/status/2112780006342455317",
+    "tv": "clean, comfy Google TV home"
+  },
+  {
+    "handle": "@stensen7",
+    "quote": "GitHub 上有个开源项目 CleanYourTV，让 AI 帮你搞定： ✅ 停用广告和没用的预装软件（不卸载，随时能恢复） ✅ 换成苹果 TV 风格的简洁桌面 ✅ 不用 root，不用拆机，电脑和电视连同一个 Wi-Fi 就行 【5 步教程】 1⃣ 电脑装好 Claude…",
+    "image": "/results/stensen7.jpg",
+    "link": "https://x.com/stensen7/status/2112775460639965409",
+    "tv": "a 5-step guide in Chinese"
+  },
+  {
+    "handle": "@ProtoMauro",
+    "quote": "Le puse la interfaz de la Wii a mi TV. Ahora estoy armando el Mii",
+    "image": "/results/protomauro.jpg",
+    "link": "https://x.com/ProtoMauro/status/2112776289312555195",
+    "tv": "the Wii menu, on a TV"
+  },
+  {
+    "handle": "@GarudaO7",
+    "quote": "Final version for now. > Added a live realistic weather homescreen design(can be changed) > Cleaner UI > Improved animations and performance > Japanese…",
+    "image": "/results/garudao7.jpg",
+    "link": "https://x.com/GarudaO7/status/2112622217280536816",
+    "tv": "live weather home, Japanese wallpapers"
+  },
+  {
+    "handle": "@dyyys0ft",
+    "quote": "OpenCode + CleanYourTv",
+    "image": "/results/dyyys0ft.jpg",
+    "link": "https://x.com/dyyys0ft/status/2112753835231912321",
+    "tv": "OpenCode + CleanYourTV"
+  },
+  {
+    "handle": "@guilippert_v4",
+    "quote": "Ta, eu fui além no vibe coding da TV, segue Antes e Depois: ME ESCUTA, bolha de IA do X Imagem 1: original Samsung, pior que vibe coding em 2024 Gif 2:…",
+    "image": "/results/guilippert_v4.jpg",
+    "link": "https://x.com/guilippert_v4/status/2112714772961505478",
+    "tv": "Samsung, way past minimal"
   }
 ]
