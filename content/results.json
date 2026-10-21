@@ -985,5 +985,117 @@
     "image": "/results/x1kafadzhy.jpg",
     "link": "https://x.com/X1Kafadzhy/status/2112890791219675329",
     "tv": "the whole story, retold"
+  },
+  {
+    "handle": "@imkaikhalid",
+    "quote": "Spent the day reprogramming my TCL 😂 Wild times we live in. The things you can do with Claude these days. Open-sourced my config to Thanks to the OG @gathint 🔥",
+    "image": "/results/imkaikhalid.jpg",
+    "link": "https://x.com/imkaikhalid/status/2112482753220604028",
+    "tv": "TCL, config on GitHub"
+  },
+  {
+    "handle": "@elthadesigner",
+    "quote": "Vibe coded my TV",
+    "image": "/results/elthadesigner.jpg",
+    "link": "https://x.com/elthadesigner/status/2112977481213112721",
+    "tv": "Mountain home, name blurred"
+  },
+  {
+    "handle": "@rishxbhh",
+    "quote": "Vibecoded my TV as well on top of an existing repo, added my own widget for music with lyrics sync and hooked up smart lights and pet feeder as well ~60%…",
+    "image": "/results/rishxbhh.jpg",
+    "link": "https://x.com/rishxbhh/status/2112981798481482214",
+    "tv": "Lyrics widget, lights, pet feeder"
+  },
+  {
+    "handle": "@Syb_vhs",
+    "quote": "J’ai suivi la trend voilà mon nouveau home screen sur FireTV",
+    "image": "/results/syb_vhs.jpg",
+    "link": "https://x.com/Syb_vhs/status/2112982802304282994",
+    "tv": "Fire TV dashboard, camera blurred"
+  },
+  {
+    "handle": "@wade9_",
+    "quote": "Wow, made some changes. 😍",
+    "image": "/results/wade9_.jpg",
+    "link": "https://x.com/wade9_/status/2112990384108482831",
+    "tv": "Waterfall home, Wi-Fi name blurred"
+  },
+  {
+    "handle": "@GulamMustafa148",
+    "quote": "Great 👍 Here's what I'm building (WIP making animations more smooth and realistic)",
+    "image": "/results/gulammustafa148.jpg",
+    "link": "https://x.com/GulamMustafa148/status/2113008708502307218",
+    "tv": "Animated home, WIP"
+  },
+  {
+    "handle": "@marcosantini91",
+    "quote": "Thanks for the inspiration and the original prompt! For all @Xbox fan out there, just vibe coded an Xbox 360 \"Blades\" Dashboard inspired version myself. Enjoy!",
+    "image": "/results/marcosantini91.jpg",
+    "link": "https://x.com/marcosantini91/status/2113013510363897877",
+    "tv": "Xbox 360 Blades, names blurred"
+  },
+  {
+    "handle": "@LookingLostCat",
+    "quote": "When the whole LG and Nexusgamer thing happened, I did something similar but a bit more extreme, WebOS is not the same that android so was a little harder.",
+    "image": "/results/lookinglostcat.jpg",
+    "link": "https://x.com/LookingLostCat/status/2113014087974363193",
+    "tv": "LG webOS"
+  },
+  {
+    "handle": "@sudoaptaj",
+    "quote": "I tried to do it on my LG C5 WebOS TV and initially thought its only Android TV that can have such modifications possible. But boy was I wrong! Look at this…",
+    "image": "/results/sudoaptaj.jpg",
+    "link": "https://x.com/sudoaptaj/status/2113032397449011438",
+    "tv": "LG C5 webOS"
+  },
+  {
+    "handle": "@rajupp",
+    "quote": "Still work in progress, but pretty happy with this bespoke Android TV launcher I've come up with till now, thanks to Claude Code.",
+    "image": "/results/rajupp.jpg",
+    "link": "https://x.com/rajupp/status/2112965301629513984",
+    "tv": "Bespoke launcher, live cricket"
+  },
+  {
+    "handle": "@LukeParkerDev",
+    "quote": "I replaced the Google Assistant with OpenCode GPT Live Connected to all my devices on my mesh 'How long till my gf gets home' (tv -> mesh -> macbook -> find…",
+    "image": "/results/lukeparkerdev.jpg",
+    "link": "https://x.com/LukeParkerDev/status/2112757425715769671",
+    "tv": "OpenCode as the assistant"
+  },
+  {
+    "handle": "@PlayWithFire___",
+    "quote": "I don't like small icons",
+    "image": "/results/playwithfire___.jpg",
+    "link": "https://x.com/PlayWithFire___/status/2112955867893305844",
+    "tv": "Big icons"
+  },
+  {
+    "handle": "@LiNKQ8",
+    "quote": "من أقوى الترندات التي طلعت من انتشار الـ Ai تخلي Claude أو Codex يعدّلون على نظام تلفزيونك ويخلّيه أسرع وأرتب بدون إعلانات وبدون تجسّس عدّلت على أحد…",
+    "image": "/results/linkq8.jpg",
+    "link": "https://x.com/LiNKQ8/status/2112869278793818194",
+    "tv": "Kuwait prayer times, city blurred"
+  },
+  {
+    "handle": "@stuntech",
+    "quote": "Funciona más rápido de lo que pensé, adiós a todos esos Ads, la tele no podía ni con los menús 😂, instale el Skin que uso en el kiosko de casa. Es irreal,…",
+    "image": "/results/stuntech.jpg",
+    "link": "https://x.com/stuntech/status/2112924156287205513",
+    "tv": "Kiosk skin, finally fast"
+  },
+  {
+    "handle": "@xbanboo",
+    "quote": "今天我的电视也被搞了😬",
+    "image": "/results/xbanboo.jpg",
+    "link": "https://x.com/xbanboo/status/2112870537206927868",
+    "tv": "Chinese living-room home"
+  },
+  {
+    "handle": "@carlosazaustre",
+    "quote": "Me lo estoy pasando bomba 🥳 He creado varias imágenes con distintas iluminaciones para que cambie el fondo según la hora del día (mañana, mediodía,…",
+    "image": "/results/carlosazaustre.jpg",
+    "link": "https://x.com/carlosazaustre/status/2112920975171846152",
+    "tv": "Xiaomi, backdrop by time and weather"
   }
 ]
