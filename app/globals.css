@@ -615,3 +615,9 @@ a.press-card:hover .press-thumb {
     grid-template-columns: minmax(0, 1.9fr) minmax(260px, 1fr);
   }
 }
+
+/* Launch day: the live pill's dot pulses; reduced motion keeps it still. On very short screens the pill gives way. */
+@keyframes ph-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.ph-dot { animation: ph-pulse 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .ph-dot { animation: none; } }
+@media (max-width: 1100px) and (max-height: 520px) { .m-phlive { display: none !important; } }
