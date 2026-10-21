@@ -887,5 +887,103 @@
     "image": "/results/jaywcjlove.jpg",
     "link": "https://x.com/jaywcjlove/status/2112817358423330955",
     "tv": "Matinee, a clean home launcher"
+  },
+  {
+    "handle": "@itsMDRZN",
+    "quote": "Did something similar for Android TVs, but even more clean https://github.com/mdrzn/cleanframe-tv/",
+    "image": "/results/itsmdrzn.jpg",
+    "link": "https://x.com/itsMDRZN/status/2112914287685464130",
+    "tv": "CleanFrame TV, even more minimal"
+  },
+  {
+    "handle": "@matiasippoliti",
+    "quote": "Anoche con codex nos subimos a este barco y le dimos una impronta diferente",
+    "image": "/results/matiasippoliti.jpg",
+    "link": "https://x.com/matiasippoliti/status/2112915136277328226",
+    "tv": "his own take with Codex, city blurred"
+  },
+  {
+    "handle": "@MrFahrenheitsz",
+    "quote": "dari kemaren penasaran mau coba ini, tapi karena tutornya panjang jadi nemu opsi² yg laen juga alias lumayan lah berubah tampilan tipi yg udh 7 tahun... tapi…",
+    "image": "/results/mrfahrenheitsz.jpg",
+    "link": "https://x.com/MrFahrenheitsz/status/2112916369062895779",
+    "tv": "a 7-year-old TV, new look"
+  },
+  {
+    "handle": "@badboysm890",
+    "quote": "Vibe coding TV is fine but i like mine controlled with Wii remote and of course i want CarPlay in it. don’t ask me why @Nintendo @Apple @Google",
+    "image": "/results/badboysm890.jpg",
+    "link": "https://x.com/badboysm890/status/2112924058614644991",
+    "tv": "Wii remote and CarPlay vibes"
+  },
+  {
+    "handle": "@seems__legit",
+    "quote": "Made my own TV home screen to make it cleaner for my parents. One row of the apps they use, weather, Wi-Fi, Bluetooth. Nothing else. Turned off system…",
+    "image": "/results/seems__legit.jpg",
+    "link": "https://x.com/seems__legit/status/2112859737532559485",
+    "tv": "one row of apps for his parents"
+  },
+  {
+    "handle": "@berteotti_",
+    "quote": "I have a Samsung Crystal TV which was an interface nightmare, it had a hand full of features I didn't want. Not even talking about the ads... Took the…",
+    "image": "/results/berteotti_.jpg",
+    "link": "https://x.com/berteotti_/status/2112842697538928650",
+    "tv": "a calmer home with weather"
+  },
+  {
+    "handle": "@Retik_S",
+    "quote": "fire tv's home screen is mostly ads. this dev had claude write a replacement no sponsored banner, no autoplay trailers. just your hdmi inputs and your apps in…",
+    "image": "/results/retik_s.jpg",
+    "link": "https://x.com/Retik_S/status/2112806001137373344",
+    "tv": "Homestead for Fire TV"
+  },
+  {
+    "handle": "@Akash08078",
+    "quote": "My mum's TV showed ads on the home screen itself. So I replaced the home screen. Mi TV 4A Pro, Android 9, 1GB RAM. 26 bloat packages off, 115MB RAM back,…",
+    "image": "/results/akash08078.jpg",
+    "link": "https://x.com/Akash08078/status/2112905010480632006",
+    "tv": "Mi TV 4A Pro for his mum, family name blurred"
+  },
+  {
+    "handle": "@ashfaq_ulhaq",
+    "quote": "insanse boost in the tv boot to interaction time. I have also added my own twist to this; https://github.com/ashfaqhaq/widgetv A calm, widget-first home…",
+    "image": "/results/ashfaq_ulhaq.jpg",
+    "link": "https://x.com/ashfaq_ulhaq/status/2112906548028785091",
+    "tv": "widgetv, a calm widget home"
+  },
+  {
+    "handle": "@Navadeep_naidu7",
+    "quote": "this is what I ended up with after 2-3 hours of tinkering around. 'kanso-tv' launcher > has a live weather wallpaper screen along side earth and other…",
+    "image": "/results/navadeep_naidu7.jpg",
+    "link": "https://x.com/Navadeep_naidu7/status/2112911369863635153",
+    "tv": "kanso-tv, live weather wallpaper"
+  },
+  {
+    "handle": "@stallion_86",
+    "quote": "I did try it on my old mi stick which was so slow and was kept aside now it’s slick and fast good minimal UI and also I did remove all the unnecessary…",
+    "image": "/results/stallion_86.jpg",
+    "link": "https://x.com/stallion_86/status/2112823172555010417",
+    "tv": "an old Mi stick, fast again"
+  },
+  {
+    "handle": "@UltraLinx",
+    "quote": "Did it to my bedroom serif tv. But had to use deepseek with opencode to get the remote to change the home button. Claude refused to.",
+    "image": "/results/ultralinx.jpg",
+    "link": "https://x.com/UltraLinx/status/2112901708791923124",
+    "tv": "the bedroom Serif TV"
+  },
+  {
+    "handle": "@jjarthur121",
+    "quote": "What about the kids ? Mod my boring Tv Home Screen into a Minecraft game 😂 don’t ask me why.",
+    "image": "/results/jjarthur121-2.jpg",
+    "link": "https://x.com/jjarthur121/status/2112886900193436083",
+    "tv": "a Minecraft home screen"
+  },
+  {
+    "handle": "@X1Kafadzhy",
+    "quote": "CLAUDE CODE IS F*CKING DANGEROUS. IT JUST TOOK OVER A SMART TV THROUGH WIFI -all it got was a model number -it found the TV on the network, connected, went…",
+    "image": "/results/x1kafadzhy.jpg",
+    "link": "https://x.com/X1Kafadzhy/status/2112890791219675329",
+    "tv": "the whole story, retold"
   }
 ]
