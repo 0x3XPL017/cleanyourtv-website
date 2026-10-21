@@ -1004,9 +1004,10 @@ export default class TvSite extends React.Component<Props, State> {
           </div>
           <div style={S("display:flex;flex-direction:column;gap:14px;padding:clamp(20px,2.6cqw,34px);border-radius:24px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16))")}>
             <div style={S("font-family:'VT323',monospace;font-size:20px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))")}>{sl.kicker}</div>
-            <h3 style={S("margin:0;font-size:clamp(24px,3cqw,40px);font-weight:300;line-height:1.1;letter-spacing:-.01em")}>{sl.name}</h3>
-            <p style={S("margin:0;font-size:16px;line-height:1.5;color:var(--ink,rgba(255,255,255,.95));opacity:.9;text-wrap:pretty;min-height:4.5em")}>{sl.what}</p>
-            <div style={S("display:flex;flex-wrap:wrap;gap:6px 20px;font-size:14px")}><span>{sl.meta}</span><span>by <a href={sl.byUrl} target="_blank" rel="noopener">{sl.by}</a></span></div>
+            {/* fixed-height text block: one-line title, description clamped to 4 lines (full text on hover), one-line meta, so the card keeps its size between slides */}
+            <h3 title={sl.name} style={S("margin:0;font-size:clamp(24px,3cqw,40px);font-weight:300;line-height:1.15;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis")}>{sl.name}</h3>
+            <p title={sl.what} style={S("margin:0;font-size:16px;line-height:1.5;color:var(--ink,rgba(255,255,255,.95));opacity:.9;text-wrap:pretty;height:6em;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden")}>{sl.what}</p>
+            <div style={S("display:flex;flex-wrap:nowrap;gap:6px 20px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis")}><span>{sl.meta}</span><span>by <a href={sl.byUrl} target="_blank" rel="noopener">{sl.by}</a></span></div>
             <div style={S("display:flex;flex-wrap:wrap;gap:10px;align-items:center")}>
               <a href={sl.url} target="_blank" rel="noopener" style={S("display:flex;align-items:center;height:44px;padding:0 18px;border-radius:22px;border:0;background:var(--pill-bg,rgba(255,255,255,.12));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500")}>Open the project</a>
               {sl.kind === "theme" && sl.site && (
