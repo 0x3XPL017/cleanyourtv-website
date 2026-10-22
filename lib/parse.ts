@@ -98,8 +98,9 @@ export function tweetToken(id: string): string {
 export type ThemeCard = { name: string; what: string; by: string; byUrl: string; screenshot: string; keys: string[]; season: string; ended: boolean };
 /** One row of the Keys table in themes/README.md; a row can name more than one key. */
 export type ThemeKey = { keys: string[]; type: string; text: string };
-export type AddonRow = { name: string; url: string; what: string; by: string; byUrl: string; tested: string; permissions: string };
-export type AddonsData = { themes: ThemeCard[]; push: string; keys: ThemeKey[]; addons: AddonRow[]; community: ShowcaseItem[] };
+export type AddonRow = { name: string; url: string; what: string; by: string; byUrl: string; tested: string; permissions: string; screenshot: string };
+/** keyImages: theme key to a repo path of its screenshot, from docs/switches.md. */
+export type AddonsData = { themes: ThemeCard[]; push: string; keys: ThemeKey[]; keyImages: Record<string, string>; addons: AddonRow[]; community: ShowcaseItem[] };
 
 const cells = (l: string) => l.split("|").slice(1, -1).map((s) => s.trim());
 
@@ -119,6 +120,25 @@ export function parseThemeKeys(md: string): ThemeKey[] {
     else out.set(id, row);
   }
   return [...out.values()];
+}
+
+/** An <img src> in a repo markdown cell as a path from the repo root, resolved against `base` (a folder ending in /); "" if none. */
+export function repoPath(cell: string | undefined, base: string): string {
+  const src = cell && /<img[^>]*\bsrc="([^"]+)"/.exec(cell)?.[1];
+  if (!src || /^[a-z]+:/i.test(src)) return "";
+  const p = new URL(src, `https://repo/${base}`).pathname.slice(1);
+  return /^[\w./-]+$/.test(p) ? p : "";
+}
+
+/** docs/switches.md: each theme key's real-TV screenshot, as a repo path. */
+export function parseSwitchImages(md: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const l of md.split("\n")) {
+    const key = /^\|\s*`([a-z_]+)`\s*\|/.exec(l)?.[1];
+    const img = key && repoPath(cells(l)[1], "docs/");
+    if (key && img) out[key] = img;
+  }
+  return out;
 }
 
 /** The README's push example (`tools/theme.sh themes/aurora`) as a template; "{theme}" stands for the folder. */
@@ -148,6 +168,8 @@ export function parseAddons(md: string): AddonRow[] {
       byUrl: by ? by[2] : "",
       tested: c[3] || "",
       permissions: c[4] || "",
+      // The Screenshot column: <img src="name/screenshot.jpg">, relative to addons/; "wanted" for none yet.
+      screenshot: repoPath(c[5], "addons/"),
     });
   }
   return out;

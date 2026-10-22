@@ -197,6 +197,7 @@ export const repoCdn = (path: string): string => `https://cdn.jsdelivr.net/gh/Ga
  * /addons: real TV screenshots in the cleanyourtv repo that show a theme key at work, keyed by the key.
  * The keys themselves come from themes/README.md; this only pairs some of them with a picture.
  */
+// The fallback for docs/switches.md, which lists them in the repo; the site reads that file first.
 export const SWITCH_IMAGES: Record<string, string> = {
   sky_intensity: "docs/sky-sunset.jpg",
   home_idle_clock_minutes: "docs/clock-screensaver.png",

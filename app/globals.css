@@ -799,6 +799,17 @@ a.press-card:hover .press-thumb {
   object-fit: cover;
   background: #111;
 }
+.ao-wanted {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6f6f6f;
+  font-size: 15px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+}
+.ao-wanted:hover {
+  color: #cfffcf;
+}
 .ao-body {
   flex: 1;
   display: flex;

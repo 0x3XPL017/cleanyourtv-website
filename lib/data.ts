@@ -3,7 +3,8 @@
 // page never depends on the public GitHub rate limit at request time.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { GH, REPO, brandsOf, countLanguages, parseAddons, parseFaq, parsePushCommand, parseShowcase, parseThemeKeys, parseTVs, parseThemes, starSeriesFallback, tweetToken } from "./parse";
+import { GH, REPO, brandsOf, countLanguages, parseAddons, parseFaq, parsePushCommand, parseShowcase, parseSwitchImages, parseThemeKeys, parseTVs, parseThemes, starSeriesFallback, tweetToken } from "./parse";
+import { SWITCH_IMAGES } from "./site";
 import type { AddonsData, Faq, Pr, ResultItem, ShowcaseItem, SiteData, ThemeCard, ThemeItem, Tweet } from "./parse";
 
 const RAW = `https://raw.githubusercontent.com/${REPO}/main/`;
@@ -165,10 +166,11 @@ async function themeCard(name: string, files: string[] | null, readmeRows: Theme
 }
 
 export async function loadAddonsData(): Promise<AddonsData> {
-  const [readmeRemote, addonsMd, showcaseMd, tree] = await Promise.all([
+  const [readmeRemote, addonsMd, showcaseMd, switchesMd, tree] = await Promise.all([
     text(RAW + "themes/README.md"),
     text(RAW + "addons/README.md"),
     text(RAW + "SHOWCASE.md"),
+    text(RAW + "docs/switches.md"),
     json<Tree>(`https://api.github.com/repos/${REPO}/git/trees/main:themes?recursive=1`),
   ]);
   const readme = readmeRemote || (await fs.readFile(path.join(process.cwd(), "content", "themes-readme.md"), "utf8"));
@@ -182,6 +184,8 @@ export async function loadAddonsData(): Promise<AddonsData> {
     themes: [...themes.filter((t) => !t.ended), ...themes.filter((t) => t.ended)],
     push: parsePushCommand(readme),
     keys: parseThemeKeys(readme),
+    // docs/switches.md is the list of key screenshots; until it exists or if it can't be read, the hand-kept fallback.
+    keyImages: { ...SWITCH_IMAGES, ...(switchesMd ? parseSwitchImages(switchesMd) : {}) },
     addons: addonsMd ? parseAddons(addonsMd) : [],
     // Add-ons that live in their own repos: SHOWCASE.md's add-ons section (its table rows only).
     community: showcaseMd ? parseShowcase(showcaseMd).filter((i) => /add-ons/i.test(i.category || "")) : [],
