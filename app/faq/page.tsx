@@ -84,11 +84,11 @@ export default async function Faq() {
     ],
   };
   return (
-    <main style={page}>
+    <main className="page-main" style={page}>
       <JsonLd data={jsonLd} />
       <article style={wrap}>
         <p style={kicker}>
-          <Link href="/" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; FAQ
+          <Link href="/" className="home-link" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; FAQ
         </p>
         <h1 style={{ fontSize: 44, lineHeight: 1.1, fontWeight: 400, margin: "0 0 14px", letterSpacing: -0.5 }}>{title}</h1>
         <p style={{ ...p, fontSize: 20, color: "#bdbdbd" }}>

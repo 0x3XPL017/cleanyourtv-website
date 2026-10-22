@@ -47,11 +47,11 @@ export default async function Addons() {
     ],
   };
   return (
-    <main style={page}>
+    <main className="page-main" style={page}>
       <JsonLd data={jsonLd} />
       <div style={wrap}>
         <p style={kicker}>
-          <Link href="/" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; Add-ons
+          <Link href="/" className="home-link" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; Add-ons
         </p>
         <h1 style={{ fontSize: 44, lineHeight: 1.1, fontWeight: 400, margin: "0 0 14px", letterSpacing: -0.5 }}>Add-ons, themes and switches</h1>
         <p style={{ margin: "0 0 24px", fontSize: 20, color: "#bdbdbd" }}>Optional extras for the launcher. Nothing changes unless you ask.</p>
