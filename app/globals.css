@@ -627,16 +627,25 @@ a.press-card:hover .press-thumb {
   list-style: none;
   padding: 0;
   margin: 0 0 40px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px 20px;
+}
+.press-logos li {
+  min-width: 0;
+}
+.press-logos span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .press-logos a {
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 9px;
   color: #8b949e;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   line-height: 28px;
   border: 0;

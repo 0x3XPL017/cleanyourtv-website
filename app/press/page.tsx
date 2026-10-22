@@ -29,8 +29,8 @@ const wrap: CSSProperties = { maxWidth: 1160, margin: "0 auto", padding: "40px 2
 const kicker: CSSProperties = { margin: "0 0 20px", fontSize: 15, letterSpacing: 2, textTransform: "uppercase", color: "#9a9a9a" };
 const green = { color: "#cfffcf", borderBottomColor: "rgba(207,255,207,.35)" };
 
-// Icons that are a generated letter, a person's photo or YouTube's own logo, not the outlet's: left out of the logo wall.
-const NO_LOGO = new Set(["tectoc", "timenews", "twaslnews", "newsytoday", "substack", "artificiallyintimidating", "youtube"]);
+// Left out of the logo wall: icons that are a generated letter, a person's photo or YouTube's own logo, and What People Made (a gallery, not an outlet).
+const NO_LOGO = new Set(["tectoc", "timenews", "twaslnews", "newsytoday", "substack", "artificiallyintimidating", "youtube", "whatpeoplemade"]);
 // The big names (the home page's press strip) lead, then everything else in the list's order.
 const RANK = new Map(PRESS.map(([slug], i) => [slug, i]));
 const rank = (icon: string, i: number) => RANK.get(icon) ?? 1000 + i;
