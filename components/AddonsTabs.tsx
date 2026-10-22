@@ -200,21 +200,19 @@ function Addons({ data }: { data: AddonsData }) {
       <a href={`${GH}/blob/main/docs/modules.md`} target="_blank" rel="noopener">docs/modules.md</a>
     </>
   );
-  if (!data.addons.length)
-    return (
-      <div className="ao-card ao-empty">
-        <div className="ao-body">
-          <p className="ao-name">No add-ons yet. Build the first one.</p>
-          <p className="ao-text">A small app that shows up on Home as a card. How-to: {docs}.</p>
-          <div className="ao-actions">
-            <CopyLine label="Tell your coding agent" text="Read addons/README.md in CleanYourTV and help me build an add-on with a module card" />
-          </div>
-        </div>
-      </div>
-    );
   return (
     <>
       <p className="ao-intro">Small apps that show up on Home as a card. How-to: {docs}.</p>
+      {!data.addons.length && (
+        <div className="ao-card ao-empty">
+          <div className="ao-body">
+            <p className="ao-name">None in the repo yet. Build the first one.</p>
+            <div className="ao-actions">
+              <CopyLine label="Tell your coding agent" text="Read addons/README.md in CleanYourTV and help me build an add-on with a module card" />
+            </div>
+          </div>
+        </div>
+      )}
       <ul className="ao-grid">
         {data.addons.map((a) => (
           <li key={a.name}>
@@ -237,6 +235,33 @@ function Addons({ data }: { data: AddonsData }) {
           </li>
         ))}
       </ul>
+      {data.community.length > 0 && (
+        <>
+          <h2 className="ao-sub">From the community</h2>
+          <p className="ao-intro">Built in their own repos and listed in <a href={`${GH}/blob/main/SHOWCASE.md`} target="_blank" rel="noopener">SHOWCASE.md</a>. Read each one&apos;s README before installing.</p>
+          <ul className="ao-grid">
+            {data.community.map((c) => (
+              <li key={c.url}>
+                <div className="ao-card">
+                  <div className="ao-body">
+                    <div className="ao-head">
+                      <a className="ao-name" href={c.url} target="_blank" rel="noopener">{c.name}</a>
+                    </div>
+                    {c.what && <p className="ao-text">{md(c.what, "")}</p>}
+                    <p className="ao-meta">
+                      {c.by && <>by {c.by}</>}
+                      {c.builtOn && <>{c.by && " · "}tested on {c.builtOn}</>}
+                    </p>
+                    <div className="ao-actions">
+                      <CopyLine label="Tell your coding agent" text={`Read ${c.url} and help me install ${c.name} on my TV safely`} />
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </>
   );
 }
@@ -257,7 +282,7 @@ export default function AddonsTabs({ data }: { data: AddonsData }) {
     setTab(t);
     try { history.replaceState(null, "", `#${t}`); } catch { /* ignore */ }
   };
-  const count: Record<Tab, number> = { themes: data.themes.length, switches: data.keys.length, addons: data.addons.length };
+  const count: Record<Tab, number> = { themes: data.themes.length, switches: data.keys.length, addons: data.addons.length + data.community.length };
   return (
     <>
       <nav className="ao-tabs" aria-label="Add-ons, themes and switches">

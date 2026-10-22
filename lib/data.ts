@@ -165,9 +165,10 @@ async function themeCard(name: string, files: string[] | null, readmeRows: Theme
 }
 
 export async function loadAddonsData(): Promise<AddonsData> {
-  const [readmeRemote, addonsMd, tree] = await Promise.all([
+  const [readmeRemote, addonsMd, showcaseMd, tree] = await Promise.all([
     text(RAW + "themes/README.md"),
     text(RAW + "addons/README.md"),
+    text(RAW + "SHOWCASE.md"),
     json<Tree>(`https://api.github.com/repos/${REPO}/git/trees/main:themes?recursive=1`),
   ]);
   const readme = readmeRemote || (await fs.readFile(path.join(process.cwd(), "content", "themes-readme.md"), "utf8"));
@@ -182,6 +183,8 @@ export async function loadAddonsData(): Promise<AddonsData> {
     push: parsePushCommand(readme),
     keys: parseThemeKeys(readme),
     addons: addonsMd ? parseAddons(addonsMd) : [],
+    // Add-ons that live in their own repos: SHOWCASE.md's add-ons section (its table rows only).
+    community: showcaseMd ? parseShowcase(showcaseMd).filter((i) => /add-ons/i.test(i.category || "")) : [],
   };
 }
 

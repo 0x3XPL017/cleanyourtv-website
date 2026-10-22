@@ -99,7 +99,7 @@ export type ThemeCard = { name: string; what: string; by: string; byUrl: string;
 /** One row of the Keys table in themes/README.md; a row can name more than one key. */
 export type ThemeKey = { keys: string[]; type: string; text: string };
 export type AddonRow = { name: string; url: string; what: string; by: string; byUrl: string; tested: string; permissions: string };
-export type AddonsData = { themes: ThemeCard[]; push: string; keys: ThemeKey[]; addons: AddonRow[] };
+export type AddonsData = { themes: ThemeCard[]; push: string; keys: ThemeKey[]; addons: AddonRow[]; community: ShowcaseItem[] };
 
 const cells = (l: string) => l.split("|").slice(1, -1).map((s) => s.trim());
 
