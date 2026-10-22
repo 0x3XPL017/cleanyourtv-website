@@ -3,8 +3,8 @@
 // page never depends on the public GitHub rate limit at request time.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { GH, REPO, parseAddons, parsePushCommand, parseShowcase, parseThemeKeys, parseTVs, parseThemes, starSeriesFallback, tweetToken } from "./parse";
-import type { AddonsData, Pr, ResultItem, ShowcaseItem, SiteData, ThemeCard, ThemeItem, Tweet } from "./parse";
+import { GH, REPO, brandsOf, countLanguages, parseAddons, parseFaq, parsePushCommand, parseShowcase, parseThemeKeys, parseTVs, parseThemes, starSeriesFallback, tweetToken } from "./parse";
+import type { AddonsData, Faq, Pr, ResultItem, ShowcaseItem, SiteData, ThemeCard, ThemeItem, Tweet } from "./parse";
 
 const RAW = `https://raw.githubusercontent.com/${REPO}/main/`;
 const REVALIDATE = 3600;
@@ -188,7 +188,33 @@ export async function loadAddonsData(): Promise<AddonsData> {
   };
 }
 
-// ---- static fallbacks (snapshot of the repo on 2026-10-19; /addons falls back to content/themes-readme.md, 2026-10-22)
+// ---- /llms.txt, the sitemap and the home page's structured data: the counts and the FAQ, live from the repo
+
+export type Facts = { tvs: number; brands: [string, number][]; languages: number; faq: Faq[]; readme: string; updated: string };
+
+export async function loadFacts(): Promise<Facts> {
+  const [examplesMd, readme, res, last] = await Promise.all([
+    text(RAW + "examples/README.md"),
+    text(RAW + "README.md"),
+    json<Tree>(`https://api.github.com/repos/${REPO}/git/trees/main:launcher/app/src/main/res`),
+    json<{ commit: { committer: { date: string } } }[]>(`https://api.github.com/repos/${REPO}/commits?per_page=1`),
+  ]);
+  const tvs = parseTVs(examplesMd || FALLBACK.examples);
+  // Languages from the launcher's res/ folders; without the tree, from the README's "**24 languages**".
+  const stated = readme?.match(/\*\*(\d+) languages\*\*/);
+  const faq = readme ? parseFaq(readme) : [];
+  return {
+    tvs: tvs.length,
+    brands: brandsOf(tvs),
+    languages: res ? countLanguages(res.tree.filter((t) => t.type === "tree").map((t) => t.path)) : stated ? Number(stated[1]) : FALLBACK.languages,
+    faq: faq.length ? faq : parseFaq(await fs.readFile(path.join(process.cwd(), "content", "readme-faq.md"), "utf8")),
+    readme: readme || "",
+    updated: last?.[0]?.commit.committer.date || new Date().toISOString(),
+  };
+}
+
+// ---- static fallbacks (snapshot of the repo on 2026-10-19, languages on 2026-10-22; /addons falls back to content/themes-readme.md
+// and the FAQ to content/readme-faq.md, both 2026-10-22)
 
 export const FALLBACK = {
   tweet: {
@@ -201,6 +227,7 @@ export const FALLBACK = {
   forks: 331,
   prCount: 52,
   contributors: 29,
+  languages: 24,
   examples: [
     "| `benq-e55-735/` | BenQ E55-735 (Changhong AI PONT, DVB96BQ) | Google TV 14 | Homwee store/help, Anoki ACR, Google TV recommendations; wireless-debugging pairing, setupwraith, deep-standby notes |",
     "| `chiq-ai-pont/` | CHiQ AI PONT (DVB93CQ) | Android TV 11 | Anoki ACR, FAST channels, AI PONT, Homwee services |",

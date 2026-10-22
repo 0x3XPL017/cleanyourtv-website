@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://cleanyour.tv"),
   title: "CleanYourTV",
   applicationName: "CleanYourTV",
+  authors: [{ name: "Gathin", url: "https://x.com/gathint" }],
+  creator: "Gathin",
   description:
     "Your TV, minus the ads. Debloat any Android TV or Google TV over Wi-Fi and swap the ad-filled home screen for a clean Apple TV-style launcher. No root, fully reversible.",
   openGraph: {

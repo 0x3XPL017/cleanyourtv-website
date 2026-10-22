@@ -2,9 +2,9 @@
 // The whole site is one old television. This is a port of the Claude Design prototype
 // (design/cleanyour.tv.dc.html): same refs, state and methods, with the content coming in as props.
 import React from "react";
-import { GH } from "@/lib/parse";
+import { GH, brandsOf } from "@/lib/parse";
 import type { SiteData } from "@/lib/parse";
-import { GROUPS, KONAMI, NAMES, ORDER, PRESS, S, SHOWCASE_IMAGES, cdn, thumb, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
+import { GROUPS, KONAMI, NAMES, ORDER, PRESS, PRESS_LOGO_W, S, SHOWCASE_IMAGES, cdn, thumb, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
 import type { ThemeName } from "@/lib/site";
 
 const TWEET = "https://x.com/gathint/status/2111379569030939102";
@@ -726,7 +726,7 @@ export default class TvSite extends React.Component<Props, State> {
                     {PRESS.map(([slug, name, url]) => (
                       <a key={slug} href={url} target="_blank" rel="noopener" title={name} tabIndex={k === 1 ? -1 : undefined} className="no-border" style={S("line-height:0;flex-shrink:0")}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={cdn(`/press/${slug}.png`)} alt={k === 1 ? "" : name} height={28} loading="lazy" style={S("height:clamp(24px,2.4cqw,32px);width:auto;display:block")} />
+                        <img src={cdn(`/press/${slug}.png`)} alt={k === 1 ? "" : name} width={Math.round((PRESS_LOGO_W[slug] ?? 88) * 28 / 88)} height={28} loading="lazy" style={S("height:clamp(24px,2.4cqw,32px);width:auto;display:block")} />
                       </a>
                     ))}
                   </div>
@@ -759,7 +759,7 @@ export default class TvSite extends React.Component<Props, State> {
   renderStory() {
     const d = this.props.data, tw = d.tweet;
     const stars = d.stars.toLocaleString("en-US");
-    const ticker = `Oct 17, 2:21 PM: posted · 48 hours later: ${stars} stars, ${d.forks.toLocaleString("en-US")} forks, ${d.prCount.toLocaleString("en-US")} pull requests · ${d.tvs.length} TVs from ${new Set(d.tvs.map((t) => t.brand)).size} brands`;
+    const ticker = `Oct 17, 2:21 PM: posted · 48 hours later: ${stars} stars, ${d.forks.toLocaleString("en-US")} forks, ${d.prCount.toLocaleString("en-US")} pull requests · ${d.tvs.length} TVs from ${brandsOf(d.tvs).length} brands`;
     return (
       <section id="ch-01" data-ch="1" aria-label="Channel 01, The story" className="m-section" style={this.sectionStyle()}>
         {this.header("CH 01 · THE STORY", "One afternoon, one tweet.", "It started on one TV. Then other people tried it on theirs.")}

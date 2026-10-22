@@ -170,3 +170,35 @@ export function keyKind(k: ThemeKey): "toggle" | "value" | "list" {
   if (/^-?\d+ to \d+$|#RRGGBB|YYYY| or /.test(k.type) || (k.type === "string" && keyDefault(k.text))) return "value";
   return "list";
 }
+
+// ---- SEO: brand and language counts and the README's FAQ, for /llms.txt and the home page's structured data
+
+/** Brands with their model counts, most models first. "onn" and "onn." are one brand. */
+export function brandsOf(tvs: Tv[]): [string, number][] {
+  const m = new Map<string, [string, number]>();
+  for (const t of tvs) {
+    const k = t.brand.replace(/\.$/, "").toLowerCase();
+    const e = m.get(k);
+    if (e) e[1] += 1;
+    else m.set(k, [t.brand, 1]);
+  }
+  return [...m.values()].sort((a, b) => b[1] - a[1]);
+}
+
+/** The launcher's languages: one per values-<locale> folder in its res/, plus the default English. */
+export function countLanguages(resDirs: string[]): number {
+  return 1 + resDirs.filter((d) => /^values-(?:[a-z]{2,3}(?:-r[A-Z]{2})?|b\+[a-z]{2,3}(?:\+\w+)*)$/.test(d)).length;
+}
+
+export type Faq = { q: string; a: string };
+
+const plain = (md: string) =>
+  md.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/`([^`]+)`/g, "$1").replace(/\*\*([^*]+)\*\*/g, "$1").replace(/\s+/g, " ").trim();
+
+/** "## Questions people ask" in the README, one <details> per question, as plain text. Answers with a code block are left out, since without the code they would not read as the README does. */
+export function parseFaq(md: string): Faq[] {
+  const sec = md.split(/^## /m).find((s) => s.startsWith("Questions people ask")) || "";
+  return Array.from(sec.matchAll(/<summary><b>([\s\S]*?)<\/b><\/summary>([\s\S]*?)<\/details>/g), (m) => ({ q: m[1], a: m[2] }))
+    .filter((f) => !f.a.includes("```"))
+    .map((f) => ({ q: plain(f.q), a: plain(f.a) }));
+}

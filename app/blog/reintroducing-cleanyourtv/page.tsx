@@ -1,31 +1,20 @@
-import type { Metadata } from "next";
 import type { CSSProperties, ReactNode } from "react";
-import { PRESS, cdn } from "@/lib/site";
+import { PRESS, PRESS_LOGO_W, cdn } from "@/lib/site";
 import { COVERAGE_COUNTRIES, COVERAGE_TOTAL } from "@/lib/press";
+import JsonLd from "@/components/JsonLd";
+import { PERSON, SITE, breadcrumbs, pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "(Re)introducing CleanYourTV",
-  description:
-    "Three days ago I fixed my parents' TV with a prompt. Then the internet fixed theirs: 66 TVs, 25 brands, 14 languages, one 300 KB launcher, nothing uninstalled.",
-  alternates: { canonical: "https://cleanyour.tv/blog/reintroducing-cleanyourtv" },
-  openGraph: {
-    type: "article",
-    title: "(Re)introducing CleanYourTV",
-    description: "Three days ago I fixed my parents' TV with a prompt. Then the internet fixed theirs.",
-    url: "https://cleanyour.tv/blog/reintroducing-cleanyourtv",
-    siteName: "CleanYourTV",
-    publishedTime: "2026-10-20T03:00:00+05:30",
-    authors: ["https://x.com/gathint"],
-    images: [{ url: "/blog/cover.png", width: 1600, height: 900, alt: "CleanYourTV: your TV, minus the ads" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    creator: "@gathint",
-    title: "(Re)introducing CleanYourTV",
-    description: "Three days ago I fixed my parents' TV with a prompt. Then the internet fixed theirs.",
-    images: ["/blog/cover.png"],
-  },
-};
+const title = "(Re)introducing CleanYourTV";
+const published = "2026-10-20T03:00:00+05:30";
+const cover = { url: "/blog/cover.png", width: 1600, height: 900, alt: "CleanYourTV: your TV, minus the ads" };
+
+// The description keeps the numbers as they were on the day it was written.
+export const metadata = pageMeta(
+  "/blog/reintroducing-cleanyourtv",
+  title,
+  "Three days ago I fixed my parents' TV with a prompt. Then the internet fixed theirs: 66 TVs, 25 brands, 14 languages, one 300 KB launcher, nothing uninstalled.",
+  { image: cover, article: { publishedTime: published } },
+);
 
 
 const page: CSSProperties = {
@@ -51,19 +40,32 @@ const A = ({ href, children }: { href: string; children: ReactNode }) => (
 const X = ({ h }: { h: string }) => <A href={`https://x.com/${h}`}>@{h}</A>;
 
 export default function Article() {
+  const url = `${SITE}/blog/reintroducing-cleanyourtv`;
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    headline: "(Re)introducing CleanYourTV",
-    datePublished: "2026-10-20T03:00:00+05:30",
-    author: { "@type": "Person", name: "Gathin", url: "https://x.com/gathint" },
-    image: "https://cleanyour.tv/blog/cover.png",
-    mainEntityOfPage: "https://cleanyour.tv/blog/reintroducing-cleanyourtv",
-    description: metadata.description,
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "@id": url,
+        headline: title,
+        description: metadata.description,
+        datePublished: published,
+        dateModified: published,
+        author: PERSON,
+        publisher: { "@id": PERSON["@id"] },
+        image: SITE + cover.url,
+        url,
+        mainEntityOfPage: url,
+        isPartOf: { "@id": `${SITE}/#website` },
+        about: { "@id": `${SITE}/#app` },
+        inLanguage: "en",
+      },
+      breadcrumbs([title, "/blog/reintroducing-cleanyourtv"]),
+    ],
   };
   return (
     <main style={page}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <JsonLd data={jsonLd} />
       <article style={wrap}>
         <p style={{ ...p, fontSize: 15, letterSpacing: 2, textTransform: "uppercase", color: "#9a9a9a" }}>
           <A href="/">cleanyour.tv</A> &nbsp;·&nbsp; 20 October 2026 &nbsp;·&nbsp; <X h="gathint" />
@@ -87,7 +89,7 @@ export default function Article() {
         <div style={{ display: "flex", flexWrap: "wrap", gap: "14px 26px", alignItems: "center", margin: "0 0 20px" }}>
           {PRESS.map(([slug, name, url]) => (
             <a key={slug} href={url} title={name} style={{ borderBottom: "none", lineHeight: 0 }}>
-              <img src={cdn(`/press/${slug}.png`)} alt={name} style={{ height: 34, width: "auto", display: "block" }} />
+              <img src={cdn(`/press/${slug}.png`)} alt={name} width={Math.round((PRESS_LOGO_W[slug] ?? 88) * 34 / 88)} height={34} style={{ height: 34, width: "auto", display: "block" }} />
             </a>
           ))}
         </div>

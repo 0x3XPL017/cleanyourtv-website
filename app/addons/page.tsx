@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { GH } from "@/lib/parse";
 import { loadAddonsData } from "@/lib/data";
 import AddonsTabs from "@/components/AddonsTabs";
+import JsonLd from "@/components/JsonLd";
+import { SITE, breadcrumbs, pageMeta } from "@/lib/seo";
 
 // Themes, keys and add-ons are read from the cleanyourtv repo, re-fetched at most once an hour,
 // so a merged theme or add-on shows up here with no site change.
@@ -12,13 +13,7 @@ export const revalidate = 3600;
 const title = "Add-ons, themes and switches · CleanYourTV";
 const description = "Everything optional around the small CleanYourTV launcher: themes you push without a rebuild, the switches a theme can flip, and add-on apps that plug in as a card.";
 
-export const metadata: Metadata = {
-  title,
-  description,
-  alternates: { canonical: "https://cleanyour.tv/addons" },
-  openGraph: { title, description, url: "https://cleanyour.tv/addons", siteName: "CleanYourTV", images: [{ url: "/docs/og.png", width: 1200, height: 630 }] },
-  twitter: { card: "summary_large_image", creator: "@gathint", title, description, images: ["/docs/og.png"] },
-};
+export const metadata = pageMeta("/addons", title, description);
 
 // body is overflow:hidden for the TV, so the page scrolls inside main, as /press and the blog do.
 const page: CSSProperties = {
@@ -44,8 +39,16 @@ const STEPS: [ReactNode, string][] = [
 
 export default async function Addons() {
   const data = await loadAddonsData();
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "WebPage", "@id": `${SITE}/addons`, url: `${SITE}/addons`, name: title, description, isPartOf: { "@id": `${SITE}/#website` }, about: { "@id": `${SITE}/#app` } },
+      breadcrumbs(["Add-ons", "/addons"]),
+    ],
+  };
   return (
     <main style={page}>
+      <JsonLd data={jsonLd} />
       <div style={wrap}>
         <p style={kicker}>
           <Link href="/" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; Add-ons

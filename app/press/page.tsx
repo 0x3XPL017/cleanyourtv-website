@@ -1,19 +1,15 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { PRESS, cdn } from "@/lib/site";
 import { COVERAGE, COVERAGE_COUNTRIES, COVERAGE_TOTAL } from "@/lib/press";
 import PressGrid, { type PressItem } from "@/components/PressGrid";
+import JsonLd from "@/components/JsonLd";
+import { SITE, breadcrumbs, isoDay, pageMeta } from "@/lib/seo";
 
+const title = "CleanYourTV in the press";
 const description = `${COVERAGE_TOTAL} articles about CleanYourTV from ${COVERAGE_COUNTRIES} countries, from TechCrunch and Mashable to GIGAZINE and Xataka.`;
 
-export const metadata: Metadata = {
-  title: "CleanYourTV in the press",
-  description,
-  alternates: { canonical: "https://cleanyour.tv/press" },
-  openGraph: { title: "CleanYourTV in the press", description, url: "https://cleanyour.tv/press", siteName: "CleanYourTV", images: [{ url: "/docs/og.png", width: 1200, height: 630 }] },
-  twitter: { card: "summary_large_image", creator: "@gathint", title: "CleanYourTV in the press", description, images: ["/docs/og.png"] },
-};
+export const metadata = pageMeta("/press", title, description);
 
 // body is overflow:hidden for the TV, so the page scrolls inside main, as the blog does.
 const page: CSSProperties = {
@@ -50,8 +46,40 @@ export default function Press() {
   const logos = items
     .filter((it) => !NO_LOGO.has(it.icon) && !seen.has(it.icon) && seen.add(it.icon))
     .map((it) => ({ icon: it.icon, url: it.url, outlet: LOGO_NAME[it.icon] ?? it.outlet.replace(/ \(.*\)$/, "") }));
+  // The page as a collection of the articles, in the order the grid shows them.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${SITE}/press`,
+        url: `${SITE}/press`,
+        name: title,
+        description,
+        isPartOf: { "@id": `${SITE}/#website` },
+        about: { "@id": `${SITE}/#app` },
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: items.length,
+          itemListElement: items.map((it, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "Article",
+              headline: it.headline,
+              url: it.url,
+              publisher: { "@type": "Organization", name: it.outlet.replace(/ \(.*\)$/, "") },
+              ...(isoDay(it.date) ? { datePublished: isoDay(it.date) } : {}),
+            },
+          })),
+        },
+      },
+      breadcrumbs(["Press", "/press"]),
+    ],
+  };
   return (
     <main style={page}>
+      <JsonLd data={jsonLd} />
       <div style={wrap}>
         <p style={kicker}>
           <Link href="/" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; Press
