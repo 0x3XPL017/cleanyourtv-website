@@ -2,12 +2,14 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { PRESS, cdn } from "@/lib/site";
 import { COVERAGE, COVERAGE_COUNTRIES, COVERAGE_TOTAL } from "@/lib/press";
+import { VIDEOS, VIDEOS_AS_OF, videoDate } from "@/lib/videos";
+import VideoGrid from "@/components/VideoGrid";
 import PressGrid, { type PressItem } from "@/components/PressGrid";
 import JsonLd from "@/components/JsonLd";
 import { SITE, breadcrumbs, isoDay, pageMeta } from "@/lib/seo";
 
 const title = "CleanYourTV in the press";
-const description = `${COVERAGE_TOTAL} articles about CleanYourTV from ${COVERAGE_COUNTRIES} countries, from TechCrunch and Mashable to GIGAZINE and Xataka.`;
+const description = `${COVERAGE_TOTAL} articles and ${VIDEOS.length} videos about CleanYourTV, from outlets in ${COVERAGE_COUNTRIES} countries: TechCrunch and Mashable to GIGAZINE and Xataka.`;
 
 export const metadata = pageMeta("/press", title, description);
 
@@ -26,7 +28,7 @@ const kicker: CSSProperties = { margin: "0 0 20px", fontSize: 15, letterSpacing:
 const green = { color: "#cfffcf", borderBottomColor: "rgba(207,255,207,.35)" };
 
 // Left out of the logo wall: icons that are a generated letter, a person's photo or YouTube's own logo, and What People Made (a gallery, not an outlet).
-const NO_LOGO = new Set(["tectoc", "timenews", "twaslnews", "newsytoday", "substack", "artificiallyintimidating", "youtube", "whatpeoplemade"]);
+const NO_LOGO = new Set(["tectoc", "timenews", "twaslnews", "newsytoday", "substack", "artificiallyintimidating", "youtube", "whatpeoplemade", "sohu", "digitalage"]);
 // The big names (the home page's press strip) lead, then everything else in the list's order.
 const RANK = new Map(PRESS.map(([slug], i) => [slug, i]));
 const rank = (icon: string, i: number) => RANK.get(icon) ?? 1000 + i;
@@ -46,7 +48,10 @@ export default function Press() {
   const logos = items
     .filter((it) => !NO_LOGO.has(it.icon) && !seen.has(it.icon) && seen.add(it.icon))
     .map((it) => ({ icon: it.icon, url: it.url, outlet: LOGO_NAME[it.icon] ?? it.outlet.replace(/ \(.*\)$/, "") }));
-  // The page as a collection of the articles, in the order the grid shows them.
+  // ISO 8601 length for VideoObject: 754 -> PT12M34S
+const isoLength = (s: number) => `PT${s >= 3600 ? `${Math.floor(s / 3600)}H` : ""}${Math.floor((s % 3600) / 60)}M${s % 60}S`;
+
+// The page as a collection of the articles, in the order the grid shows them, and of the videos.
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -74,6 +79,28 @@ export default function Press() {
           })),
         },
       },
+      {
+        "@type": "ItemList",
+        "@id": `${SITE}/press#videos`,
+        name: "Videos about CleanYourTV",
+        numberOfItems: VIDEOS.length,
+        itemListElement: VIDEOS.map((v, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          item: {
+            "@type": "VideoObject",
+            name: v.title,
+            description: `${v.title}, by ${v.channel} on YouTube`,
+            url: `https://www.youtube.com/watch?v=${v.id}`,
+            embedUrl: `https://www.youtube.com/embed/${v.id}`,
+            thumbnailUrl: `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
+            uploadDate: v.date,
+            ...(v.duration > 0 ? { duration: isoLength(v.duration) } : {}),
+            author: { "@type": "Person", name: v.channel },
+            interactionStatistic: { "@type": "InteractionCounter", interactionType: { "@type": "WatchAction" }, userInteractionCount: v.views },
+          },
+        })),
+      },
       breadcrumbs(["Press", "/press"]),
     ],
   };
@@ -86,8 +113,9 @@ export default function Press() {
         </p>
         <h1 style={{ fontSize: 44, lineHeight: 1.1, fontWeight: 400, margin: "0 0 14px", letterSpacing: -0.5 }}>In the press</h1>
         <p style={{ margin: "0 0 32px", fontSize: 20, color: "#bdbdbd", maxWidth: 680 }}>
-          {COVERAGE_TOTAL} articles about CleanYourTV in its first days: {fromCountries} from outlets in {COVERAGE_COUNTRIES} countries, the rest from
-          Spanish-language sites in Latin America, newsletters, blogs and AI news sites. Headlines are as published.
+          {COVERAGE_TOTAL} articles and {VIDEOS.length} videos about CleanYourTV in its first days. Of the articles, {fromCountries} are from outlets in{" "}
+          {COVERAGE_COUNTRIES} countries, the rest from Spanish-language sites in Latin America, newsletters, blogs and AI news sites. Headlines are as
+          published.
         </p>
 
         <ul className="press-logos" aria-label="Outlets">
@@ -102,6 +130,11 @@ export default function Press() {
           ))}
         </ul>
 
+        <h2 id="videos" className="press-h2">Videos</h2>
+        <p className="press-h2-note">On YouTube, most watched first. Views as of {videoDate(VIDEOS_AS_OF)}.</p>
+        <VideoGrid videos={VIDEOS} />
+
+        <h2 id="articles" className="press-h2">Articles</h2>
         <PressGrid items={items} groups={COVERAGE.map((g) => ({ label: g.group, count: g.items.length }))} />
 
         <p style={{ margin: "56px 0 0", color: "#9a9a9a" }}>
