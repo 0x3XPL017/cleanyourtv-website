@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { PRESS, cdn } from "@/lib/site";
 import { COVERAGE, COVERAGE_COUNTRIES, COVERAGE_TOTAL } from "@/lib/press";
-import CountryJump from "@/components/CountryJump";
+import PressGrid, { type PressItem } from "@/components/PressGrid";
 
 const description = `${COVERAGE_TOTAL} articles about CleanYourTV from ${COVERAGE_COUNTRIES} countries, from TechCrunch and Mashable to GIGAZINE and Xataka.`;
 
@@ -28,10 +28,28 @@ const page: CSSProperties = {
 const wrap: CSSProperties = { maxWidth: 1160, margin: "0 auto", padding: "40px 20px 120px", fontSize: 17, lineHeight: 1.5 };
 const kicker: CSSProperties = { margin: "0 0 20px", fontSize: 15, letterSpacing: 2, textTransform: "uppercase", color: "#9a9a9a" };
 const green = { color: "#cfffcf", borderBottomColor: "rgba(207,255,207,.35)" };
-const anchor = (g: string) => g.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+// Icons that are a generated letter, a person's photo or YouTube's own logo, not the outlet's: left out of the logo wall.
+const NO_LOGO = new Set(["tectoc", "timenews", "twaslnews", "newsytoday", "substack", "artificiallyintimidating", "youtube"]);
+// The big names (the home page's press strip) lead, then everything else in the list's order.
+const RANK = new Map(PRESS.map(([slug], i) => [slug, i]));
+const rank = (icon: string, i: number) => RANK.get(icon) ?? 1000 + i;
+// Platform icons shared by several authors are named after the platform.
+const LOGO_NAME: Record<string, string> = { devto: "DEV Community" };
 
 export default function Press() {
   const fromCountries = COVERAGE.filter((g) => g.country).reduce((n, g) => n + g.items.length, 0);
+  const items: PressItem[] = COVERAGE.flatMap((g) =>
+    g.items.map(([outlet, headline, date, url, thumb, icon]) => ({ outlet, headline, date, url, thumb, icon, group: g.group })),
+  )
+    .map((it, i) => ({ it, r: rank(it.icon, i) }))
+    .sort((a, b) => a.r - b.r)
+    .map(({ it }) => it);
+  // One logo per outlet, linking to its first article; names drop "(on Yahoo Tech)"-style notes.
+  const seen = new Set<string>();
+  const logos = items
+    .filter((it) => !NO_LOGO.has(it.icon) && !seen.has(it.icon) && seen.add(it.icon))
+    .map((it) => ({ icon: it.icon, url: it.url, outlet: LOGO_NAME[it.icon] ?? it.outlet.replace(/ \(.*\)$/, "") }));
   return (
     <main style={page}>
       <div style={wrap}>
@@ -44,46 +62,19 @@ export default function Press() {
           Spanish-language sites in Latin America, newsletters, blogs and AI news sites. Headlines are as published.
         </p>
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "14px 26px", alignItems: "center", margin: "0 0 36px" }}>
-          {PRESS.map(([slug, name, url]) => (
-            <a key={slug} href={url} target="_blank" rel="noopener" title={name} className="no-border" style={{ lineHeight: 0 }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={cdn(`/press/${slug}.png`)} alt={name} height={30} style={{ height: 30, width: "auto", display: "block" }} />
-            </a>
+        <ul className="press-logos" aria-label="Outlets">
+          {logos.map((l) => (
+            <li key={l.icon}>
+              <a href={l.url} target="_blank" rel="noopener" title={l.outlet} className="no-border">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={cdn(`/press/icons/${l.icon}.png`)} alt="" width={28} height={28} loading="lazy" decoding="async" />
+                <span>{l.outlet}</span>
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        <div style={{ margin: "0 0 12px" }}>
-          <CountryJump groups={COVERAGE.map((g) => ({ id: anchor(g.group), label: g.group, count: g.items.length }))} />
-        </div>
-
-        {COVERAGE.map((g) => (
-          <section key={g.group} id={anchor(g.group)} style={{ scrollMarginTop: 24 }}>
-            <h2 style={{ fontSize: 26, fontWeight: 400, margin: "48px 0 6px", letterSpacing: -0.2 }}>
-              {g.group} <span style={{ color: "#7a7a7a", fontSize: 18 }}>{g.items.length}</span>
-            </h2>
-            <ul className="press-grid">
-              {g.items.map(([outlet, headline, date, url, thumb, icon]) => (
-                <li key={url}>
-                  <a href={url} target="_blank" rel="noopener" className="press-card">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img className="press-thumb" src={cdn(`/press/thumbs/${thumb}.jpg`)} alt="" width={640} height={360} loading="lazy" decoding="async" />
-                    <span className="press-body">
-                      <span className="press-outlet">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={cdn(`/press/icons/${icon}.png`)} alt="" width={22} height={22} loading="lazy" decoding="async" />
-                        <span className="press-outlet-name">{outlet}</span>
-                      </span>
-                      <span className="press-title">{headline}</span>
-                      <span className="press-date">{date}</span>
-                      <span className="sr-only"> (opens in a new tab)</span>
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
+        <PressGrid items={items} groups={COVERAGE.map((g) => ({ label: g.group, count: g.items.length }))} />
 
         <p style={{ margin: "56px 0 0", color: "#9a9a9a" }}>
           Wrote about CleanYourTV and not on this list? <a href="https://github.com/Gathin23/cleanyourtv/issues/new" style={green}>Open an issue</a> with the link.
