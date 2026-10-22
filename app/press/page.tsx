@@ -78,11 +78,11 @@ export default function Press() {
     ],
   };
   return (
-    <main style={page}>
+    <main className="page-main" style={page}>
       <JsonLd data={jsonLd} />
       <div style={wrap}>
         <p style={kicker}>
-          <Link href="/" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; Press
+          <Link href="/" className="home-link" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; Press
         </p>
         <h1 style={{ fontSize: 44, lineHeight: 1.1, fontWeight: 400, margin: "0 0 14px", letterSpacing: -0.5 }}>In the press</h1>
         <p style={{ margin: "0 0 32px", fontSize: 20, color: "#bdbdbd", maxWidth: 680 }}>

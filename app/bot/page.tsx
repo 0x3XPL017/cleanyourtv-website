@@ -128,11 +128,11 @@ export default async function Bot() {
     ],
   };
   return (
-    <main style={page}>
+    <main className="page-main" style={page}>
       <JsonLd data={jsonLd} />
       <div style={wrap}>
         <p style={kicker}>
-          <Link href="/" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; Bot
+          <Link href="/" className="home-link" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; Bot
         </p>
         <h1 className="bot-title">maintainer-bot</h1>
         <p className="bot-lede">

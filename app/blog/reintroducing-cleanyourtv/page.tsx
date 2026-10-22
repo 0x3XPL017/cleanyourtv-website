@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { PRESS, PRESS_LOGO_W, cdn } from "@/lib/site";
 import { COVERAGE_COUNTRIES, COVERAGE_TOTAL } from "@/lib/press";
@@ -64,11 +65,11 @@ export default function Article() {
     ],
   };
   return (
-    <main style={page}>
+    <main className="page-main" style={page}>
       <JsonLd data={jsonLd} />
       <article style={wrap}>
         <p style={{ ...p, fontSize: 15, letterSpacing: 2, textTransform: "uppercase", color: "#9a9a9a" }}>
-          <A href="/">cleanyour.tv</A> &nbsp;·&nbsp; 20 October 2026 &nbsp;·&nbsp; <X h="gathint" />
+          <Link href="/" className="home-link" style={{ color: "#cfffcf", borderBottomColor: "rgba(207,255,207,.35)" }}>cleanyour.tv</Link> &nbsp;·&nbsp; 20 October 2026 &nbsp;·&nbsp; <X h="gathint" />
         </p>
         <h1 style={{ fontSize: 44, lineHeight: 1.1, fontWeight: 400, margin: "12px 0 10px", letterSpacing: -0.5 }}>(Re)introducing CleanYourTV</h1>
         <p style={{ ...p, fontSize: 22, color: "#bdbdbd", fontStyle: "italic" }}>Three days ago I fixed my parents&rsquo; TV. Then the internet fixed theirs.</p>
