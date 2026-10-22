@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { GH } from "@/lib/parse";
 import { loadAddonsData } from "@/lib/data";
 import AddonsTabs from "@/components/AddonsTabs";
@@ -34,6 +34,14 @@ const wrap: CSSProperties = { maxWidth: 1160, margin: "0 auto", padding: "40px 1
 const kicker: CSSProperties = { margin: "0 0 20px", fontSize: 15, letterSpacing: 2, textTransform: "uppercase", color: "#9a9a9a" };
 const green = { color: "#cfffcf", borderBottomColor: "rgba(207,255,207,.35)" };
 
+// The three steps under the title: small line icons in the site's grey, numbers in the green accent.
+const line = { fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+const STEPS: [ReactNode, string][] = [
+  [<><rect {...line} x="3" y="5" width="18" height="14" rx="3" /><path {...line} d="M7 15h6" /></>, "Pick a card"],
+  [<><rect {...line} x="8" y="8" width="12" height="12" rx="2.5" /><path {...line} d="M16 4H6.5A2.5 2.5 0 0 0 4 6.5V16" /></>, "Copy its line"],
+  [<><rect {...line} x="3" y="4" width="18" height="16" rx="3" /><path {...line} d="M7 10l3 2.5L7 15M12.5 15H17" /></>, "Your coding agent applies it"],
+];
+
 export default async function Addons() {
   const data = await loadAddonsData();
   return (
@@ -43,10 +51,17 @@ export default async function Addons() {
           <Link href="/" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; Add-ons
         </p>
         <h1 style={{ fontSize: 44, lineHeight: 1.1, fontWeight: 400, margin: "0 0 14px", letterSpacing: -0.5 }}>Add-ons, themes and switches</h1>
-        <p style={{ margin: "0 0 32px", fontSize: 20, color: "#bdbdbd", maxWidth: 720 }}>
-          The launcher stays small and plain on purpose. Everything here is optional: themes you push without a rebuild, switches a theme can
-          flip, and add-on apps that plug in as a card. Copy the line on a card and give it to your coding agent.
-        </p>
+        <p style={{ margin: "0 0 24px", fontSize: 20, color: "#bdbdbd" }}>Optional extras for the launcher. Nothing changes unless you ask.</p>
+
+        <ol className="ao-steps" aria-label="How it works">
+          {STEPS.map(([icon, label], i) => (
+            <li key={label}>
+              <span className="ao-step-n">{i + 1}</span>
+              <svg className="ao-step-icon" viewBox="0 0 24 24" aria-hidden="true">{icon}</svg>
+              <span className="ao-step-label">{label}</span>
+            </li>
+          ))}
+        </ol>
 
         <AddonsTabs data={data} />
 

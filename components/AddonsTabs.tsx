@@ -91,8 +91,7 @@ function Themes({ data }: { data: AddonsData }) {
   return (
     <>
     <p className="ao-intro">
-      A theme is a folder with a <code>config.json</code> and maybe a wallpaper. Pushing one changes the dock, layout and look on the TV without
-      rebuilding the launcher, and <code>tools/theme.sh --reset</code> goes back to the built-in look. Every screenshot is from a real TV.
+      Real-TV screenshots. Undo any time with <code>tools/theme.sh --reset</code>.
     </p>
     <ul className="ao-grid">
       {data.themes.map((t) => (
@@ -143,11 +142,7 @@ function Switches({ keys }: { keys: ThemeKey[] }) {
   const rank = (k: ThemeKey) => (keyKind(k) === "toggle" ? (keyDefault(k.text) === "false" ? 0 : keyDefault(k.text) === "true" ? 2 : 1) : 0);
   return (
     <>
-      <p className="ao-intro">
-        Every key a theme&apos;s <code>config.json</code> can set, from{" "}
-        <a href={`${GH}/blob/main/themes/README.md#keys`} target="_blank" rel="noopener">themes/README.md</a>. A missing key keeps the built-in
-        value and a wrong one is ignored, so a theme can never break Home.
-      </p>
+      <p className="ao-intro">One setting each. A wrong key is ignored, so Home never breaks.</p>
       <label className="ao-search">
         <span className="sr-only">Search the keys</span>
         <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search ${keys.length} keys`} />
@@ -210,11 +205,7 @@ function Addons({ data }: { data: AddonsData }) {
       <div className="ao-card ao-empty">
         <div className="ao-body">
           <p className="ao-name">No add-ons yet. Build the first one.</p>
-          <p className="ao-text">
-            An add-on is its own small Android TV app that declares a module card. The launcher finds the card, asks you once, then shows it as a tile
-            with the add-on&apos;s label, caption and glow colour. The launcher never depends on it, so it can&apos;t make the core bigger.
-          </p>
-          <p className="ao-text">A widget, an info tile, a storage or smart-home card: the how-to is in {docs}.</p>
+          <p className="ao-text">A small app that shows up on Home as a card. How-to: {docs}.</p>
           <div className="ao-actions">
             <CopyLine label="Tell your coding agent" text="Read addons/README.md in CleanYourTV and help me build an add-on with a module card" />
           </div>
@@ -223,7 +214,7 @@ function Addons({ data }: { data: AddonsData }) {
     );
   return (
     <>
-      <p className="ao-intro">Small Android TV apps that plug into the launcher as a module card. You install one only if you want it. How they work: {docs}.</p>
+      <p className="ao-intro">Small apps that show up on Home as a card. How-to: {docs}.</p>
       <ul className="ao-grid">
         {data.addons.map((a) => (
           <li key={a.name}>
