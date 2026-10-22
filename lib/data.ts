@@ -3,8 +3,8 @@
 // page never depends on the public GitHub rate limit at request time.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { GH, REPO, parseShowcase, parseTVs, parseThemes, starSeriesFallback, tweetToken } from "./parse";
-import type { Pr, ResultItem, ShowcaseItem, SiteData, ThemeItem, Tweet } from "./parse";
+import { GH, REPO, parseAddons, parsePushCommand, parseShowcase, parseThemeKeys, parseTVs, parseThemes, starSeriesFallback, tweetToken } from "./parse";
+import type { AddonsData, Pr, ResultItem, ShowcaseItem, SiteData, ThemeCard, ThemeItem, Tweet } from "./parse";
 
 const RAW = `https://raw.githubusercontent.com/${REPO}/main/`;
 const REVALIDATE = 3600;
@@ -131,7 +131,61 @@ export async function loadSiteData(): Promise<SiteData> {
   };
 }
 
-// ---- static fallbacks (snapshot of the repo on 2026-10-19)
+// ---- /addons: one card per folder in themes/, the Keys table as switches, and the add-ons table
+
+type Tree = { tree: { path: string; type: string }[] };
+type Commit = { author: { login: string; html_url: string } | null; commit: { author: { name: string } } };
+
+const shortDate = (d: string) => new Date(d + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+
+async function themeCard(name: string, files: string[] | null, readmeRows: ThemeItem[], readme: string): Promise<ThemeCard> {
+  const [raw, commits] = await Promise.all([
+    text(`${RAW}themes/${name}/config.json`),
+    json<Commit[]>(`https://api.github.com/repos/${REPO}/commits?path=themes/${name}&per_page=100`),
+  ]);
+  let config: Record<string, unknown> = {};
+  try { config = raw ? (JSON.parse(raw) as Record<string, unknown>) : {}; } catch { /* a theme that doesn't parse shows no keys */ }
+  // The folder's first commit is its author. Screenshots are only ever ones the folder has.
+  const first = commits?.length ? commits[commits.length - 1] : null;
+  const shot = files
+    ? ["screenshot.jpg", "screenshot.png"].find((f) => files.includes(`${name}/${f}`))
+    : readme.includes(`${name}/screenshot.jpg`) ? "screenshot.jpg" : undefined;
+  const until = typeof config.festival_until === "string" && /^\d{4}-\d{2}-\d{2}$/.test(config.festival_until) ? config.festival_until : "";
+  const ended = !!until && until < new Date().toISOString().slice(0, 10);
+  return {
+    name,
+    what: readmeRows.find((t) => t.name === name)?.what || "",
+    by: first ? first.author?.login || first.commit.author.name : "",
+    byUrl: first?.author?.html_url || "",
+    screenshot: shot ? `themes/${name}/${shot}` : "",
+    keys: Object.keys(config),
+    season: until ? `${ended ? "ended" : "until"} ${shortDate(until)}` : "",
+    ended,
+  };
+}
+
+export async function loadAddonsData(): Promise<AddonsData> {
+  const [readmeRemote, addonsMd, tree] = await Promise.all([
+    text(RAW + "themes/README.md"),
+    text(RAW + "addons/README.md"),
+    json<Tree>(`https://api.github.com/repos/${REPO}/git/trees/main:themes?recursive=1`),
+  ]);
+  const readme = readmeRemote || (await fs.readFile(path.join(process.cwd(), "content", "themes-readme.md"), "utf8"));
+  const rows = parseThemes(readme);
+  // Folders come from the tree; without it, from the README's table. README order first, then any new folder.
+  const files = tree ? tree.tree.filter((t) => t.type === "blob").map((t) => t.path) : null;
+  const folders = tree ? tree.tree.filter((t) => t.type === "tree" && !t.path.includes("/")).map((t) => t.path) : rows.map((r) => r.name);
+  const order = [...rows.map((r) => r.name).filter((n) => folders.includes(n)), ...folders.filter((n) => !rows.some((r) => r.name === n)).sort()];
+  const themes = await Promise.all(order.map((n) => themeCard(n, files, rows, readme)));
+  return {
+    themes: [...themes.filter((t) => !t.ended), ...themes.filter((t) => t.ended)],
+    push: parsePushCommand(readme),
+    keys: parseThemeKeys(readme),
+    addons: addonsMd ? parseAddons(addonsMd) : [],
+  };
+}
+
+// ---- static fallbacks (snapshot of the repo on 2026-10-19; /addons falls back to content/themes-readme.md, 2026-10-22)
 
 export const FALLBACK = {
   tweet: {

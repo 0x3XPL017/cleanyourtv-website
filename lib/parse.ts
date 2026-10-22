@@ -91,3 +91,82 @@ export function tweetToken(id: string): string {
   for (let i = 0; i < 12; i++) { fp *= 36; const k = Math.floor(fp); frac += d[k]; fp -= k; }
   return ((out || "0") + "." + frac).replace(/(0+|\.)/g, "");
 }
+
+// ---- /addons: themes, the theme keys ("switches") and the add-ons table, all from the repo
+
+/** One folder in themes/. `season` is "until 21 Oct" or "ended 21 Oct" for a theme with `festival_until`. */
+export type ThemeCard = { name: string; what: string; by: string; byUrl: string; screenshot: string; keys: string[]; season: string; ended: boolean };
+/** One row of the Keys table in themes/README.md; a row can name more than one key. */
+export type ThemeKey = { keys: string[]; type: string; text: string };
+export type AddonRow = { name: string; url: string; what: string; by: string; byUrl: string; tested: string; permissions: string };
+export type AddonsData = { themes: ThemeCard[]; push: string; keys: ThemeKey[]; addons: AddonRow[] };
+
+const cells = (l: string) => l.split("|").slice(1, -1).map((s) => s.trim());
+
+/** The Keys table under "## Keys". A key listed twice (merge leftovers) keeps its first place and its last text. */
+export function parseThemeKeys(md: string): ThemeKey[] {
+  const out = new Map<string, ThemeKey>();
+  let on = false;
+  for (const l of md.split("\n")) {
+    if (/^##\s/.test(l)) on = /^##\s+Keys\s*$/.test(l);
+    if (!on || !/^\|\s*`[a-z_]+`/.test(l)) continue;
+    const c = cells(l);
+    const keys = Array.from(c[0].matchAll(/`([a-z_]+)`/g), (m) => m[1]);
+    if (!keys.length) continue;
+    const row = { keys, type: (c[1] || "").replace(/`/g, ""), text: c[2] || "" };
+    const id = keys.join(",");
+    if (out.has(id)) out.get(id)!.text = row.text;
+    else out.set(id, row);
+  }
+  return [...out.values()];
+}
+
+/** The README's push example (`tools/theme.sh themes/aurora`) as a template; "{theme}" stands for the folder. */
+export function parsePushCommand(md: string): string {
+  const l = md.split("\n").find((x) => /tools\/theme\.sh\s+themes\/[\w-]+/.test(x));
+  return l ? l.replace(/\s+#.*$/, "").trim().replace(/themes\/[\w-]+/, "themes/{theme}") : "";
+}
+
+/** Rows of the table under "## Add-ons" in addons/README.md: Add-on | What it does | Author | Tested on | Permissions. */
+export function parseAddons(md: string): AddonRow[] {
+  const out: AddonRow[] = [];
+  let on = false;
+  for (const l of md.split("\n")) {
+    if (/^##\s/.test(l)) on = /^##\s+Add-ons\s*$/.test(l);
+    if (!on || !/^\|/.test(l) || /^\|\s*-/.test(l) || /^\|\s*Add-on\s*\|/.test(l)) continue;
+    const c = cells(l);
+    if (!c[0]) continue;
+    const link = c[0].match(/\[([^\]]+)\]\(([^)]+)\)/);
+    const name = (link ? link[1] : c[0]).replace(/`/g, "");
+    const href = link ? link[2] : name.replace(/\/$/, "") + "/";
+    const by = (c[2] || "").match(/\[@?([^\]]+)\]\(([^)]+)\)/);
+    out.push({
+      name,
+      url: /^https?:/.test(href) ? href : `${GH}/tree/main/addons/${href.replace(/^\.\//, "")}`,
+      what: c[1] || "",
+      by: by ? by[1] : (c[2] || "").replace(/^@/, ""),
+      byUrl: by ? by[2] : "",
+      tested: c[3] || "",
+      permissions: c[4] || "",
+    });
+  }
+  return out;
+}
+
+/** The default a key's text states ("(`false` by default)", "`radial` (default)", "Off unless set"), or "" when it says none. */
+export function keyDefault(text: string): string {
+  const t = text.replace(/`/g, "");
+  let m = t.match(/\b(true|false|\d+|black)\s+by default/i);
+  if (m) return m[1].toLowerCase();
+  m = t.match(/([\w#.-]+)(?:\s+(?:hides it|is off))?\s*\((?:the )?default\b/);
+  if (m) return m[1];
+  if (/off unless set|off by default/i.test(t)) return "false";
+  return "";
+}
+
+/** toggle: a bool. value: a number range, colour, date, choice, or a string with a stated default. list: lists, names and apps. */
+export function keyKind(k: ThemeKey): "toggle" | "value" | "list" {
+  if (/^bool$/i.test(k.type)) return "toggle";
+  if (/^-?\d+ to \d+$|#RRGGBB|YYYY| or /.test(k.type) || (k.type === "string" && keyDefault(k.text))) return "value";
+  return "list";
+}

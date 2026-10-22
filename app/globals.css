@@ -705,3 +705,297 @@ a.press-card:hover .press-thumb {
   outline-offset: 2px;
   border-radius: 6px;
 }
+
+/* /addons: tabs as chips (like What people built), cards in the /press card style, copy-to-agent lines. */
+.ao-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 24px;
+}
+.ao-tab {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 18px;
+  border: 0;
+  font-size: 14px;
+  font-weight: 500;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+.ao-tab[aria-pressed="true"] {
+  background: #fff;
+  color: #000;
+  box-shadow: none;
+}
+.ao-tab span {
+  opacity: 0.6;
+  font-weight: 400;
+}
+.ao-intro {
+  margin: 0 0 24px;
+  max-width: 760px;
+  color: #bdbdbd;
+}
+.ao-intro a,
+.ao-text a,
+.ao-meta a {
+  color: #cfffcf;
+  border-bottom-color: rgba(207, 255, 207, 0.35);
+}
+.ao-intro code,
+.ao-text code,
+.ao-sets code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86em;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e9e9e9;
+  overflow-wrap: anywhere;
+}
+.ao-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 640px) {
+  .ao-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1100px) {
+  .ao-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.ao-grid > li {
+  display: flex;
+  min-width: 0;
+}
+.ao-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+.ao-ended .ao-thumb {
+  filter: saturate(0.6) brightness(0.8);
+}
+.ao-thumb {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #111;
+}
+.ao-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 16px;
+  min-width: 0;
+}
+.ao-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 10px;
+}
+.ao-name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 400;
+  color: #fff;
+  border: 0;
+}
+.ao-key {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  color: #cfffcf;
+  overflow-wrap: anywhere;
+}
+.ao-badge {
+  flex: none;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 10px;
+  color: #bdbdbd;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+.ao-season {
+  color: #ffd27a;
+  box-shadow: inset 0 0 0 1px rgba(255, 210, 122, 0.4);
+}
+.ao-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: #d8d8d8;
+}
+.ao-meta {
+  margin: 0;
+  font-size: 14px;
+  color: #8b8b8b;
+}
+.ao-sets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+.ao-sets code {
+  font-size: 12px;
+  color: #bdbdbd;
+}
+.ao-more summary {
+  cursor: pointer;
+  font-size: 14px;
+  color: #cfffcf;
+  width: max-content;
+}
+.ao-more summary:focus-visible {
+  outline: 2px solid #cfffcf;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.ao-more .ao-text {
+  margin-top: 6px;
+  font-size: 15px;
+  color: #bdbdbd;
+}
+.ao-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+.ao-label {
+  display: block;
+  margin: 0 0 5px;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #8b8b8b;
+}
+.ao-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 9px 9px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.ao-line code {
+  flex: 1;
+  min-width: 0;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #e9e9e9;
+  overflow-wrap: anywhere;
+  padding-top: 3px;
+}
+.ao-cmd code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px;
+  color: #bdbdbd;
+}
+.ao-copy {
+  flex: none;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 14px;
+  border: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #000;
+  background: #cfffcf;
+}
+.ao-copy:hover {
+  background: #fff;
+}
+.ao-h2 {
+  margin: 32px 0 14px;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #9a9a9a;
+}
+.ao-h2 span {
+  opacity: 0.6;
+}
+.ao-keys {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  columns: 1;
+  column-gap: 20px;
+}
+@media (min-width: 640px) {
+  .ao-keys {
+    columns: 2;
+  }
+}
+@media (min-width: 1100px) {
+  .ao-keys {
+    columns: 3;
+  }
+}
+.ao-keys > li {
+  break-inside: avoid;
+  margin: 0 0 20px;
+}
+.ao-search input {
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  font-size: 15px;
+  color: #e9e9e9;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 22px;
+  height: 44px;
+  padding: 0 18px;
+  width: 100%;
+  max-width: 360px;
+}
+.ao-search input::placeholder {
+  color: #8b8b8b;
+}
+.ao-search input:focus-visible {
+  outline: 2px solid #cfffcf;
+  outline-offset: 2px;
+}
+.ao-search {
+  display: block;
+  margin: 0 0 8px;
+}
+.ao-search:focus-within {
+  outline: none;
+}
+.ao-empty {
+  max-width: 720px;
+}
+.ao-empty .ao-body {
+  gap: 14px;
+  padding: 24px;
+}
+.ao-intro code {
+  white-space: nowrap;
+}

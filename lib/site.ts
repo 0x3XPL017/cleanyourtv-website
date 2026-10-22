@@ -187,3 +187,18 @@ export const CDN_BASE = "https://cdn.jsdelivr.net/gh/Gathin23/cleanyourtv-websit
 export const cdn = (path: string): string => (path && path.startsWith("/") ? CDN_BASE + path : path);
 /** The On air wall's small copy of a photo: public/results/thumbs/, 320x180, centre-cropped. */
 export const thumb = (path: string): string => path.replace(/^\/results\//, "/results/thumbs/");
+/** The same mirror of the cleanyourtv repo itself, for images that live there (theme screenshots, docs/). */
+export const repoCdn = (path: string): string => `https://cdn.jsdelivr.net/gh/Gathin23/cleanyourtv@main/${path}`;
+
+/**
+ * /addons: real TV screenshots in the cleanyourtv repo that show a theme key at work, keyed by the key.
+ * The keys themselves come from themes/README.md; this only pairs some of them with a picture.
+ */
+export const SWITCH_IMAGES: Record<string, string> = {
+  sky_intensity: "docs/sky-sunset.jpg",
+  home_idle_clock_minutes: "docs/clock-screensaver.png",
+  settings_key_panel: "docs/quick-settings-panel.jpg",
+  columns: "themes/six-columns/screenshot.jpg",
+  festival: "themes/dussehra/screenshot.jpg",
+  wallpaper_rotation_minutes: "themes/scenes/screenshot.jpg",
+};
