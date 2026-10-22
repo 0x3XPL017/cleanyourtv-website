@@ -84,6 +84,15 @@ const ROADMAP: { phase: string; name: string; status: string; live?: boolean; te
   { phase: "Goal", name: "Any repo", status: "Later", text: "A standalone bot any busy repo can use: its rules, its past decisions." },
 ];
 
+// "Powered by" and the 0G logo (public/brand/0g.svg, white, from 0g.ai), as a glass pill to pc.0g.ai.
+const POWERED = (
+  <a href={PC} className="bot-0g" aria-label="Powered by 0G">
+    <span>Powered by</span>
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <img src="/brand/0g.svg" alt="" width={46} height={22} />
+  </a>
+);
+
 const ARROW = (
   <svg className="bot-arrow" viewBox="0 0 24 24" aria-hidden="true">
     <path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -132,8 +141,9 @@ export default async function Bot() {
         <div className="bot-cta">
           <a href={BOT} className="bot-btn bot-btn-main">maintainer-bot on GitHub</a>
           <a href="#how" className="bot-btn">How it decides</a>
-          <span className="bot-cta-note">MIT licensed · powered by <a href={PC} style={green}>0G</a></span>
+          {POWERED}
         </div>
+        <p className="bot-cta-note">MIT licensed</p>
 
         {/* 01: the flood */}
         <section aria-labelledby="why">
@@ -187,7 +197,10 @@ export default async function Bot() {
           <div className="bot-card bot-models">
             <div className="bot-models-head">
               <h3>The right model for each step</h3>
-              <p>Depth where it matters, speed and cost where it doesn&rsquo;t. All through one 0G router key.</p>
+              <p>Depth where it matters, speed and cost where it doesn&rsquo;t. All through one 0G router key.{" "}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/brand/0g.svg" alt="" width={25} height={12} className="bot-0g-inline" />
+              </p>
             </div>
             <ul>
               {MODELS.map((m, i) => (
@@ -273,9 +286,12 @@ export default async function Bot() {
           </ol>
         </section>
 
-        <p style={{ margin: "56px 0 0", color: "#9a9a9a" }}>
-          The code, the rules and the reports are on <a href={BOT} style={green}>GitHub</a>, MIT licensed. maintainer-bot runs on{" "}
-          <a href={PC} style={green}>0G Private Computer</a>, powered by 0G. Also: <Link href="/faq" style={green}>the FAQ</Link>,{" "}
+        <div className="bot-foot">
+          {POWERED}
+          <span>maintainer-bot runs on <a href={PC} style={green}>0G Private Computer</a>.</span>
+        </div>
+        <p style={{ margin: "16px 0 0", color: "#9a9a9a" }}>
+          The code, the rules and the reports are on <a href={BOT} style={green}>GitHub</a>, MIT licensed. Also: <Link href="/faq" style={green}>the FAQ</Link>,{" "}
           <Link href="/press" style={green}>press</Link>, <Link href="/addons" style={green}>add-ons</Link> and <a href={GH} style={green}>CleanYourTV on GitHub</a>.
         </p>
       </div>
