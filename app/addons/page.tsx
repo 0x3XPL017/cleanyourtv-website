@@ -39,7 +39,7 @@ const line = { fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLin
 const STEPS: [ReactNode, string][] = [
   [<><rect {...line} x="3" y="5" width="18" height="14" rx="3" /><path {...line} d="M7 15h6" /></>, "Pick a card"],
   [<><rect {...line} x="8" y="8" width="12" height="12" rx="2.5" /><path {...line} d="M16 4H6.5A2.5 2.5 0 0 0 4 6.5V16" /></>, "Copy its line"],
-  [<><rect {...line} x="3" y="4" width="18" height="16" rx="3" /><path {...line} d="M7 10l3 2.5L7 15M12.5 15H17" /></>, "Your coding agent applies it"],
+  [<><rect {...line} x="3" y="4" width="18" height="16" rx="3" /><path {...line} d="M7 10l3 2.5L7 15M12.5 15H17" /></>, "Your agent applies it"],
 ];
 
 export default async function Addons() {
