@@ -22,7 +22,7 @@ type Axis = "x" | "y" | "w" | "h";
 
 type Props = { data: SiteData; pressTotal: number };
 type State = {
-  osd: string; theme: ThemeName; sound: boolean; power: boolean; booted: boolean; mobile: boolean; mounted: boolean; focus: number;
+  nudge: boolean; osd: string; theme: ThemeName; sound: boolean; power: boolean; booted: boolean; mobile: boolean; mounted: boolean; focus: number;
   clock: string; ampm: string; date: string; greeting: string;
   counters: Counter[];
   ch: number; wiz: number; os: "mac" | "win"; typed: number; copied: boolean; slide: number; feat: number; held: boolean;
@@ -67,7 +67,7 @@ export default class TvSite extends React.Component<Props, State> {
       })
       .concat(d.themes.map<Slide>((t) => ({ kind: "theme", name: t.name + "/", what: t.what, meta: "In themes/" + t.name + "/", by: "cleanyourtv", byUrl: GH, url: GH + "/tree/main/themes/" + t.name, wall: t.name === "aurora" ? "aurora" : "black", tiles: t.name === "six-columns" ? 6 : 4, site: t.name === "aurora" ? "aurora" : "black", kicker: "THEME", group: "Themes" })));
     this.state = {
-      osd: "CH 00", theme: "black", sound: false, power: true, booted: false, mobile: false, mounted: false, focus: 0,
+      nudge: false, osd: "CH 00", theme: "black", sound: false, power: true, booted: false, mobile: false, mounted: false, focus: 0,
       clock: "", ampm: "", date: "", greeting: "",
       counters: [
         { key: "stars", label: "STARS", value: d.stars, max: Math.max(5000, d.stars * 1.4), display: 0 },
@@ -299,9 +299,16 @@ export default class TvSite extends React.Component<Props, State> {
   onSection(e: IntersectionObserverEntry) {
     if (!e.isIntersecting) return; const n = Number((e.target as HTMLElement).dataset.ch); if (n === this.state.ch) return;
     this.setState({ ch: n }); this.remember(n);
+    if (n === 1) this.maybeNudge();
     // Scrolling between channels only updates the corner label; static is kept for the remote and number keys.
     if (performance.now() > this.quietUntil && this.state.booted) this.showOsd(`CH 0${n}`, 1200, false);
     this.enter(n);
+  }
+  // A small one-time note pointing to /addons, shown on the way down to On air; dismissed for good once closed or followed.
+  nudgeT = 0;
+  maybeNudge() {
+    try { if (localStorage.getItem("cyt-nudge-addons")) return; localStorage.setItem("cyt-nudge-addons", "1"); } catch { return; }
+    this.setState({ nudge: true }); clearTimeout(this.nudgeT); this.nudgeT = window.setTimeout(() => this.setState({ nudge: false }), 14000);
   }
   enter(n: number) { if (n === 1) this.animateScope(); if (n === 2) { this.featT = 0; this.preload(this.state.feat + 1); } if (n === 3 && !this.typingStarted) this.startTyping(); }
   channel(n: number) {
@@ -535,6 +542,14 @@ export default class TvSite extends React.Component<Props, State> {
               </section>
             </div>
             <div ref={this.r.osd} aria-live="polite" style={S("position:absolute;top:clamp(6px,1cqw,14px);right:clamp(10px,1.6cqw,22px);z-index:5;font-family:'VT323',monospace;font-size:clamp(22px,3.2cqw,40px);line-height:1;letter-spacing:.06em;color:var(--osd,#CFFFCF);text-shadow:0 0 10px var(--osd-glow,rgba(140,255,140,.6)),1px 0 0 rgba(255,0,0,.25),-1px 0 0 rgba(0,160,255,.25);opacity:0;transition:opacity .3s;pointer-events:none")}>{s.osd}</div>
+            {s.nudge && (
+              <div role="dialog" aria-label="New: add-ons, themes and switches" className="m-nudge">
+                <span className="m-nudge-k">NEW</span>
+                <span className="m-nudge-t">Themes, switches and add-ons for the launcher</span>
+                <a href="/addons" className="m-nudge-go">Take a look</a>
+                <button type="button" aria-label="Close" className="m-nudge-x" onClick={() => this.setState({ nudge: false })}>×</button>
+              </div>
+            )}
             <canvas ref={this.staticRef} width={192} height={108} aria-hidden="true" style={S("position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;z-index:6;pointer-events:none")} />
             <div ref={this.r.flash} aria-hidden="true" style={S("position:absolute;inset:0;background:#fff;opacity:0;z-index:7;pointer-events:none;transform-origin:center")} />
             <div ref={this.r.off} style={S("position:absolute;inset:0;z-index:8;display:none;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,24px);padding:6cqw;background:radial-gradient(80% 70% at 50% 40%,#0c0c0e,#050506);color:rgba(255,255,255,.88);text-align:center;font-size:clamp(14px,1.6cqw,19px);font-weight:400;opacity:0")}>
@@ -589,9 +604,9 @@ export default class TvSite extends React.Component<Props, State> {
               </div>
             </div>
             <div className="m-pills" style={S("display:flex;gap:clamp(4px,.8cqw,10px);flex-shrink:0")}>
-              <div style={S(pill)}>Inputs</div>
-              <div style={S(pill)}>Wi-Fi</div>
-              <div style={S(pill)}>Settings</div>
+              {/* The launcher's Inputs / Wi-Fi / Settings pills, as the site's own navigation. */}
+              <a href="/addons" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>Add-ons</a>
+              <a href="/press" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>Press</a>
             </div>
           </div>
           <div ref={this.r.dock} style={S("position:absolute;left:50%;bottom:clamp(28px,5cqw,64px);transform:translateX(-50%);padding:clamp(8px,1.1cqw,14px);border-radius:clamp(16px,2cqw,26px);background:var(--band,#141416);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.12));display:flex;gap:clamp(8px,1.6cqw,22px)")}>

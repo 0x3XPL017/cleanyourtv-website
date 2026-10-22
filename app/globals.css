@@ -187,7 +187,9 @@ button:focus-visible {
     top: 22px !important;
   }
   .m-pills {
-    display: none !important;
+    position: absolute;
+    top: 0;
+    right: 0;
   }
   .m-title {
     padding: 96px 20px 0 !important;
@@ -1074,5 +1076,95 @@ a.press-card:hover .press-thumb {
   }
   .ao-step-label {
     font-size: 14px;
+  }
+}
+
+/* Home: the hero's pills are links; the one-time "new" note for /addons. */
+a.m-navpill {
+  color: inherit;
+  text-decoration: none;
+  border: 0;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+a.m-navpill:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+a.m-navpill:focus-visible {
+  outline: 2px solid #cfffcf;
+  outline-offset: 2px;
+}
+.m-nudge {
+  position: absolute;
+  left: clamp(10px, 1.6cqw, 22px);
+  bottom: clamp(10px, 1.6cqw, 22px);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(460px, calc(100% - 20px));
+  padding: 10px 10px 10px 14px;
+  border-radius: 18px;
+  background: rgba(20, 22, 26, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 10px 30px rgba(0, 0, 0, 0.45);
+  font-size: 14px;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.9);
+  animation: m-nudge-in 0.35s ease-out;
+}
+.m-nudge-k {
+  flex: none;
+  font-family: "VT323", monospace;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  color: #cfffcf;
+}
+.m-nudge-t {
+  min-width: 0;
+}
+a.m-nudge-go {
+  flex: none;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 17px;
+  display: inline-flex;
+  align-items: center;
+  background: #cfffcf;
+  color: #0b2a14;
+  font-weight: 500;
+  border: 0;
+  white-space: nowrap;
+}
+.m-nudge-x {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.m-nudge-x:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+a.m-nudge-go:focus-visible,
+.m-nudge-x:focus-visible {
+  outline: 2px solid #cfffcf;
+  outline-offset: 2px;
+}
+@keyframes m-nudge-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-nudge {
+    animation: none;
   }
 }
