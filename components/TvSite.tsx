@@ -910,7 +910,7 @@ export default class TvSite extends React.Component<Props, State> {
               <div style={S("font-size:clamp(64px,9cqw,128px);font-weight:200;line-height:.9;letter-spacing:-.04em")}>{d.contributors.toLocaleString("en-US")}</div>
               <div style={S("font-size:16px;color:var(--ink-dim,rgba(255,255,255,.6))")}>people who sent them</div>
             </div>
-            <p style={S("margin:0;font-size:15px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));max-width:30em")}>Hover a name to stop the roll. Every name goes to their GitHub.</p>
+            <p style={S("margin:0;font-size:15px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));max-width:30em")}>Hover a name to stop the roll. Every name goes to their GitHub. Every pull request is read first by <a href="/bot">the review bot</a>.</p>
           </div>
         </div>
       </section>

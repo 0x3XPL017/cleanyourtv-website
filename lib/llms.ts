@@ -41,6 +41,7 @@ CleanYourTV is free and MIT licensed. You paste one markdown prompt into a codin
 - [Questions people ask](${SITE}/faq): is it safe, firmware updates, ADB security and more
 - [Add-ons, themes and switches](${SITE}/addons): optional extras for the launcher
 - [Press](${SITE}/press): the press coverage, with logos and links
+- [maintainer-bot](${SITE}/bot): the open-source bot that reviews every pull request, how it decides and how well; it runs on 0G Private Computer
 
 ## Optional
 

@@ -213,6 +213,53 @@ export async function loadFacts(): Promise<Facts> {
   };
 }
 
+// ---- /bot: the pull-request flood and the bot's own runs, live from the GitHub API
+
+export type BotStats = {
+  prs: number; merged: number; open: number; authors: number;
+  peak: number; peakDay: string; // the most PRs open at once, and the UTC day it happened
+  perDay: [string, number][]; // PRs opened per UTC day, oldest first
+  runs: number; reviewed: number; // successful maintainer-bot workflow runs; PRs carrying its review comment
+};
+
+type PullRow = { user: { login: string; type: string }; created_at: string; closed_at: string | null; merged_at: string | null };
+
+export async function loadBotStats(): Promise<BotStats> {
+  const F = FALLBACK.bot;
+  const [runs, reviewed] = await Promise.all([
+    json<{ total_count: number }>(`https://api.github.com/repos/${REPO}/actions/workflows/maintainer-bot.yml/runs?status=success&per_page=1`),
+    json<{ total_count: number }>(`https://api.github.com/search/issues?q=${encodeURIComponent(`repo:${REPO} type:pr "Reviewed by maintainer-bot" in:comments`)}&per_page=1`),
+  ]);
+  // Every PR, 100 a page: only with a token (the walk would use up the public limit), capped like the star walk.
+  const pulls: PullRow[] = [];
+  if (process.env.GITHUB_TOKEN) {
+    for (let p = 1; p <= 30; p++) {
+      const page = await json<PullRow[]>(`https://api.github.com/repos/${REPO}/pulls?state=all&per_page=100&page=${p}`);
+      if (!page) { pulls.length = 0; break; }
+      pulls.push(...page);
+      if (page.length < 100) break;
+    }
+  }
+  const live = { runs: runs?.total_count || F.runs, reviewed: reviewed?.total_count || F.reviewed };
+  if (pulls.length < F.prs) return { ...F, ...live };
+  // Walk the opens and closes in time order for the biggest backlog.
+  const events = pulls.flatMap((x) => [[x.created_at, 1], ...(x.closed_at ? [[x.closed_at, -1]] : [])] as [string, number][]).sort((a, b) => a[0].localeCompare(b[0]));
+  let open = 0, peak = 0, peakDay = "";
+  for (const [t, d] of events) if ((open += d) > peak) [peak, peakDay] = [open, t.slice(0, 10)];
+  const days = new Map<string, number>();
+  for (const x of pulls) days.set(x.created_at.slice(0, 10), (days.get(x.created_at.slice(0, 10)) || 0) + 1);
+  return {
+    prs: pulls.length,
+    merged: pulls.filter((x) => x.merged_at).length,
+    open: pulls.filter((x) => !x.closed_at).length,
+    authors: new Set(pulls.filter((x) => x.user.type === "User" && x.user.login !== REPO.split("/")[0]).map((x) => x.user.login)).size,
+    peak,
+    peakDay,
+    perDay: [...days].sort((a, b) => a[0].localeCompare(b[0])),
+    ...live,
+  };
+}
+
 // ---- static fallbacks (snapshot of the repo on 2026-10-19, languages on 2026-10-22; /addons falls back to content/themes-readme.md
 // and the FAQ to content/readme-faq.md, both 2026-10-22)
 
@@ -223,6 +270,12 @@ export const FALLBACK = {
     replies: 647,
     date: "2026-10-17T08:51:31.000Z",
   } as Tweet,
+  // /bot, from the GitHub API on 2026-10-22 ~13:00 UTC (per day: whole days only)
+  bot: {
+    prs: 768, merged: 526, open: 100, authors: 374, peak: 174, peakDay: "2026-10-21",
+    perDay: [["2026-10-18", 70], ["2026-10-19", 136], ["2026-10-20", 251], ["2026-10-21", 243]],
+    runs: 222, reviewed: 150,
+  } as BotStats,
   stars: 2780,
   forks: 331,
   prCount: 52,

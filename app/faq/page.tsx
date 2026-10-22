@@ -104,8 +104,8 @@ export default async function Faq() {
 
         <p style={{ margin: "56px 0 0", color: "#9a9a9a", fontSize: 17 }}>
           Something else? Ask in <a href={`${GH}/discussions`} style={green}>GitHub Discussions</a>, or read the{" "}
-          <a href={GH} style={green}>whole README</a>. Also: <Link href="/addons" style={green}>add-ons</Link> and{" "}
-          <Link href="/press" style={green}>press</Link>.
+          <a href={GH} style={green}>whole README</a>. Also: <Link href="/addons" style={green}>add-ons</Link>,{" "}
+          <Link href="/press" style={green}>press</Link> and <Link href="/bot" style={green}>the review bot</Link>.
         </p>
       </article>
     </main>
