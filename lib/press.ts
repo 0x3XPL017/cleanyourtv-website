@@ -22,6 +22,7 @@ export const COVERAGE: PressGroup[] = [
       ["Decrypt", "People Are Vibe Coding the Ads Out of Their Smart TVs: Here's How", "20 Oct", "https://decrypt.co/381456/vibe-coding-ads-out-smart-tvs-heres-how", "decrypt-16b75f", "decrypt"],
       ["Gadget Review (on Yahoo Tech)", "Developers Are Using AI to Strip Ads and Tracking From Smart TVs", "19 Oct", "https://tech.yahoo.com/ai/meta-ai/articles/developers-using-ai-strip-ads-185856468.html", "gadgetreview-57a196", "gadgetreview"],
       ["HighTechDad", "Tech Brief: People Are Using AI Coding Agents to Strip Ads and Tracking Off Their Smart TVs", "20 Oct", "https://www.hightechdad.com/tech-briefs/people-are-using-ai-coding-agents-to-strip-ads-and-tracking-off-their-smart-tvs/", "hightechdad-2bee7d", "hightechdad"],
+      ["Yahoo Tech", "Sick of seeing ads and clutter on your smart TV? The internet says AI can fix that.", "21 Oct", "https://tech.yahoo.com/ai/article/sick-of-seeing-ads-and-clutter-on-your-smart-tv-the-internet-says-ai-can-fix-that-181417392.html", "yahoo-d09a72", "yahoo"],
     ],
   },
   {
@@ -84,6 +85,7 @@ export const COVERAGE: PressGroup[] = [
     items: [
       ["WinFuture", "KIs machen Smart-TVs dumm, um Werbung und Tracking loszuwerden", "20 Oct", "https://winfuture.de/news,162070.html", "winfuture-294e85", "winfuture"],
       ["Clauding.de", "dumbtv and cleanyourtv: People Are Stripping Their TVs With Claude Code", "20 Oct", "https://clauding.de/en/posts/smart-tv-entruempeln-claude-code/", "clauding-c6a28f", "clauding"],
+      ["Bild", "Smart-TV: Warum Nutzer ihre Fernseher mit KI verändern", "21 Oct", "https://www.bild.de/leben-wissen/digital/smart-tv-warum-nutzer-ihre-fernseher-mit-ki-veraendern-6ad89038842f9bd88130aa9e", "bild-c1ba1c", "bild"],
     ],
   },
   {
@@ -161,6 +163,7 @@ export const COVERAGE: PressGroup[] = [
       ["DiarioBitcoin", "Usuarios usan IA para quitar anuncios y bloatware de sus televisores inteligentes", "19 Oct", "https://www.diariobitcoin.com/tecnologia/usuarios-usan-ia-para-quitar-anuncios-y-bloatware-de-sus-televisores-inteligentes/", "diariobitcoin-4755e2", "diariobitcoin"],
       ["Ecosistema Startup", "dumbtv: el hack con IA que elimina los anuncios del TV", "19 Oct", "https://ecosistemastartup.com/dumbtv-el-hack-con-ia-que-elimina-los-anuncios-del-tv/", "ecosistemastartup-f105a1", "ecosistemastartup"],
       ["TecToc", "Usuarios están usando IA para quitar anuncios y «limpiar» sus Smart TV", "19 Oct", "https://tectoc.blog/2026/10/19/usuarios-estan-usando-ia-para-quitar-anuncios-y-limpiar-sus-smart-tv/", "tectoc-41ea15", "tectoc"],
+      ["Tecnobits", "Cómo hacer debloat a tu Smart TV con IA y CleanYourTV", "21 Oct", "https://tecnobits.net/como-hacer-debloat-a-tu-smart-tv-con-ia-cleanyourtv/", "tecnobits-d7a0f3", "tecnobits"],
     ],
   },
   {
@@ -229,6 +232,7 @@ export const COVERAGE: PressGroup[] = [
       ["AwesomeFOSS (YouTube)", "CleanYourTV: 6,000 Stars in 3 Days to Kill Smart TV Ads", "20 Oct", "https://www.youtube.com/watch?v=-u2FuQZ9HsU", "youtube-d2ebdb", "youtube"],
       ["vc.ru (Aleksandr Biryukov)", "CleanYourTV — AI DIY проект, который убирает рекламу и стилизует вашу TV OS", "20 Oct", "https://vc.ru/id553757/3205401-cleanyourtv-proekt-dlya-udaleniya-reklamy-i-kustomizatsii-android-tv", "vc-70f8b6", "vc"],
       ["Prism Labs (YouTube)", "CleanYourTV Strips Ads From 54 Smart TVs Free", "19 Oct", "https://www.youtube.com/watch?v=lHonkeutGvg", "youtube-b7f6aa", "youtube"],
+      ["What People Made", "Vibe coded a new launcher for parents' Xiaomi TV, removing ads and bloat", "", "https://www.whatpeoplemade.com/i/vibe-coded-a-new-launcher-for-parents-xiaomi-tv-removing-939102.html", "whatpeoplemade-d865ce", "whatpeoplemade"],
     ],
   },
 ];
