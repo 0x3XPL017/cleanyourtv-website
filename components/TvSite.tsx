@@ -65,7 +65,7 @@ export default class TvSite extends React.Component<Props, State> {
         const n = shows.filter((x) => x.g === g).findIndex((x) => x.s === s) + 1;
         return { kind: "show", name: s.name, what: s.what, meta: "Built on " + s.builtOn, by: s.by, byUrl: "https://github.com/" + s.by, url: s.url, wall: "aurora", tiles: 4, image, group: g, kicker: `${g.toUpperCase()} · ${String(n).padStart(2, "0")} / ${String(count(g)).padStart(2, "0")}` };
       })
-      .concat(d.themes.map<Slide>((t) => ({ kind: "theme", name: t.name + "/", what: t.what, meta: "In themes/" + t.name + "/", by: "cleanyourtv", byUrl: GH, url: GH + "/tree/main/themes/" + t.name, wall: t.name === "aurora" ? "aurora" : "black", tiles: t.name === "six-columns" ? 6 : 4, site: t.name === "aurora" ? "aurora" : "black", kicker: "THEME", group: "Themes" })));
+      .concat(d.themes.map<Slide>((t) => ({ kind: "theme", name: t.name + "/", what: t.what, meta: "In themes/" + t.name + "/", by: "cleanyourtv", byUrl: GH, url: GH + "/tree/main/themes/" + t.name, wall: t.name === "aurora" ? "aurora" : "black", tiles: t.name === "six-columns" ? 6 : 4, site: t.name === "aurora" ? "aurora" : "black", kicker: "THEME", image: t.image, group: "Themes" })));
     this.state = {
       osd: "CH 00", theme: "black", sound: false, power: true, booted: false, mobile: false, mounted: false, focus: 0,
       clock: "", ampm: "", date: "", greeting: "",
@@ -1007,7 +1007,7 @@ export default class TvSite extends React.Component<Props, State> {
             <div style={{ ...S("position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background-size:cover;background-position:center;transition:background-color .3s"), backgroundColor: sl.wall === "aurora" ? "#070A14" : "#000000", backgroundImage: sl.wall === "aurora" ? "url('/themes/aurora/wallpaper.jpg')" : "none" }}>
               {sl.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={cdn(sl.image)} alt={sl.name + " on a TV"} style={S("position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block")} />
+                <img src={cdn(sl.image)} alt={sl.kind === "theme" ? "The " + sl.name.replace(/\/$/, "") + " theme on a TV" : sl.name + " on a TV"} style={S("position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block")} />
               ) : sl.kind === "theme" ? (
                 <>
                   <div style={S("position:absolute;left:6%;right:6%;bottom:38%;color:#fff;font-size:clamp(18px,2.8cqw,40px);font-weight:200;letter-spacing:-.02em;line-height:1.05;text-wrap:balance")}>{sl.name}</div>
