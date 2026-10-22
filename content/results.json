@@ -1097,5 +1097,75 @@
     "image": "/results/carlosazaustre.jpg",
     "link": "https://x.com/carlosazaustre/status/2112920975171846152",
     "tv": "Xiaomi, backdrop by time and weather"
+  },
+  {
+    "handle": "@kirubaakaran",
+    "quote": "Connected Claude Code with my 5 year old TV, Removed all unwanted apps, home page ads, cleared space. Added Nifty, Sensex on Home Screen. Now my TV loads…",
+    "image": "/results/kirubaakaran.jpg",
+    "link": "https://x.com/kirubaakaran/status/2113093431392337960",
+    "tv": "5-year-old TV, Nifty and Sensex"
+  },
+  {
+    "handle": "@LimitScience",
+    "quote": "Just did it hahaha.",
+    "image": "/results/limitscience.jpg",
+    "link": "https://x.com/LimitScience/status/2113135353687093477",
+    "tv": "Netflix-style home"
+  },
+  {
+    "handle": "@stuntech",
+    "quote": "WebOS, en efecto más latoso. Solo Astra le entró, hay que hacer cuenta deveolper (1 min) Se acabó la lentitud y esperar minutos para ver algo de contenido.",
+    "image": "/results/stuntech-2.jpg",
+    "link": "https://x.com/stuntech/status/2113044415707246890",
+    "tv": "LG webOS, no more waiting"
+  },
+  {
+    "handle": "@KienDotA",
+    "quote": "Fixed my shitty Android TV with Claude, so damn easy. It found the TV on wifi, killed the Google junk, and remapped the remote by itself. Repo: Inspired by…",
+    "image": "/results/kiendota.jpg",
+    "link": "https://x.com/KienDotA/status/2113099822999994796",
+    "tv": "Widget home, city blurred"
+  },
+  {
+    "handle": "@XiJie27870",
+    "quote": "最近社区都在折腾自己的电视，手痒了也把自己的LG C5也折腾了一版：这是基于 @gathint 原项目的 webOS 分支改造： 1、修复了webOS vibe hack对中文乱码的问题 2、添加了主流影视app对动态影视封面的支持 3、加入了自动切换明暗主题的功能。 视觉风格是参考 @jakubkralka…",
+    "image": "/results/xijie27870.jpg",
+    "link": "https://x.com/XiJie27870/status/2113115056905007295",
+    "tv": "LG C5 webOS, Chinese fixed"
+  },
+  {
+    "handle": "@PssBerg",
+    "quote": "我去，投影仪终于可以不用看乱七八糟的桌面了 我用 Claude Code 把家里的 Vidda M2 Pro 投影仪系统改了一遍：停用广告、数据上报和用不上的预装应用；换成开源的极简桌面…",
+    "image": "/results/pssberg.jpg",
+    "link": "https://x.com/PssBerg/status/2113083358507045315",
+    "tv": "Vidda M2 Pro projector"
+  },
+  {
+    "handle": "@alexhmcdaniel",
+    "quote": "It actually works 😂😂😂",
+    "image": "/results/alexhmcdaniel.jpg",
+    "link": "https://x.com/alexhmcdaniel/status/2113064298855743967",
+    "tv": "It actually works"
+  },
+  {
+    "handle": "@DavidNgugi15",
+    "quote": "Finally figured out Samsung TV Tizen 6 hack including live wallpapers. Still can't fully replace the native launcher but can fully map \"Home\" to own app…",
+    "image": "/results/davidngugi15.jpg",
+    "link": "https://x.com/DavidNgugi15/status/2113067143273054471",
+    "tv": "Samsung Tizen 6, own launcher"
+  },
+  {
+    "handle": "@AlejoGrenouille",
+    "quote": "Parce, 15 minutos me demoré haciendo esa vaina. Le dejé a mi abuela solo lo que ella usa, sin propaganda, sin apps raras y en un TV que estaba súper lento.",
+    "image": "/results/alejogrenouille.jpg",
+    "link": "https://x.com/AlejoGrenouille/status/2113068125365412343",
+    "tv": "Grandma's TV, only what she uses"
+  },
+  {
+    "handle": "@suryaatmovies",
+    "quote": "Inspired by this, I built my own Android TV launcher that displays a random movie from my Letterboxd watchlist, with options to watch it on Nuvio. Dock lets…",
+    "image": "/results/suryaatmovies.jpg",
+    "link": "https://x.com/suryaatmovies/status/2113054824849973724",
+    "tv": "Letterboxd launcher, Wi-Fi name blurred"
   }
 ]
