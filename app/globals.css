@@ -1982,6 +1982,16 @@ a.bot-0g:hover {
   .nudge-on .m-bezel {
     padding-bottom: calc(60px + 70px + env(safe-area-inset-bottom, 0px)) !important;
   }
+  /* ...and every channel keeps its height in pixels while the screen is 70 px shorter, so nothing on the page moves */
+  .nudge-on .m-hero {
+    height: calc(100% + 70px) !important;
+  }
+  .nudge-on .m-section {
+    min-height: calc(100% + 70px) !important;
+  }
+  .nudge-on .m-end {
+    min-height: calc(60% + 42px) !important;
+  }
   a.m-nudge-go {
     height: 44px;
     border-radius: 22px;
