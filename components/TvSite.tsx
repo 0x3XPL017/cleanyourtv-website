@@ -14,7 +14,9 @@ const PH = "https://www.producthunt.com/products/cleanyourtv";
 const FEAT_SECS = 6;
 
 type Counter = { key: string; label: string; value: number; max: number; display: number };
-type Slide = { kind: "show" | "theme"; name: string; what: string; meta: string; by: string; byUrl: string; url: string; wall: "aurora" | "black"; tiles: number; site?: ThemeName; kicker: string; image?: string };
+type Slide = { kind: "show" | "theme"; name: string; what: string; meta: string; by: string; byUrl: string; url: string; wall: "aurora" | "black"; tiles: number; site?: ThemeName; kicker: string; image?: string; group: string };
+/** Short chip names for SHOWCASE.md's sections; an unknown section shows its own heading. */
+const GROUP_SHORT: Record<string, string> = { "Home screens built as their own app": "Home screens", "Forks of the launcher": "Forks", "Screensavers and add-ons": "Add-ons", "Tools and companion apps": "Tools", "Other platforms: Fire TV and LG webOS": "Fire TV & webOS" };
 type Spring = { p: number; v: number; t: number };
 type Axis = "x" | "y" | "w" | "h";
 
@@ -50,13 +52,20 @@ export default class TvSite extends React.Component<Props, State> {
     this.r = Object.fromEntries(REF_KEYS.map((k) => [k, React.createRef<HTMLDivElement>()])) as Record<RefKey, React.RefObject<HTMLDivElement | null>>;
     const d = p.data;
     // Projects with a screenshot lead; the ones still waiting for one follow, then the themes.
+    // Grouped by SHOWCASE.md section (in the page's order); inside a group, projects with a screenshot lead. Then the themes.
+    const groupOf = (c?: string) => (c ? GROUP_SHORT[c] || c : "Showcase");
+    const order: string[] = [];
+    d.showcase.forEach((s) => { const g = groupOf(s.category); if (!order.includes(g)) order.push(g); });
     const shows = d.showcase
-      .map((s, i) => ({ s, i, image: SHOWCASE_IMAGES[s.by.toLowerCase()] }))
-      .sort((a, b) => Number(!a.image) - Number(!b.image) || a.i - b.i)
-      .map(({ s, image }) => ({ ...s, image }));
+      .map((s, i) => ({ s, i, g: groupOf(s.category), image: SHOWCASE_IMAGES[s.by.toLowerCase()] }))
+      .sort((a, b) => order.indexOf(a.g) - order.indexOf(b.g) || Number(!a.image) - Number(!b.image) || a.i - b.i);
+    const count = (g: string) => shows.filter((x) => x.g === g).length;
     this.slides = shows
-      .map<Slide>((s, i) => ({ kind: "show", name: s.name, what: s.what, meta: "Built on " + s.builtOn, by: s.by, byUrl: "https://github.com/" + s.by, url: s.url, wall: "aurora", tiles: 4, image: s.image, kicker: `SHOWCASE ${String(i + 1).padStart(2, "0")} / ${String(d.showcase.length).padStart(2, "0")}` }))
-      .concat(d.themes.map<Slide>((t) => ({ kind: "theme", name: t.name + "/", what: t.what, meta: "In themes/" + t.name + "/", by: "cleanyourtv", byUrl: GH, url: GH + "/tree/main/themes/" + t.name, wall: t.name === "aurora" ? "aurora" : "black", tiles: t.name === "six-columns" ? 6 : 4, site: t.name === "aurora" ? "aurora" : "black", kicker: "THEME" })));
+      .map<Slide>(({ s, g, image }) => {
+        const n = shows.filter((x) => x.g === g).findIndex((x) => x.s === s) + 1;
+        return { kind: "show", name: s.name, what: s.what, meta: "Built on " + s.builtOn, by: s.by, byUrl: "https://github.com/" + s.by, url: s.url, wall: "aurora", tiles: 4, image, group: g, kicker: `${g.toUpperCase()} · ${String(n).padStart(2, "0")} / ${String(count(g)).padStart(2, "0")}` };
+      })
+      .concat(d.themes.map<Slide>((t) => ({ kind: "theme", name: t.name + "/", what: t.what, meta: "In themes/" + t.name + "/", by: "cleanyourtv", byUrl: GH, url: GH + "/tree/main/themes/" + t.name, wall: t.name === "aurora" ? "aurora" : "black", tiles: t.name === "six-columns" ? 6 : 4, site: t.name === "aurora" ? "aurora" : "black", kicker: "THEME", group: "Themes" })));
     this.state = {
       osd: "CH 00", theme: "black", sound: false, power: true, booted: false, mobile: false, mounted: false, focus: 0,
       clock: "", ampm: "", date: "", greeting: "",
@@ -981,6 +990,18 @@ export default class TvSite extends React.Component<Props, State> {
     return (
       <section id="ch-04" data-ch="4" aria-label="Channel 04, Built on it" className="m-section" style={this.sectionStyle()}>
         {this.header("CH 04 · BUILT ON IT", "What people built", "Launchers, ports and add-ons people built on top, plus the themes. Nothing here is reviewed by the repo: read each project's README before you sideload it.")}
+        <nav aria-label="Showcase sections" style={S("display:flex;flex-wrap:wrap;gap:8px;margin:0 0 clamp(14px,1.8cqw,22px)")}>
+          {Array.from(new Set(this.slides.map((x) => x.group))).map((g) => {
+            const first = this.slides.findIndex((x) => x.group === g), on = sl.group === g;
+            return (
+              <button key={g} onClick={() => this.slideGo(first)} aria-pressed={on} style={S("height:36px;padding:0 14px;border-radius:18px;border:0;font-size:14px;font-weight:500;" + (on ? "background:var(--ink,#fff);color:var(--bg,#000)" : "background:var(--pill-bg,rgba(255,255,255,.12));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22))"))}>
+                {g} <span style={S("opacity:.6;font-weight:400")}>{this.slides.filter((x) => x.group === g).length}</span>
+              </button>
+            );
+          })}
+          <a href={GH + "/blob/main/SHOWCASE.md"} target="_blank" rel="noopener" style={S("display:flex;align-items:center;height:36px;padding:0 14px;font-size:14px")}>Full index by TV brand →</a>
+          <a href={GH + "/tree/main/addons"} target="_blank" rel="noopener" style={S("display:flex;align-items:center;height:36px;padding:0 14px;font-size:14px")}>Add-ons in the repo →</a>
+        </nav>
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(20px,3.4cqw,48px);align-items:center")}>
           <div onTouchStart={(e) => { this.tx = e.touches[0].clientX; }} onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - (this.tx || 0); if (Math.abs(dx) > 40) this.slideGo(s.slide + (dx < 0 ? 1 : -1)); }} style={S("padding:clamp(10px,1.2cqw,16px);border-radius:22px;background:linear-gradient(180deg,#26262a,#121214);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 40px rgba(0,0,0,.4)")}>
             <div style={{ ...S("position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background-size:cover;background-position:center;transition:background-color .3s"), backgroundColor: sl.wall === "aurora" ? "#070A14" : "#000000", backgroundImage: sl.wall === "aurora" ? "url('/themes/aurora/wallpaper.jpg')" : "none" }}>

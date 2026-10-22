@@ -5,7 +5,7 @@ export const GH = `https://github.com/${REPO}`;
 export type Tv = { folder: string; tv: string; brand: string; model: string; os: string; notes: string };
 export type Pr = { login: string; avatar: string; title: string };
 export type ResultItem = { handle: string; quote: string; image: string; link: string; tv: string };
-export type ShowcaseItem = { name: string; what: string; builtOn: string; by: string; url: string };
+export type ShowcaseItem = { name: string; what: string; builtOn: string; by: string; url: string; category?: string };
 export type ThemeItem = { name: string; what: string };
 export type Tweet = { text: string; likes: number; replies: number; date: string };
 export type SiteData = {
@@ -43,16 +43,21 @@ export function parseTVs(md: string): Tv[] {
 }
 
 export function parseShowcase(md: string): ShowcaseItem[] {
-  return md
-    .split("\n")
-    .filter((l) => /^\|\s*\[/.test(l))
-    .map((l) => {
-      const c = l.split("|").slice(1, -1).map((s) => s.trim());
-      const m = c[0].match(/\[([^\]]+)\]\(([^)]+)\)/);
-      const by = (c[3] || "").match(/\[([^\]]+)\]/);
-      return { name: m ? m[1] : c[0], url: m ? m[2] : GH, what: c[1] || "", builtOn: c[2] || "", by: by ? by[1] : "" };
-    })
-    .filter((s) => s.name && s.url);
+  // SHOWCASE.md is split into "## Section" tables (home screens, forks, add-ons, tools, other platforms);
+  // each row keeps the section it sits under, so the site can group and jump by it.
+  let category = "";
+  const out: ShowcaseItem[] = [];
+  for (const l of md.split("\n")) {
+    const h = l.match(/^##\s+(.+?)\s*$/);
+    if (h) { category = h[1]; continue; }
+    if (!/^\|\s*\[/.test(l)) continue;
+    const c = l.split("|").slice(1, -1).map((s) => s.trim());
+    const m = c[0].match(/\[([^\]]+)\]\(([^)]+)\)/);
+    const by = (c[3] || "").match(/\[([^\]]+)\]/);
+    const item = { name: m ? m[1] : c[0], url: m ? m[2] : GH, what: c[1] || "", builtOn: c[2] || "", by: by ? by[1] : "", category };
+    if (item.name && item.url) out.push(item);
+  }
+  return out;
 }
 
 export function parseThemes(md: string): ThemeItem[] {
