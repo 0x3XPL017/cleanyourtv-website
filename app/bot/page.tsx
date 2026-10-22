@@ -89,7 +89,7 @@ const POWERED = (
   <a href={PC} className="bot-0g" aria-label="Powered by 0G">
     <span>Powered by</span>
     {/* eslint-disable-next-line @next/next/no-img-element */}
-    <img src="/brand/0g.svg" alt="" width={46} height={22} />
+    <img src="/brand/0g-purple.svg" alt="" width={46} height={22} />
   </a>
 );
 
@@ -136,7 +136,7 @@ export default async function Bot() {
         </p>
         <h1 className="bot-title">maintainer-bot</h1>
         <p className="bot-lede">
-          Every pull request here is reviewed by an open-source bot that runs on <a href={PC} style={green}>0G Private Computer</a>.
+          Every pull request here is reviewed by an open-source bot that runs on <a href={PC} style={{ ...green, whiteSpace: "nowrap" }}>0G Private Computer</a>.
         </p>
         <div className="bot-cta">
           <a href={BOT} className="bot-btn bot-btn-main">maintainer-bot on GitHub</a>
@@ -197,15 +197,16 @@ export default async function Bot() {
           <div className="bot-card bot-models">
             <div className="bot-models-head">
               <h3>The right model for each step</h3>
-              <p>Depth where it matters, speed and cost where it doesn&rsquo;t. All through one 0G router key.{" "}
+              <p>Depth where it matters, speed and cost where it doesn&rsquo;t. Claude Opus 5.5, Claude Sonnet 5 and GLM-5.3-flash all run on{" "}
+                <a href={PC} style={{ ...green, whiteSpace: "nowrap" }}>0G Private Computer</a>, through one router key.{" "}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/brand/0g.svg" alt="" width={25} height={12} className="bot-0g-inline" />
+                <img src="/brand/0g-purple.svg" alt="" width={25} height={12} className="bot-0g-inline" />
               </p>
             </div>
             <ul>
               {MODELS.map((m, i) => (
                 <li key={m.model}>
-                  <span className="bot-m-name">{m.model}</span>
+                  <span className="bot-m-name">{m.model} <span className="bot-small">on 0G PC</span></span>
                   <span className="bot-m-job">{m.job}</span>
                   <span className="bot-m-bar" aria-hidden="true"><span style={{ width: `${Math.max(2, (perCall[i] / perCall[0]) * 100)}%` }} /></span>
                   <span className="bot-m-cost">{(perCall[i] * 100).toFixed(1)}¢ a call</span>
@@ -287,8 +288,7 @@ export default async function Bot() {
         </section>
 
         <div className="bot-foot">
-          {POWERED}
-          <span>maintainer-bot runs on <a href={PC} style={green}>0G Private Computer</a>.</span>
+          <span>maintainer-bot runs on <a href={PC} style={{ ...green, whiteSpace: "nowrap" }}>0G Private Computer</a>.</span>
         </div>
         <p style={{ margin: "16px 0 0", color: "#9a9a9a" }}>
           The code, the rules and the reports are on <a href={BOT} style={green}>GitHub</a>, MIT licensed. Also: <Link href="/faq" style={green}>the FAQ</Link>,{" "}
