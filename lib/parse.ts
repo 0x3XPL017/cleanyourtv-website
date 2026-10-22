@@ -190,7 +190,8 @@ export function countLanguages(resDirs: string[]): number {
   return 1 + resDirs.filter((d) => /^values-(?:[a-z]{2,3}(?:-r[A-Z]{2})?|b\+[a-z]{2,3}(?:\+\w+)*)$/.test(d)).length;
 }
 
-export type Faq = { q: string; a: string };
+/** q and a as plain text (for structured data), md as the README writes the answer (for /faq). */
+export type Faq = { q: string; a: string; md: string };
 
 const plain = (md: string) =>
   md.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/`([^`]+)`/g, "$1").replace(/\*\*([^*]+)\*\*/g, "$1").replace(/\s+/g, " ").trim();
@@ -200,5 +201,5 @@ export function parseFaq(md: string): Faq[] {
   const sec = md.split(/^## /m).find((s) => s.startsWith("Questions people ask")) || "";
   return Array.from(sec.matchAll(/<summary><b>([\s\S]*?)<\/b><\/summary>([\s\S]*?)<\/details>/g), (m) => ({ q: m[1], a: m[2] }))
     .filter((f) => !f.a.includes("```"))
-    .map((f) => ({ q: plain(f.q), a: plain(f.a) }));
+    .map((f) => ({ q: plain(f.q), a: plain(f.a), md: f.a.trim() }));
 }

@@ -43,7 +43,7 @@ export function breadcrumbs(...trail: [string, string][]) {
   };
 }
 
-/** The home page: the site, the app itself, its author and the README's FAQ. Counts are the live ones. */
+/** The home page: the site, the app itself and its author. Counts are the live ones. */
 export function homeGraph(f: Facts, description: string) {
   return {
     "@context": "https://schema.org",
@@ -66,11 +66,6 @@ export function homeGraph(f: Facts, description: string) {
         author: { "@id": PERSON["@id"] },
       },
       PERSON,
-      {
-        "@type": "FAQPage",
-        "@id": `${SITE}/#faq`,
-        mainEntity: f.faq.slice(0, 8).map((x) => ({ "@type": "Question", name: x.q, acceptedAnswer: { "@type": "Answer", text: x.a } })),
-      },
     ],
   };
 }

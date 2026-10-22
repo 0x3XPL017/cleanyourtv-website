@@ -38,6 +38,7 @@ CleanYourTV is free and MIT licensed. You paste one markdown prompt into a codin
 - [PROMPT.md](${BLOB}/PROMPT.md): the prompt to paste into a coding assistant
 - [SHOWCASE.md](${BLOB}/SHOWCASE.md): launchers, forks, add-ons and ports people built on top
 - [PRESS.md](${BLOB}/docs/PRESS.md): every article written about it
+- [Questions people ask](${SITE}/faq): is it safe, firmware updates, ADB security and more
 - [Add-ons, themes and switches](${SITE}/addons): optional extras for the launcher
 - [Press](${SITE}/press): the press coverage, with logos and links
 

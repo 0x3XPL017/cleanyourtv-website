@@ -599,14 +599,15 @@ export default class TvSite extends React.Component<Props, State> {
               <div style={S("display:flex;align-items:flex-end;gap:clamp(6px,.8cqw,12px);white-space:nowrap")}>
                 <div style={S("font-size:clamp(24px,4cqw,52px);font-weight:300;letter-spacing:-.04em;line-height:1")}>{s.clock}</div>
                 <div style={S("font-size:clamp(9px,1.15cqw,15px);font-weight:500;letter-spacing:.08em;text-transform:uppercase;opacity:.7;padding-bottom:2px")}>{s.ampm}</div>
-                <div style={S("width:1px;height:clamp(14px,2cqw,26px);background:var(--ink-dim,rgba(255,255,255,.3));opacity:.5;margin:0 clamp(2px,.4cqw,6px) 3px")} />
-                <div style={S("font-size:clamp(9px,1.1cqw,14px);letter-spacing:.14em;text-transform:uppercase;opacity:.65;padding-bottom:3px")}>{s.date}</div>
+                <div className="m-date" style={S("width:1px;height:clamp(14px,2cqw,26px);background:var(--ink-dim,rgba(255,255,255,.3));opacity:.5;margin:0 clamp(2px,.4cqw,6px) 3px")} />
+                <div className="m-date" style={S("font-size:clamp(9px,1.1cqw,14px);letter-spacing:.14em;text-transform:uppercase;opacity:.65;padding-bottom:3px")}>{s.date}</div>
               </div>
             </div>
             <div className="m-pills" style={S("display:flex;gap:clamp(4px,.8cqw,10px);flex-shrink:0")}>
               {/* The launcher's Inputs / Wi-Fi / Settings pills, as the site's own navigation. */}
               <a href="/addons" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>Add-ons</a>
               <a href="/press" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>Press</a>
+              <a href="/faq" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>FAQ</a>
             </div>
           </div>
           <div ref={this.r.dock} style={S("position:absolute;left:50%;bottom:clamp(28px,5cqw,64px);transform:translateX(-50%);padding:clamp(8px,1.1cqw,14px);border-radius:clamp(16px,2cqw,26px);background:var(--band,#141416);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.12));display:flex;gap:clamp(8px,1.6cqw,22px)")}>

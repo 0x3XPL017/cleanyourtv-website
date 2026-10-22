@@ -107,6 +107,7 @@ export default function Press() {
         <p style={{ margin: "56px 0 0", color: "#9a9a9a" }}>
           Wrote about CleanYourTV and not on this list? <a href="https://github.com/Gathin23/cleanyourtv/issues/new" style={green}>Open an issue</a> with the link.
           The same list is <a href="https://github.com/Gathin23/cleanyourtv/blob/main/docs/PRESS.md" style={green}>docs/PRESS.md</a> in the repo.
+          New here? Start with <Link href="/faq" style={green}>the questions people ask</Link>.
         </p>
       </div>
     </main>

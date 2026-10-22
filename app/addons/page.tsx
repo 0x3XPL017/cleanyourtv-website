@@ -70,7 +70,7 @@ export default async function Addons() {
 
         <p style={{ margin: "56px 0 0", color: "#9a9a9a" }}>
           Looking for whole launchers and forks? See <Link href="/#ch-04" style={green}>What people built</Link> and{" "}
-          <a href={GH + "/blob/main/SHOWCASE.md"} style={green}>SHOWCASE.md</a>.
+          <a href={GH + "/blob/main/SHOWCASE.md"} style={green}>SHOWCASE.md</a>. Questions? See <Link href="/faq" style={green}>the FAQ</Link>.
         </p>
       </div>
     </main>

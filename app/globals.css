@@ -1079,6 +1079,13 @@ a.press-card:hover .press-thumb {
   }
 }
 
+/* Narrow phones: the three hero pills need the date's room, so the clock stands alone. */
+@media (max-width: 420px) {
+  .m-date {
+    display: none;
+  }
+}
+
 /* Home: the hero's pills are links; the one-time "new" note for /addons. */
 a.m-navpill {
   color: inherit;

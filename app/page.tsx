@@ -16,13 +16,12 @@ export const metadata = pageMeta("/", "CleanYourTV: remove ads and bloat from An
 
 export default async function Page() {
   const [data, facts] = await Promise.all([loadSiteData(), loadFacts()]);
-  const named = facts.brands.filter(([, n]) => n > 1).map(([b]) => b);
   return (
     <>
       <JsonLd data={homeGraph(facts, description)} />
       <TvSite data={data} pressTotal={COVERAGE_TOTAL} />
       {/* The TV above is mostly drawn and animated on the client. This is the same story in plain text for screen
-          readers and crawlers: the pitch, the three setup screens of channel 03 and the counts behind its ticker. */}
+          readers and crawlers: the pitch, the three setup screens of channel 03, the counts in its ticker and its links. */}
       <section className="sr-only" aria-labelledby="about-cleanyourtv">
         <h2 id="about-cleanyourtv">About CleanYourTV</h2>
         <p>
@@ -37,15 +36,13 @@ export default async function Page() {
         </ol>
         <p>Nothing uninstalled. One line restores it.</p>
         <h3>Supported TVs</h3>
-        <p>
-          Android TV and Google TV, with tested lists for {facts.tvs} TV models from {facts.brands.length} brands, including {named.join(", ")}. Fire TV takes
-          the debloat only. Samsung (Tizen) and LG (webOS) are different systems and are not supported.
-        </p>
+        <p>Android TV and Google TV: {facts.tvs} TVs from {facts.brands.length} brands so far.</p>
         <h3>More</h3>
         <ul>
           <li><a href={GH}>CleanYourTV on GitHub</a></li>
           <li><Link href="/press">{COVERAGE_TOTAL} articles about CleanYourTV in the press</Link></li>
           <li><Link href="/addons">Add-ons, themes and switches for the launcher</Link></li>
+          <li><Link href="/faq">Questions people ask</Link></li>
           <li><Link href="/blog/reintroducing-cleanyourtv">(Re)introducing CleanYourTV</Link></li>
         </ul>
       </section>
