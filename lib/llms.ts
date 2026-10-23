@@ -44,10 +44,12 @@ CleanYourTV is free and MIT licensed. You paste one markdown prompt into a codin
 - [Add-ons, themes and switches](${SITE}/addons): optional extras for the launcher
 - [Press](${SITE}/press): the press coverage: ${COVERAGE_TOTAL} articles, with outlets in ${COVERAGE_COUNTRIES} countries, and ${VIDEOS.length} YouTube videos
 - [maintainer-bot](${SITE}/bot): the open-source bot that reviews every pull request, how it decides and how well; it runs on 0G Private Computer
+- [Clean Your TV app for Android phones](${SITE}/app/android): a community-built phone app that does the same clean-up from an Android phone over Wi-Fi, with no computer or coding agent
 
 ## Optional
 
 - [(Re)introducing CleanYourTV](${SITE}/blog/reintroducing-cleanyourtv): the launch story, 20 October 2026
+- [Android app privacy policy](${SITE}/app/android/privacy): the phone app collects no data: no accounts, analytics, advertising or crash reporting, and no server of its own
 - [llms-full.txt](${SITE}/llms-full.txt): this file followed by the whole README
 `;
 }
