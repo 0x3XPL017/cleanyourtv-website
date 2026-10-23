@@ -596,9 +596,9 @@ export default class TvSite extends React.Component<Props, State> {
 
   renderNudge() {
     return (
-      <div role="dialog" aria-label="New: add-ons, themes and switches" className="m-nudge">
+      <div role="dialog" aria-label="New: add-ons, themes and settings" className="m-nudge">
         <span className="m-nudge-k">NEW</span>
-        <span className="m-nudge-t">Themes, switches and add-ons for the launcher</span>
+        <span className="m-nudge-t">Themes, settings and add-ons for the launcher</span>
         <a href="/addons" className="m-nudge-go">Take a look</a>
         <button type="button" aria-label="Close" className="m-nudge-x" onClick={() => this.setState({ nudge: false })}>×</button>
       </div>
@@ -1042,7 +1042,7 @@ export default class TvSite extends React.Component<Props, State> {
             );
           })}
           <a href={GH + "/blob/main/SHOWCASE.md"} target="_blank" rel="noopener" style={S("display:flex;align-items:center;height:36px;padding:0 14px;font-size:14px")}>Full index by TV brand →</a>
-          <a href="/addons" style={S("display:flex;align-items:center;height:36px;padding:0 14px;font-size:14px")}>Add-ons, themes and switches →</a>
+          <a href="/addons" style={S("display:flex;align-items:center;height:36px;padding:0 14px;font-size:14px")}>Add-ons, themes and settings →</a>
         </nav>
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(20px,3.4cqw,48px);align-items:center")}>
           <div onTouchStart={(e) => { this.tx = e.touches[0].clientX; }} onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - (this.tx || 0); if (Math.abs(dx) > 40) this.slideGo(s.slide + (dx < 0 ? 1 : -1)); }} style={S("padding:clamp(10px,1.2cqw,16px);border-radius:22px;background:linear-gradient(180deg,#26262a,#121214);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 40px rgba(0,0,0,.4)")}>

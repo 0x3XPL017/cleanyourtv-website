@@ -41,7 +41,7 @@ export default async function Page() {
         <ul>
           <li><a href={GH}>CleanYourTV on GitHub</a></li>
           <li><Link href="/press">{COVERAGE_TOTAL} articles about CleanYourTV in the press</Link></li>
-          <li><Link href="/addons">Add-ons, themes and switches for the launcher</Link></li>
+          <li><Link href="/addons">Add-ons, themes and settings for the launcher</Link></li>
           <li><Link href="/faq">Questions people ask</Link></li>
           <li><Link href="/blog/reintroducing-cleanyourtv">(Re)introducing CleanYourTV</Link></li>
         </ul>
