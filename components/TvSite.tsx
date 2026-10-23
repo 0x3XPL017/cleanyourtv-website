@@ -632,7 +632,7 @@ export default class TvSite extends React.Component<Props, State> {
             <div className="m-pills" style={S("display:flex;gap:clamp(4px,.8cqw,10px);flex-shrink:0")}>
               {/* The launcher's Inputs / Wi-Fi / Settings pills, as the site's own navigation. */}
               <a href="/addons" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>Add-ons</a>
-              <a href="/app/android" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>App</a>
+              <a href="/app/android" onClick={(e) => e.stopPropagation()} className="m-navpill m-navpill-new" style={S(pill)}>App<span className="m-new" aria-label="new">NEW</span></a>
               <a href="/press" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>Press</a>
               <a href="/faq" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>FAQ</a>
             </div>
