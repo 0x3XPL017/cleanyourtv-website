@@ -167,7 +167,7 @@ export default function AndroidApp() {
               <Avatar size={44} />
               <span>
                 <b>Built by udhaykumarbala for the community</b>
-                <span>On Clean Your TV, with Gathin&rsquo;s permission</span>
+                <span>Built on Clean Your TV</span>
               </span>
             </a>
           </div>
@@ -255,7 +255,7 @@ export default function AndroidApp() {
             <Avatar size={44} />
             <span>
               <b>A community-built app by udhaykumarbala</b>
-              <span>Built on Clean Your TV with Gathin&rsquo;s permission</span>
+              <span>Built on Clean Your TV</span>
             </span>
           </a>
         </section>
