@@ -119,7 +119,7 @@ const isoLength = (s: number) => `PT${s >= 3600 ? `${Math.floor(s / 3600)}H` : "
           published.
         </p>
 
-        <LogoWall count={logos.length}>
+        <LogoWall count={COVERAGE_TOTAL}>
         <ul className="press-logos" aria-label="Outlets">
           {logos.map((l) => (
             <li key={l.icon}>

@@ -28,7 +28,7 @@ export default function LogoWall({ count, children }: { count: number; children:
     <div ref={wrap} className="press-logos-wrap" data-open={open || undefined} style={fold ? ({ "--logo-rows": `${fold}px` } as React.CSSProperties) : undefined}>
       {children}
       <button type="button" className="press-logos-more" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        {open ? "Show fewer" : `See all ${count} outlets`}
+        {open ? "Show fewer" : `See all outlets · ${count} articles`}
       </button>
     </div>
   );
