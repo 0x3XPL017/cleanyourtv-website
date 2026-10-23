@@ -632,6 +632,7 @@ export default class TvSite extends React.Component<Props, State> {
             <div className="m-pills" style={S("display:flex;gap:clamp(4px,.8cqw,10px);flex-shrink:0")}>
               {/* The launcher's Inputs / Wi-Fi / Settings pills, as the site's own navigation. */}
               <a href="/addons" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>Add-ons</a>
+              <a href="/app/android" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>App</a>
               <a href="/press" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>Press</a>
               <a href="/faq" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>FAQ</a>
             </div>
@@ -693,10 +694,9 @@ export default class TvSite extends React.Component<Props, State> {
         </div>
         <div ref={this.r.title} className="m-title" style={S("position:absolute;left:0;right:0;top:0;bottom:clamp(90px,16cqw,200px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,28px);padding:clamp(60px,9cqw,110px) 5cqw 0;text-align:center;opacity:0;pointer-events:none;color:var(--ink,rgba(255,255,255,.95))")}>
           <div style={S("display:flex;flex-direction:column;align-items:center;gap:clamp(6px,.8cqw,12px)")}>
-            {/* Launch day: a live pill above the wordmark, linking to the Product Hunt page. */}
-            <a href={PH} target="_blank" rel="noopener" className="m-phlive no-border act-shrink" style={S("pointer-events:auto;display:inline-flex;align-items:center;gap:10px;height:clamp(32px,3cqw,40px);padding:0 clamp(14px,1.6cqw,20px);margin-bottom:clamp(4px,.6cqw,10px);border-radius:999px;background:#da552f;color:#fff;font-size:clamp(13px,1.3cqw,16px);font-weight:600;letter-spacing:.02em;box-shadow:0 6px 24px rgba(218,85,47,.35)")}>
-              <span className="ph-dot" style={S("width:8px;height:8px;border-radius:50%;background:#fff")} />
-              Live on Product Hunt today →
+            {/* The community Android app (udhaykumarbala): a pill above the wordmark; narrow phones use the App pill instead. */}
+            <a href="/app/android" onClick={(e) => e.stopPropagation()} className="m-applive no-border act-shrink" style={S("pointer-events:auto;display:inline-flex;align-items:center;gap:10px;height:clamp(32px,3cqw,40px);padding:0 clamp(14px,1.6cqw,20px);margin-bottom:clamp(4px,.6cqw,10px);border-radius:999px;background:#cfffcf;color:#0b2a14;font-size:clamp(13px,1.3cqw,16px);font-weight:600;letter-spacing:.02em;box-shadow:0 6px 24px rgba(140,255,140,.25)")}>
+              New: clean your TV from your phone →
             </a>
             <h1 className="m-h1" aria-label="CleanYourTV" style={S("margin:0;display:flex;align-items:center;gap:.22em;font-family:var(--font-fredoka),'Fredoka',sans-serif;font-size:clamp(40px,min(8cqw,11vh),104px);font-weight:600;letter-spacing:-.01em;line-height:1;white-space:nowrap")}>
               <svg aria-hidden="true" viewBox="10 7 44 51" style={S("height:1.05em;width:auto;flex:none;margin-top:-.08em")}>
