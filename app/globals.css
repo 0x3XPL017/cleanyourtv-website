@@ -2239,3 +2239,43 @@ a.bot-0g:hover {
     font-size: 11px;
   }
 }
+
+/* /press: the logo wall shows five rows until "See all" opens it. */
+.press-logos-wrap {
+  --logo-rows: calc(5 * 28px + 4 * 12px);
+  margin: 0 0 40px;
+}
+.press-logos-wrap .press-logos {
+  margin: 0;
+}
+.press-logos-wrap:not([data-open]) .press-logos {
+  max-height: var(--logo-rows);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 14px), transparent);
+  mask-image: linear-gradient(180deg, #000 calc(100% - 14px), transparent);
+}
+.press-logos-more {
+  margin-top: 16px;
+  height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  color: #cfffcf;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.press-logos-more:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+.press-logos-more:focus-visible {
+  outline: 2px solid #cfffcf;
+  outline-offset: 2px;
+}
+@media (max-width: 639px) {
+  .press-logos-wrap {
+    --logo-rows: calc(5 * 34px + 4 * 12px);
+  }
+}

@@ -4,6 +4,7 @@ import { PRESS, cdn } from "@/lib/site";
 import { COVERAGE, COVERAGE_COUNTRIES, COVERAGE_TOTAL } from "@/lib/press";
 import { VIDEOS, VIDEOS_AS_OF, videoDate } from "@/lib/videos";
 import VideoGrid from "@/components/VideoGrid";
+import LogoWall from "@/components/LogoWall";
 import PressGrid, { type PressItem } from "@/components/PressGrid";
 import JsonLd from "@/components/JsonLd";
 import { SITE, breadcrumbs, isoDay, pageMeta } from "@/lib/seo";
@@ -118,6 +119,7 @@ const isoLength = (s: number) => `PT${s >= 3600 ? `${Math.floor(s / 3600)}H` : "
           published.
         </p>
 
+        <LogoWall count={logos.length}>
         <ul className="press-logos" aria-label="Outlets">
           {logos.map((l) => (
             <li key={l.icon}>
@@ -129,6 +131,7 @@ const isoLength = (s: number) => `PT${s >= 3600 ? `${Math.floor(s / 3600)}H` : "
             </li>
           ))}
         </ul>
+        </LogoWall>
 
         <h2 id="videos" className="press-h2">Videos</h2>
         <p className="press-h2-note">On YouTube, most watched first. Views as of {videoDate(VIDEOS_AS_OF)}.</p>
