@@ -3,8 +3,9 @@
 // page never depends on the public GitHub rate limit at request time.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { GH, REPO, THEMES_RAW, parseShowcase, parseTVs, parseThemes, starSeriesFallback, tweetToken } from "./parse";
-import type { Pr, ResultItem, ShowcaseItem, SiteData, ThemeItem, Tweet } from "./parse";
+import { GH, REPO, THEMES_RAW, brandsOf, countLanguages, parseAddons, parseFaq, parsePushCommand, parseShowcase, parseSwitchImages, parseThemeKeys, parseTVs, parseThemes, starSeriesFallback, tweetToken } from "./parse";
+import { SWITCH_IMAGES } from "./site";
+import type { AddonsData, Faq, Pr, ResultItem, ShowcaseItem, SiteData, ThemeCard, ThemeItem, Tweet } from "./parse";
 
 const RAW = `https://raw.githubusercontent.com/${REPO}/main/`;
 const REVALIDATE = 3600;
@@ -131,7 +132,140 @@ export async function loadSiteData(): Promise<SiteData> {
   };
 }
 
-// ---- static fallbacks (snapshot of the repo on 2026-10-19)
+// ---- /addons: one card per folder in themes/, the Keys table as switches, and the add-ons table
+
+type Tree = { tree: { path: string; type: string }[] };
+type Commit = { author: { login: string; html_url: string } | null; commit: { author: { name: string } } };
+
+const shortDate = (d: string) => new Date(d + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+
+async function themeCard(name: string, files: string[] | null, readmeRows: ThemeItem[], readme: string): Promise<ThemeCard> {
+  const [raw, commits] = await Promise.all([
+    text(`${RAW}themes/${name}/config.json`),
+    json<Commit[]>(`https://api.github.com/repos/${REPO}/commits?path=themes/${name}&per_page=100`),
+  ]);
+  let config: Record<string, unknown> = {};
+  try { config = raw ? (JSON.parse(raw) as Record<string, unknown>) : {}; } catch { /* a theme that doesn't parse shows no keys */ }
+  // The folder's first commit is its author. Screenshots are only ever ones the folder has.
+  const first = commits?.length ? commits[commits.length - 1] : null;
+  const shot = files
+    ? ["screenshot.jpg", "screenshot.png"].find((f) => files.includes(`${name}/${f}`))
+    : readme.includes(`${name}/screenshot.jpg`) ? "screenshot.jpg" : undefined;
+  const until = typeof config.festival_until === "string" && /^\d{4}-\d{2}-\d{2}$/.test(config.festival_until) ? config.festival_until : "";
+  const ended = !!until && until < new Date().toISOString().slice(0, 10);
+  return {
+    name,
+    what: readmeRows.find((t) => t.name === name)?.what || "",
+    by: first ? first.author?.login || first.commit.author.name : "",
+    byUrl: first?.author?.html_url || "",
+    screenshot: shot ? `themes/${name}/${shot}` : "",
+    keys: Object.keys(config),
+    season: until ? `${ended ? "ended" : "until"} ${shortDate(until)}` : "",
+    ended,
+  };
+}
+
+export async function loadAddonsData(): Promise<AddonsData> {
+  const [readmeRemote, addonsMd, showcaseMd, switchesMd, tree] = await Promise.all([
+    text(RAW + "themes/README.md"),
+    text(RAW + "addons/README.md"),
+    text(RAW + "SHOWCASE.md"),
+    text(RAW + "docs/switches.md"),
+    json<Tree>(`https://api.github.com/repos/${REPO}/git/trees/main:themes?recursive=1`),
+  ]);
+  const readme = readmeRemote || (await fs.readFile(path.join(process.cwd(), "content", "themes-readme.md"), "utf8"));
+  const rows = parseThemes(readme);
+  // Folders come from the tree; without it, from the README's table. README order first, then any new folder.
+  const files = tree ? tree.tree.filter((t) => t.type === "blob").map((t) => t.path) : null;
+  const folders = tree ? tree.tree.filter((t) => t.type === "tree" && !t.path.includes("/")).map((t) => t.path) : rows.map((r) => r.name);
+  const order = [...rows.map((r) => r.name).filter((n) => folders.includes(n)), ...folders.filter((n) => !rows.some((r) => r.name === n)).sort()];
+  const themes = await Promise.all(order.map((n) => themeCard(n, files, rows, readme)));
+  return {
+    themes: [...themes.filter((t) => !t.ended), ...themes.filter((t) => t.ended)],
+    push: parsePushCommand(readme),
+    keys: parseThemeKeys(readme),
+    // docs/switches.md is the list of key screenshots; until it exists or if it can't be read, the hand-kept fallback.
+    keyImages: { ...SWITCH_IMAGES, ...(switchesMd ? parseSwitchImages(switchesMd) : {}) },
+    addons: addonsMd ? parseAddons(addonsMd) : [],
+    // Add-ons that live in their own repos: SHOWCASE.md's add-ons section (its table rows only).
+    community: showcaseMd ? parseShowcase(showcaseMd).filter((i) => /add-ons/i.test(i.category || "")) : [],
+  };
+}
+
+// ---- /llms.txt, the sitemap and the home page's structured data: the counts and the FAQ, live from the repo
+
+export type Facts = { tvs: number; brands: [string, number][]; languages: number; faq: Faq[]; readme: string; updated: string };
+
+export async function loadFacts(): Promise<Facts> {
+  const [examplesMd, readme, res, last] = await Promise.all([
+    text(RAW + "examples/README.md"),
+    text(RAW + "README.md"),
+    json<Tree>(`https://api.github.com/repos/${REPO}/git/trees/main:launcher/app/src/main/res`),
+    json<{ commit: { committer: { date: string } } }[]>(`https://api.github.com/repos/${REPO}/commits?per_page=1`),
+  ]);
+  const tvs = parseTVs(examplesMd || FALLBACK.examples);
+  // Languages from the launcher's res/ folders; without the tree, from the README's "**24 languages**".
+  const stated = readme?.match(/\*\*(\d+) languages\*\*/);
+  const faq = readme ? parseFaq(readme) : [];
+  return {
+    tvs: tvs.length,
+    brands: brandsOf(tvs),
+    languages: res ? countLanguages(res.tree.filter((t) => t.type === "tree").map((t) => t.path)) : stated ? Number(stated[1]) : FALLBACK.languages,
+    faq: faq.length ? faq : parseFaq(await fs.readFile(path.join(process.cwd(), "content", "readme-faq.md"), "utf8")),
+    readme: readme || "",
+    updated: last?.[0]?.commit.committer.date || new Date().toISOString(),
+  };
+}
+
+// ---- /bot: the pull-request flood and the bot's own runs, live from the GitHub API
+
+export type BotStats = {
+  prs: number; merged: number; open: number; authors: number;
+  peak: number; peakDay: string; // the most PRs open at once, and the UTC day it happened
+  perDay: [string, number][]; // PRs opened per UTC day, oldest first
+  runs: number; reviewed: number; // successful maintainer-bot workflow runs; PRs carrying its review comment
+};
+
+type PullRow = { user: { login: string; type: string }; created_at: string; closed_at: string | null; merged_at: string | null };
+
+export async function loadBotStats(): Promise<BotStats> {
+  const F = FALLBACK.bot;
+  const [runs, reviewed] = await Promise.all([
+    json<{ total_count: number }>(`https://api.github.com/repos/${REPO}/actions/workflows/maintainer-bot.yml/runs?status=success&per_page=1`),
+    json<{ total_count: number }>(`https://api.github.com/search/issues?q=${encodeURIComponent(`repo:${REPO} type:pr "Reviewed by maintainer-bot" in:comments`)}&per_page=1`),
+  ]);
+  // Every PR, 100 a page: only with a token (the walk would use up the public limit), capped like the star walk.
+  const pulls: PullRow[] = [];
+  if (process.env.GITHUB_TOKEN) {
+    for (let p = 1; p <= 30; p++) {
+      const page = await json<PullRow[]>(`https://api.github.com/repos/${REPO}/pulls?state=all&per_page=100&page=${p}`);
+      if (!page) { pulls.length = 0; break; }
+      pulls.push(...page);
+      if (page.length < 100) break;
+    }
+  }
+  const live = { runs: runs?.total_count || F.runs, reviewed: reviewed?.total_count || F.reviewed };
+  if (pulls.length < F.prs) return { ...F, ...live };
+  // Walk the opens and closes in time order for the biggest backlog.
+  const events = pulls.flatMap((x) => [[x.created_at, 1], ...(x.closed_at ? [[x.closed_at, -1]] : [])] as [string, number][]).sort((a, b) => a[0].localeCompare(b[0]));
+  let open = 0, peak = 0, peakDay = "";
+  for (const [t, d] of events) if ((open += d) > peak) [peak, peakDay] = [open, t.slice(0, 10)];
+  const days = new Map<string, number>();
+  for (const x of pulls) days.set(x.created_at.slice(0, 10), (days.get(x.created_at.slice(0, 10)) || 0) + 1);
+  return {
+    prs: pulls.length,
+    merged: pulls.filter((x) => x.merged_at).length,
+    open: pulls.filter((x) => !x.closed_at).length,
+    authors: new Set(pulls.filter((x) => x.user.type === "User" && x.user.login !== REPO.split("/")[0]).map((x) => x.user.login)).size,
+    peak,
+    peakDay,
+    perDay: [...days].sort((a, b) => a[0].localeCompare(b[0])),
+    ...live,
+  };
+}
+
+// ---- static fallbacks (snapshot of the repo on 2026-10-19, languages on 2026-10-22; /addons falls back to content/themes-readme.md
+// and the FAQ to content/readme-faq.md, both 2026-10-22)
 
 export const FALLBACK = {
   tweet: {
@@ -140,10 +274,17 @@ export const FALLBACK = {
     replies: 647,
     date: "2026-10-17T08:51:31.000Z",
   } as Tweet,
+  // /bot, from the GitHub API on 2026-10-22 ~13:00 UTC (per day: whole days only)
+  bot: {
+    prs: 768, merged: 526, open: 100, authors: 374, peak: 174, peakDay: "2026-10-21",
+    perDay: [["2026-10-18", 70], ["2026-10-19", 136], ["2026-10-20", 251], ["2026-10-21", 243]],
+    runs: 222, reviewed: 150,
+  } as BotStats,
   stars: 2780,
   forks: 331,
   prCount: 52,
   contributors: 29,
+  languages: 24,
   examples: [
     "| `benq-e55-735/` | BenQ E55-735 (Changhong AI PONT, DVB96BQ) | Google TV 14 | Homwee store/help, Anoki ACR, Google TV recommendations; wireless-debugging pairing, setupwraith, deep-standby notes |",
     "| `chiq-ai-pont/` | CHiQ AI PONT (DVB93CQ) | Android TV 11 | Anoki ACR, FAST channels, AI PONT, Homwee services |",

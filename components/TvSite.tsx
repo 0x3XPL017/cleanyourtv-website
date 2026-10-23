@@ -2,9 +2,9 @@
 // The whole site is one old television. This is a port of the Claude Design prototype
 // (design/cleanyour.tv.dc.html): same refs, state and methods, with the content coming in as props.
 import React from "react";
-import { GH } from "@/lib/parse";
+import { GH, brandsOf } from "@/lib/parse";
 import type { SiteData } from "@/lib/parse";
-import { GROUPS, KONAMI, NAMES, ORDER, PRESS, S, SHOWCASE_IMAGES, cdn, thumb, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
+import { GROUPS, KONAMI, NAMES, ORDER, PRESS, PRESS_LOGO_W, S, SHOWCASE_IMAGES, cdn, thumb, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
 import type { ThemeName } from "@/lib/site";
 
 const TWEET = "https://x.com/gathint/status/2111379569030939102";
@@ -12,6 +12,8 @@ const COFFEE = "https://buymeacoffee.com/gathint";
 const BOOT_DELAY = 700;
 const PH = "https://www.producthunt.com/products/cleanyourtv";
 const FEAT_SECS = 6;
+/** The phone channel bar's short labels, in channel order. */
+const TABS = ["Home", "Story", "On air", "Set up", "Built on it", "Credits"];
 
 type Counter = { key: string; label: string; value: number; max: number; display: number };
 type Slide = { kind: "show" | "theme"; name: string; what: string; meta: string; by: string; byUrl: string; url: string; wall: "aurora" | "black"; tiles: number; site?: ThemeName; kicker: string; image?: string; group: string };
@@ -22,7 +24,7 @@ type Axis = "x" | "y" | "w" | "h";
 
 type Props = { data: SiteData; pressTotal: number };
 type State = {
-  osd: string; theme: ThemeName; sound: boolean; power: boolean; booted: boolean; mobile: boolean; mounted: boolean; focus: number;
+  nudge: boolean; osd: string; theme: ThemeName; sound: boolean; power: boolean; booted: boolean; mobile: boolean; mounted: boolean; focus: number;
   clock: string; ampm: string; date: string; greeting: string;
   counters: Counter[];
   ch: number; wiz: number; os: "mac" | "win"; typed: number; copied: boolean; slide: number; feat: number; held: boolean;
@@ -43,8 +45,8 @@ export default class TvSite extends React.Component<Props, State> {
   reduced = false; mq!: MediaQueryList; onMq!: () => void; onKey!: (e: KeyboardEvent) => void; onResize!: () => void;
   clockTimer!: ReturnType<typeof setInterval>; typeT!: ReturnType<typeof setInterval>; osdT!: ReturnType<typeof setTimeout>; copyT!: ReturnType<typeof setTimeout>;
   io!: IntersectionObserver; typingStarted = false; tx = 0;
-  resumeCh = 0; instant = false; pull = 0; pullAt = 0; pullY = 0; bottomAt = 0; onWheel!: (e: WheelEvent) => void; onTouchS!: (e: TouchEvent) => void; onTouchM!: (e: TouchEvent) => void; onTouchE!: () => void;
-  gaugeRef = React.createRef<HTMLDivElement>(); gaugeTextRef = React.createRef<HTMLDivElement>();
+  resumeCh = 0; instant = false; pull = 0; pullAt = 0; pullY = 0; bottomAt = 0; onWheel!: (e: WheelEvent) => void; onTouchS!: (e: TouchEvent) => void; onTouchM!: (e: TouchEvent) => void; onTouchE!: () => void; onScroll!: () => void; nudgeY = 0;
+  gaugeRef = React.createRef<HTMLDivElement>(); termRef = React.createRef<HTMLDivElement>(); tabsRef = React.createRef<HTMLDivElement>(); gaugeTextRef = React.createRef<HTMLDivElement>();
   _ac: AudioContext | null = null; humNode: { o: OscillatorNode; o2: OscillatorNode; g: GainNode; g2: GainNode } | null = null;
 
   constructor(p: Props) {
@@ -67,7 +69,7 @@ export default class TvSite extends React.Component<Props, State> {
       })
       .concat(d.themes.map<Slide>((t) => ({ kind: "theme", name: t.name + "/", what: t.what, meta: "In themes/" + t.name + "/", by: "cleanyourtv", byUrl: GH, url: GH + "/tree/main/themes/" + t.name, wall: t.name === "aurora" ? "aurora" : "black", tiles: t.name === "six-columns" ? 6 : 4, site: t.name === "aurora" ? "aurora" : "black", kicker: "THEME", image: t.image, group: "Themes" })));
     this.state = {
-      osd: "CH 00", theme: "black", sound: false, power: true, booted: false, mobile: false, mounted: false, focus: 0,
+      nudge: false, osd: "CH 00", theme: "black", sound: false, power: true, booted: false, mobile: false, mounted: false, focus: 0,
       clock: "", ampm: "", date: "", greeting: "",
       counters: [
         { key: "stars", label: "STARS", value: d.stars, max: Math.max(5000, d.stars * 1.4), display: 0 },
@@ -93,7 +95,7 @@ export default class TvSite extends React.Component<Props, State> {
     } catch { /* ignore */ }
     this.reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.mq = matchMedia("(max-width: 1100px)");
-    this.onMq = () => { this.setPadR(); this.setState({ mobile: this.mq.matches }, () => this.retarget()); };
+    this.onMq = () => { this.setPadR(); this.observe(); this.setState({ mobile: this.mq.matches }, () => this.retarget()); };
     this.mq.addEventListener("change", this.onMq);
     const t: ThemeName = theme && theme in THEMES ? (theme as ThemeName) : "black";
     this.setState({ mounted: true, mobile: this.mq.matches, sound, theme: t }, () => this.applyTheme(t));
@@ -102,8 +104,7 @@ export default class TvSite extends React.Component<Props, State> {
     this.onKey = (e) => this.key(e); window.addEventListener("keydown", this.onKey);
     this.onResize = () => { this.retarget(); this.drawScope(this.scopeP || 0); }; window.addEventListener("resize", this.onResize);
     const sc = this.r.scroll.current!;
-    this.io = new IntersectionObserver((es) => es.forEach((e) => this.onSection(e)), { root: sc, threshold: [0.5] });
-    sc.querySelectorAll("section[data-ch]").forEach((s) => this.io.observe(s));
+    this.observe();
     // Turning the set off takes a deliberate pull: sit at the very bottom and keep scrolling.
     // The momentum of the scroll that reached the bottom does not count; only scrolling after a short rest does.
     this.onWheel = (e) => {
@@ -111,22 +112,39 @@ export default class TvSite extends React.Component<Props, State> {
       const now = performance.now(); if (!this.bottomAt) this.bottomAt = now;
       if (now - this.bottomAt > 900) this.addPull(Math.min(e.deltaY, 60) / 1100);
     };
-    this.onTouchS = (e) => { this.pullY = e.touches[0].clientY; };
+    // Phones have no pull at all ("Turn it off" is the way); elsewhere a touch only counts if it starts at the bottom.
+    this.onTouchS = (e) => { this.pullY = !this.mq.matches && this.atBottom() ? e.touches[0].clientY : NaN; };
     this.onTouchM = (e) => { const dy = this.pullY - e.touches[0].clientY; if (dy > 0 && this.atBottom()) this.setPull(dy / 320); };
     this.onTouchE = () => { if (this.pull < 1) this.setPull(0); };
     sc.addEventListener("wheel", this.onWheel, { passive: true }); sc.addEventListener("touchstart", this.onTouchS, { passive: true });
     sc.addEventListener("touchmove", this.onTouchM, { passive: true }); sc.addEventListener("touchend", this.onTouchE);
+    this.onScroll = () => { if (this.state.nudge && this.mq.matches && Math.abs(sc.scrollTop - this.nudgeY) > sc.clientHeight * 0.6) this.setState({ nudge: false }); };
+    sc.addEventListener("scroll", this.onScroll, { passive: true });
     this.lastLoop = performance.now(); this.loopRaf = requestAnimationFrame(this.loop);
     this.boot();
+  }
+  componentDidUpdate(_: Props, prev: State) {
+    if (!this.state.mobile) return;
+    // Phones: the terminal has a fixed height, so it follows the newest line; the channel bar keeps the channel on screen in view.
+    const t = this.termRef.current; if (t && prev.typed !== this.state.typed) t.scrollTop = t.scrollHeight;
+    const bar = this.tabsRef.current, tab = bar?.querySelector<HTMLElement>(`[data-tab="${this.state.ch}"]`);
+    if (bar && tab && (prev.ch !== this.state.ch || prev.mobile !== this.state.mobile)) bar.scrollTo({ left: tab.offsetLeft - (bar.clientWidth - tab.offsetWidth) / 2, behavior: this.reduced ? "auto" : "smooth" });
   }
   componentWillUnmount() {
     clearInterval(this.clockTimer); clearInterval(this.typeT); window.removeEventListener("keydown", this.onKey); window.removeEventListener("resize", this.onResize);
     this.mq.removeEventListener("change", this.onMq); cancelAnimationFrame(this.glassRaf); cancelAnimationFrame(this.loopRaf); cancelAnimationFrame(this.scopeRaf);
     this.io?.disconnect(); this.hum(false);
-    const sc = this.r.scroll.current; if (sc) { sc.removeEventListener("wheel", this.onWheel); sc.removeEventListener("touchstart", this.onTouchS); sc.removeEventListener("touchmove", this.onTouchM); sc.removeEventListener("touchend", this.onTouchE); }
+    const sc = this.r.scroll.current; if (sc) { sc.removeEventListener("wheel", this.onWheel); sc.removeEventListener("touchstart", this.onTouchS); sc.removeEventListener("touchmove", this.onTouchM); sc.removeEventListener("touchend", this.onTouchE); sc.removeEventListener("scroll", this.onScroll); }
   }
 
   // ---- helpers
+  // The channel on screen: on desktop the one at least half in view; on phones the one crossing the middle of the screen,
+  // so channels taller than two screens still count.
+  observe() {
+    const sc = this.r.scroll.current; if (!sc) return; this.io?.disconnect();
+    this.io = new IntersectionObserver((es) => es.forEach((e) => this.onSection(e)), this.mq.matches ? { root: sc, rootMargin: "-45% 0px -45% 0px", threshold: 0 } : { root: sc, threshold: [0.5] });
+    sc.querySelectorAll("section[data-ch]").forEach((s) => this.io.observe(s));
+  }
   setPadR() { this.setVar("--pad-r", this.mq.matches ? "clamp(16px,6cqw,84px)" : "156px"); }
   setVar(k: string, v: string) { const el = this.r.root.current; if (el) el.style.setProperty(k, v); }
   applyTheme(name: ThemeName) {
@@ -299,9 +317,18 @@ export default class TvSite extends React.Component<Props, State> {
   onSection(e: IntersectionObserverEntry) {
     if (!e.isIntersecting) return; const n = Number((e.target as HTMLElement).dataset.ch); if (n === this.state.ch) return;
     this.setState({ ch: n }); this.remember(n);
+    if (n === 1) this.maybeNudge();
     // Scrolling between channels only updates the corner label; static is kept for the remote and number keys.
     if (performance.now() > this.quietUntil && this.state.booted) this.showOsd(`CH 0${n}`, 1200, false);
     this.enter(n);
+  }
+  // A small one-time note pointing to /addons, shown on the way down to On air; dismissed for good once closed or followed.
+  nudgeT = 0;
+  maybeNudge() {
+    try { if (localStorage.getItem("cyt-nudge-addons")) return; localStorage.setItem("cyt-nudge-addons", "1"); } catch { return; }
+    // On phones it sits above the channel bar for 6 s, and goes once you scroll on.
+    const phone = this.mq.matches; this.nudgeY = this.r.scroll.current?.scrollTop ?? 0;
+    this.setState({ nudge: true }); clearTimeout(this.nudgeT); this.nudgeT = window.setTimeout(() => this.setState({ nudge: false }), phone ? 6000 : 14000);
   }
   enter(n: number) { if (n === 1) this.animateScope(); if (n === 2) { this.featT = 0; this.preload(this.state.feat + 1); } if (n === 3 && !this.typingStarted) this.startTyping(); }
   channel(n: number) {
@@ -335,7 +362,8 @@ export default class TvSite extends React.Component<Props, State> {
     const cl = this.r.clutter.current!, fl = this.r.flash.current!, sc = this.r.scroll.current!;
     sc.scrollTop = 0; this.setVar("--led", "#4bff7a");
     const resume = this.resumeCh; this.resumeCh = 0;
-    if (resume || this.instant) {
+    // Phones skip the boot: the headline and buttons are there at once, with no flash.
+    if (resume || this.instant || this.mq.matches) {
       this.instant = false;
       this.finalize(id);
       if (resume) {
@@ -511,7 +539,7 @@ export default class TvSite extends React.Component<Props, State> {
   render() {
     const s = this.state;
     return (
-      <div ref={this.r.root} style={S("position:fixed;inset:0;background:#070708;font-family:Outfit,sans-serif;color:rgba(255,255,255,.95);-webkit-font-smoothing:antialiased")}>
+      <div ref={this.r.root} className={s.mobile && s.nudge ? "nudge-on" : undefined} style={S("position:fixed;inset:0;background:#070708;font-family:Outfit,sans-serif;color:rgba(255,255,255,.95);-webkit-font-smoothing:antialiased")}>
         <div className="m-bezel" style={S("position:absolute;inset:0;padding:clamp(8px,2.4vw,30px) clamp(8px,2.4vw,30px) max(64px,5vw);background:linear-gradient(180deg,#1c1c1f 0%,#121214 60%,#0b0b0c 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)")}>
           <div ref={this.r.screen} className="m-screen" style={S("position:relative;height:100%;border-radius:clamp(8px,1.5vw,22px);background:#000;overflow:hidden;container-type:inline-size;box-shadow:0 0 0 2px #000,0 0 0 3px #232326,inset 0 0 60px rgba(0,0,0,.9)")}>
             <div ref={this.r.scroll} className="m-scroll" style={S("position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y proximity;scrollbar-width:none")}>
@@ -524,17 +552,18 @@ export default class TvSite extends React.Component<Props, State> {
               <section id="ch-end" aria-label="End of transmission" className="m-end" style={S("position:relative;min-height:70%;scroll-snap-align:none;background:var(--page,#15181e);color:var(--ink,rgba(255,255,255,.95));display:grid;place-items:center;border-top:1px solid var(--line,rgba(255,255,255,.12))")}>
                 <div ref={this.r.end} style={S("display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;padding:24px")}>
                   <div style={S("font-family:'VT323',monospace;font-size:28px;letter-spacing:.14em;color:var(--ink-dim,rgba(255,255,255,.6))")}>END OF TRANSMISSION</div>
-                  <div style={S("display:flex;flex-direction:column;gap:8px;width:min(320px,70vw);font-family:'VT323',monospace;font-size:18px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))")}>
+                  <div className="mx-pullgauge" style={S("display:flex;flex-direction:column;gap:8px;width:min(320px,70vw);font-family:'VT323',monospace;font-size:18px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))")}>
                     <div ref={this.gaugeTextRef} aria-live="polite">KEEP SCROLLING TO TURN IT OFF</div>
                     <div style={S("position:relative;height:10px;background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);opacity:.25")} />
                     <div ref={this.gaugeRef} style={S("position:relative;height:10px;margin-top:-18px;width:0;background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);color:var(--ink,#fff);transition:width .08s linear")} />
                   </div>
                   <button onClick={() => this.onPower()} style={S("height:44px;padding:0 20px;border-radius:22px;border:0;background:var(--pill-bg,rgba(255,255,255,.12));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500")}>Turn it off</button>
-                  <a href={COFFEE} target="_blank" rel="noopener" style={S("font-size:14px;color:var(--ink-dim,rgba(255,255,255,.6))")}>Buy me a coffee</a>
+                  <a href={COFFEE} target="_blank" rel="noopener" className="mx-coffee" style={S("font-size:14px;color:var(--ink-dim,rgba(255,255,255,.6))")}>Buy me a coffee</a>
                 </div>
               </section>
             </div>
             <div ref={this.r.osd} aria-live="polite" style={S("position:absolute;top:clamp(6px,1cqw,14px);right:clamp(10px,1.6cqw,22px);z-index:5;font-family:'VT323',monospace;font-size:clamp(22px,3.2cqw,40px);line-height:1;letter-spacing:.06em;color:var(--osd,#CFFFCF);text-shadow:0 0 10px var(--osd-glow,rgba(140,255,140,.6)),1px 0 0 rgba(255,0,0,.25),-1px 0 0 rgba(0,160,255,.25);opacity:0;transition:opacity .3s;pointer-events:none")}>{s.osd}</div>
+            {s.nudge && !s.mobile && this.renderNudge()}
             <canvas ref={this.staticRef} width={192} height={108} aria-hidden="true" style={S("position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;z-index:6;pointer-events:none")} />
             <div ref={this.r.flash} aria-hidden="true" style={S("position:absolute;inset:0;background:#fff;opacity:0;z-index:7;pointer-events:none;transform-origin:center")} />
             <div ref={this.r.off} style={S("position:absolute;inset:0;z-index:8;display:none;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,24px);padding:6cqw;background:radial-gradient(80% 70% at 50% 40%,#0c0c0e,#050506);color:rgba(255,255,255,.88);text-align:center;font-size:clamp(14px,1.6cqw,19px);font-weight:400;opacity:0")}>
@@ -558,11 +587,23 @@ export default class TvSite extends React.Component<Props, State> {
         </div>
         {s.mounted && !s.mobile && this.renderRemote()}
         {s.mounted && s.mobile && this.renderMobileBar()}
+        {s.mounted && s.mobile && s.nudge && this.renderNudge()}
       </div>
     );
   }
 
   onPower() { if (this.state.power) this.powerOff(); else this.powerOn(); }
+
+  renderNudge() {
+    return (
+      <div role="dialog" aria-label="New: add-ons, themes and switches" className="m-nudge">
+        <span className="m-nudge-k">NEW</span>
+        <span className="m-nudge-t">Themes, switches and add-ons for the launcher</span>
+        <a href="/addons" className="m-nudge-go">Take a look</a>
+        <button type="button" aria-label="Close" className="m-nudge-x" onClick={() => this.setState({ nudge: false })}>×</button>
+      </div>
+    );
+  }
 
   renderBoot() {
     const s = this.state;
@@ -580,21 +621,23 @@ export default class TvSite extends React.Component<Props, State> {
           <div ref={this.r.ambient} style={S("position:absolute;inset:0;background:radial-gradient(55% 50% at 30% 42%,var(--glow,rgba(0,0,0,0)) 0%,rgba(0,0,0,0) 70%);transition:opacity .6s;opacity:.9;pointer-events:none")} />
           <div className="m-hero-top" style={S("position:absolute;left:4.2cqw;right:4.2cqw;top:clamp(44px,5.6cqw,72px);display:flex;justify-content:space-between;align-items:flex-end;gap:12px")}>
             <div style={S("display:flex;flex-direction:column;gap:2px;min-width:0")}>
-              <div style={S("font-size:clamp(9px,.95cqw,12px);font-weight:500;letter-spacing:.22em;text-transform:uppercase;opacity:.55;padding-left:2px")}>{s.greeting}</div>
+              <div className="mx-greet" style={S("font-size:clamp(9px,.95cqw,12px);font-weight:500;letter-spacing:.22em;text-transform:uppercase;opacity:.55;padding-left:2px")}>{s.greeting}</div>
               <div style={S("display:flex;align-items:flex-end;gap:clamp(6px,.8cqw,12px);white-space:nowrap")}>
                 <div style={S("font-size:clamp(24px,4cqw,52px);font-weight:300;letter-spacing:-.04em;line-height:1")}>{s.clock}</div>
-                <div style={S("font-size:clamp(9px,1.15cqw,15px);font-weight:500;letter-spacing:.08em;text-transform:uppercase;opacity:.7;padding-bottom:2px")}>{s.ampm}</div>
-                <div style={S("width:1px;height:clamp(14px,2cqw,26px);background:var(--ink-dim,rgba(255,255,255,.3));opacity:.5;margin:0 clamp(2px,.4cqw,6px) 3px")} />
-                <div style={S("font-size:clamp(9px,1.1cqw,14px);letter-spacing:.14em;text-transform:uppercase;opacity:.65;padding-bottom:3px")}>{s.date}</div>
+                <div className="mx-ampm" style={S("font-size:clamp(9px,1.15cqw,15px);font-weight:500;letter-spacing:.08em;text-transform:uppercase;opacity:.7;padding-bottom:2px")}>{s.ampm}</div>
+                <div className="m-date" style={S("width:1px;height:clamp(14px,2cqw,26px);background:var(--ink-dim,rgba(255,255,255,.3));opacity:.5;margin:0 clamp(2px,.4cqw,6px) 3px")} />
+                <div className="m-date" style={S("font-size:clamp(9px,1.1cqw,14px);letter-spacing:.14em;text-transform:uppercase;opacity:.65;padding-bottom:3px")}>{s.date}</div>
               </div>
             </div>
             <div className="m-pills" style={S("display:flex;gap:clamp(4px,.8cqw,10px);flex-shrink:0")}>
-              <div style={S(pill)}>Inputs</div>
-              <div style={S(pill)}>Wi-Fi</div>
-              <div style={S(pill)}>Settings</div>
+              {/* The launcher's Inputs / Wi-Fi / Settings pills, as the site's own navigation. */}
+              <a href="/addons" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>Add-ons</a>
+              <a href="/app/android" onClick={(e) => e.stopPropagation()} className="m-navpill m-navpill-new" style={S(pill)}>App<span className="m-new" aria-label="new">NEW</span></a>
+              <a href="/press" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>Press</a>
+              <a href="/faq" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>FAQ</a>
             </div>
           </div>
-          <div ref={this.r.dock} style={S("position:absolute;left:50%;bottom:clamp(28px,5cqw,64px);transform:translateX(-50%);padding:clamp(8px,1.1cqw,14px);border-radius:clamp(16px,2cqw,26px);background:var(--band,#141416);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.12));display:flex;gap:clamp(8px,1.6cqw,22px)")}>
+          <div ref={this.r.dock} className="m-dock" style={S("position:absolute;left:50%;bottom:clamp(28px,5cqw,64px);transform:translateX(-50%);padding:clamp(8px,1.1cqw,14px);border-radius:clamp(16px,2cqw,26px);background:var(--band,#141416);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.12));display:flex;gap:clamp(8px,1.6cqw,22px)")}>
             {["Films", "Series", "Music", "Live TV"].map((label, i) => (
               <div key={label} data-tile={i} data-color={TILE_COLORS[i]} onMouseEnter={hoverTile} onClick={clickTile} style={S(tile + TILE_COLORS[i])}>
                 {label}
@@ -602,11 +645,11 @@ export default class TvSite extends React.Component<Props, State> {
               </div>
             ))}
           </div>
-          <div ref={this.r.glass} aria-hidden="true" style={S("position:absolute;left:0;top:0;width:10px;height:10px;opacity:0;pointer-events:none;border-radius:clamp(10px,1.6cqw,22px);background:var(--glass-fill,linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1.5px var(--glass-rim,rgba(255,255,255,.8)),0 0 0 1px rgba(255,255,255,.14),0 0 14px rgba(255,255,255,.28);will-change:transform,width,height")}>
+          <div ref={this.r.glass} aria-hidden="true" className="m-glass" style={S("position:absolute;left:0;top:0;width:10px;height:10px;opacity:0;pointer-events:none;border-radius:clamp(10px,1.6cqw,22px);background:var(--glass-fill,linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1.5px var(--glass-rim,rgba(255,255,255,.8)),0 0 0 1px rgba(255,255,255,.14),0 0 14px rgba(255,255,255,.28);will-change:transform,width,height")}>
             <div style={S("position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 45%)")} />
           </div>
         </div>
-        <div ref={this.r.clutter} aria-hidden="true" style={S("position:absolute;inset:0;background:linear-gradient(180deg,#0B1220 0%,#05070C 100%);color:#fff;overflow:hidden")}>
+        <div ref={this.r.clutter} aria-hidden="true" className="m-clutter" style={S("position:absolute;inset:0;background:linear-gradient(180deg,#0B1220 0%,#05070C 100%);color:#fff;overflow:hidden")}>
           <div data-row="3" style={S("display:flex;justify-content:space-between;align-items:center;padding:clamp(44px,5cqw,66px) 4.2cqw 0;transform-origin:top;font-size:clamp(10px,1.6cqw,20px)")}>
             <div style={S("display:flex;gap:clamp(10px,2.6cqw,34px);align-items:center")}>
               <div style={S("display:flex;gap:6px;align-items:center")}><div style={S("display:flex;gap:2px")}><div style={S("width:.7cqw;height:.7cqw;border-radius:50%;background:#4285F4")} /><div style={S("width:.7cqw;height:.7cqw;border-radius:50%;background:#EA4335")} /><div style={S("width:.7cqw;height:.7cqw;border-radius:50%;background:#FBBC04")} /></div>Search</div>
@@ -651,10 +694,9 @@ export default class TvSite extends React.Component<Props, State> {
         </div>
         <div ref={this.r.title} className="m-title" style={S("position:absolute;left:0;right:0;top:0;bottom:clamp(90px,16cqw,200px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,28px);padding:clamp(60px,9cqw,110px) 5cqw 0;text-align:center;opacity:0;pointer-events:none;color:var(--ink,rgba(255,255,255,.95))")}>
           <div style={S("display:flex;flex-direction:column;align-items:center;gap:clamp(6px,.8cqw,12px)")}>
-            {/* Launch day: a live pill above the wordmark, linking to the Product Hunt page. */}
-            <a href={PH} target="_blank" rel="noopener" className="m-phlive no-border act-shrink" style={S("pointer-events:auto;display:inline-flex;align-items:center;gap:10px;height:clamp(32px,3cqw,40px);padding:0 clamp(14px,1.6cqw,20px);margin-bottom:clamp(4px,.6cqw,10px);border-radius:999px;background:#da552f;color:#fff;font-size:clamp(13px,1.3cqw,16px);font-weight:600;letter-spacing:.02em;box-shadow:0 6px 24px rgba(218,85,47,.35)")}>
-              <span className="ph-dot" style={S("width:8px;height:8px;border-radius:50%;background:#fff")} />
-              Live on Product Hunt today →
+            {/* The community Android app (udhaykumarbala): a pill above the wordmark; narrow phones use the App pill instead. */}
+            <a href="/app/android" onClick={(e) => e.stopPropagation()} className="m-applive no-border act-shrink" style={S("pointer-events:auto;display:inline-flex;align-items:center;gap:10px;height:clamp(32px,3cqw,40px);padding:0 clamp(14px,1.6cqw,20px);margin-bottom:clamp(4px,.6cqw,10px);border-radius:999px;background:#cfffcf;color:#0b2a14;font-size:clamp(13px,1.3cqw,16px);font-weight:600;letter-spacing:.02em;box-shadow:0 6px 24px rgba(140,255,140,.25)")}>
+              New: clean your TV from your phone →
             </a>
             <h1 className="m-h1" aria-label="CleanYourTV" style={S("margin:0;display:flex;align-items:center;gap:.22em;font-family:var(--font-fredoka),'Fredoka',sans-serif;font-size:clamp(40px,min(8cqw,11vh),104px);font-weight:600;letter-spacing:-.01em;line-height:1;white-space:nowrap")}>
               <svg aria-hidden="true" viewBox="10 7 44 51" style={S("height:1.05em;width:auto;flex:none;margin-top:-.08em")}>
@@ -696,7 +738,7 @@ export default class TvSite extends React.Component<Props, State> {
               Star on GitHub
             </a>
             {/* Launch week: the Product Hunt badge sits with the buttons. */}
-            <a href={PH} target="_blank" rel="noopener" className="no-border" style={S("pointer-events:auto;display:flex;align-items:center;justify-content:center;line-height:0")}>
+            <a href={PH} target="_blank" rel="noopener" className="no-border m-phbadge" style={S("pointer-events:auto;display:flex;align-items:center;justify-content:center;line-height:0")}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1286319&theme=dark" alt="CleanYourTV on Product Hunt" width={204} height={44} style={S("width:204px;height:44px;display:block")} />
             </a>
@@ -711,18 +753,18 @@ export default class TvSite extends React.Component<Props, State> {
                     {PRESS.map(([slug, name, url]) => (
                       <a key={slug} href={url} target="_blank" rel="noopener" title={name} tabIndex={k === 1 ? -1 : undefined} className="no-border" style={S("line-height:0;flex-shrink:0")}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={cdn(`/press/${slug}.png`)} alt={k === 1 ? "" : name} height={28} loading="lazy" style={S("height:clamp(24px,2.4cqw,32px);width:auto;display:block")} />
+                        <img src={cdn(`/press/${slug}.png`)} alt={k === 1 ? "" : name} width={Math.round((PRESS_LOGO_W[slug] ?? 88) * 28 / 88)} height={28} loading="lazy" style={S("height:clamp(24px,2.4cqw,32px);width:auto;display:block")} />
                       </a>
                     ))}
                   </div>
                 ))}
               </div>
             </div>
-            <a href="/press" aria-label={`All ${this.props.pressTotal} articles about CleanYourTV`} className="hov-bright no-border" style={S("flex-shrink:0;font-family:'VT323',monospace;font-size:clamp(18px,1.8cqw,22px);letter-spacing:.08em;white-space:nowrap;color:var(--ink-dim,rgba(255,255,255,.8))")}>+{this.props.pressTotal - PRESS.length}<span className="press-more-word"> MORE</span> ▸</a>
+            <a href="/press" aria-label={`All ${this.props.pressTotal} articles about CleanYourTV`} className="hov-bright no-border mx-more" style={S("flex-shrink:0;font-family:'VT323',monospace;font-size:clamp(18px,1.8cqw,22px);letter-spacing:.08em;white-space:nowrap;color:var(--ink-dim,rgba(255,255,255,.8))")}>+{this.props.pressTotal - PRESS.length}<span className="press-more-word"> MORE</span> ▸</a>
           </div>
         </div>
         {s.mounted && !s.booted && s.power && (
-          <button onClick={(e) => { e.stopPropagation(); this.skip(); }} className="hov-white" style={S("position:absolute;left:clamp(12px,2cqw,28px);bottom:clamp(12px,2cqw,28px);z-index:3;height:44px;padding:0 18px;border-radius:22px;border:0;background:rgba(0,0,0,.55);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);color:#fff;font-family:'VT323',monospace;font-size:22px;letter-spacing:.08em")}>SKIP INTRO ▸▸</button>
+          <button onClick={(e) => { e.stopPropagation(); this.skip(); }} className="hov-white m-skip" style={S("position:absolute;left:clamp(12px,2cqw,28px);bottom:clamp(12px,2cqw,28px);z-index:3;height:44px;padding:0 18px;border-radius:22px;border:0;background:rgba(0,0,0,.55);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);color:#fff;font-family:'VT323',monospace;font-size:22px;letter-spacing:.08em")}>SKIP INTRO ▸▸</button>
         )}
       </section>
     );
@@ -744,7 +786,7 @@ export default class TvSite extends React.Component<Props, State> {
   renderStory() {
     const d = this.props.data, tw = d.tweet;
     const stars = d.stars.toLocaleString("en-US");
-    const ticker = `Oct 17, 2:21 PM: posted · 48 hours later: ${stars} stars, ${d.forks.toLocaleString("en-US")} forks, ${d.prCount.toLocaleString("en-US")} pull requests · ${d.tvs.length} TVs from ${new Set(d.tvs.map((t) => t.brand)).size} brands`;
+    const ticker = `Oct 17, 2:21 PM: posted · 48 hours later: ${stars} stars, ${d.forks.toLocaleString("en-US")} forks, ${d.prCount.toLocaleString("en-US")} pull requests · ${d.tvs.length} TVs from ${brandsOf(d.tvs).length} brands`;
     return (
       <section id="ch-01" data-ch="1" aria-label="Channel 01, The story" className="m-section" style={this.sectionStyle()}>
         {this.header("CH 01 · THE STORY", "One afternoon, one tweet.", "It started on one TV. Then other people tried it on theirs.")}
@@ -761,14 +803,14 @@ export default class TvSite extends React.Component<Props, State> {
                   <img src={cdn("/docs/avatar.jpg")} alt="" width={40} height={40} style={S("width:40px;height:40px;border-radius:50%;background:#E6E6E6")} />
                   <div style={S("display:flex;flex-direction:column;line-height:1.25")}><span style={S("font-weight:700;font-size:15px")}>Gathin</span><span style={S("font-size:14px;color:#536471")}>@gathint</span></div>
                 </div>
-                <p style={S("margin:0;font-size:clamp(13px,1.2cqw,15px);line-height:1.35;white-space:pre-line;text-wrap:pretty")}>{tw.text}</p>
+                <p className="mx-tweet" style={S("margin:0;font-size:clamp(13px,1.2cqw,15px);line-height:1.35;white-space:pre-line;text-wrap:pretty")}>{tw.text}</p>
                 <a href={TWEET} target="_blank" rel="noopener" className="no-border" style={S("display:block;border-radius:12px;overflow:hidden;background:#000")}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={cdn("/docs/tweet-photo.jpg")} alt="Before: the stock home with a sponsored ad. After: the clean launcher." style={S("width:100%;height:clamp(80px,calc(100vh - 760px),220px);display:block;object-fit:contain;background:#000")} />
                 </a>
                 <div style={S("display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px;color:#536471")}>
                   <span><b style={S("color:#0F1419;font-weight:700")}>{tw.likes.toLocaleString("en-US")}</b> likes · <b style={S("color:#0F1419;font-weight:700")}>{tw.replies.toLocaleString("en-US")}</b> replies</span>
-                  <a href={TWEET} target="_blank" rel="noopener" style={S("color:#1D5F9E;border-bottom:1px solid rgba(29,95,158,.35)")}>Read it on X</a>
+                  <a href={TWEET} target="_blank" rel="noopener" className="mx-hit" style={S("color:#1D5F9E;border-bottom:1px solid rgba(29,95,158,.35)")}>Read it on X</a>
                 </div>
               </article>
             </div>
@@ -819,7 +861,7 @@ export default class TvSite extends React.Component<Props, State> {
                 <div className="onair-meta" style={S("display:flex;align-items:baseline;gap:2px 12px;min-width:0")}>
                   <span style={S("font-size:18px;font-weight:500;white-space:nowrap")}>{it.handle}</span>
                   <span className="onair-tv" style={S("flex:1;min-width:0;font-family:'VT323',monospace;font-size:19px;letter-spacing:.04em;color:rgba(255,255,255,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis")}>{it.tv}</span>
-                  <a href={it.link} target="_blank" rel="noopener" style={S("flex-shrink:0;font-size:14px")}>See the post ↗</a>
+                  <a href={it.link} target="_blank" rel="noopener" className="mx-hit" style={S("flex-shrink:0;font-size:14px")}>See the post ↗</a>
                 </div>
                 <p className="onair-quote" style={S("margin:0;font-size:15px;line-height:1.45;color:rgba(255,255,255,.82);text-wrap:pretty")}>“{it.quote}”</p>
               </figcaption>
@@ -833,13 +875,13 @@ export default class TvSite extends React.Component<Props, State> {
                   <span style={S("font-family:'VT323',monospace;font-size:20px;letter-spacing:.1em;color:var(--ink-dim,rgba(255,255,255,.6))")}>THE WALL</span>
                   <span style={S("font-family:'VT323',monospace;font-size:26px;letter-spacing:.06em")}>{String(s.feat + 1).padStart(2, "0")} / {n}</span>
                 </div>
-                <button onClick={() => this.featGo(s.feat - 1)} aria-label="Previous TV" style={S(round)}>←</button>
+                <button onClick={() => this.featGo(s.feat - 1)} aria-label="Previous TV" className="mx-round" style={S(round)}>←</button>
                 {!this.reduced && n > 1 && (
-                  <button onClick={() => { this.click(); this.featT = 0; this.setState({ held: !s.held }); }} aria-label={s.held ? "Play the wall" : "Pause the wall"} style={S(round)}>
+                  <button onClick={() => { this.click(); this.featT = 0; this.setState({ held: !s.held }); }} aria-label={s.held ? "Play the wall" : "Pause the wall"} className="mx-round" style={S(round)}>
                     {s.held ? <span aria-hidden="true" style={S("margin-left:3px;width:0;height:0;border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent currentColor")} /> : <span aria-hidden="true" style={S("width:10px;height:12px;border-left:3px solid currentColor;border-right:3px solid currentColor")} />}
                   </button>
                 )}
-                <button onClick={() => this.featGo(s.feat + 1)} aria-label="Next TV" style={S(round)}>→</button>
+                <button onClick={() => this.featGo(s.feat + 1)} aria-label="Next TV" className="mx-round" style={S(round)}>→</button>
               </div>
               <div className="onair-well">
                 <div ref={this.r.wall} role="group" aria-label={`All ${n} TVs`} className="onair-wall">
@@ -894,7 +936,7 @@ export default class TvSite extends React.Component<Props, State> {
               <div style={S("font-size:clamp(64px,9cqw,128px);font-weight:200;line-height:.9;letter-spacing:-.04em")}>{d.contributors.toLocaleString("en-US")}</div>
               <div style={S("font-size:16px;color:var(--ink-dim,rgba(255,255,255,.6))")}>people who sent them</div>
             </div>
-            <p style={S("margin:0;font-size:15px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));max-width:30em")}>Hover a name to stop the roll. Every name goes to their GitHub.</p>
+            <p style={S("margin:0;font-size:15px;line-height:1.5;color:var(--ink-dim,rgba(255,255,255,.6));max-width:30em")}><span className="mx-hover">Hover</span><span className="mx-tap">Tap</span> a name to stop the roll. Every name goes to their GitHub. Every pull request is read first by <a href="/bot">the review bot</a>.</p>
           </div>
         </div>
       </section>
@@ -916,7 +958,7 @@ export default class TvSite extends React.Component<Props, State> {
           <div style={S("display:flex;flex-direction:column;gap:20px;padding:clamp(18px,2.4cqw,30px);border-radius:26px;background:var(--panel,#1e222a);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.16));min-height:440px")}>
             <div style={S("display:flex;gap:8px;align-items:center")}>
               {[0, 1, 2].map((i) => (
-                <button key={i} aria-label={`Step ${i + 1} of 3`} onClick={() => this.wizGo(i)} style={{ ...S("height:8px;border-radius:4px;border:0;padding:0;background:var(--ink,#fff);transition:width .25s,opacity .25s"), width: s.wiz === i ? "28px" : "8px", opacity: s.wiz === i ? 1 : 0.35 }} />
+                <button key={i} aria-label={`Step ${i + 1} of 3`} onClick={() => this.wizGo(i)} className="mx-step" data-on={s.wiz === i || undefined} style={{ ...S("height:8px;border-radius:4px;border:0;padding:0;background:var(--ink,#fff);transition:width .25s,opacity .25s"), width: s.wiz === i ? "28px" : "8px", opacity: s.wiz === i ? 1 : 0.35 }} />
               ))}
               <span style={S("margin-left:auto;font-family:'VT323',monospace;font-size:20px;letter-spacing:.08em;color:var(--ink-dim,rgba(255,255,255,.6))")}>{s.wiz + 1} / 3</span>
             </div>
@@ -961,15 +1003,15 @@ export default class TvSite extends React.Component<Props, State> {
               </div>
             </div>
           </div>
-          <div style={S("display:flex;flex-direction:column;border-radius:16px;overflow:hidden;background:#0A0C0E;color:#D8F5DA;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);min-height:440px")}>
+          <div className="mx-term" style={S("display:flex;flex-direction:column;border-radius:16px;overflow:hidden;background:#0A0C0E;color:#D8F5DA;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);min-height:440px")}>
             <div style={S("display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-bottom:1px solid rgba(255,255,255,.08)")}>
               <span style={S("min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'VT323',monospace;font-size:18px;letter-spacing:.08em;opacity:.6")}>ASSISTANT · 192.168.1.50</span>
               <div role="group" aria-label="Command style" style={S("flex-shrink:0;display:flex;padding:3px;border-radius:999px;background:rgba(255,255,255,.07)")}>
-                <button aria-pressed={s.os === "mac"} onClick={() => setOs("mac")} style={S(osBtn + (s.os === "mac" ? "rgba(255,255,255,.18)" : "transparent"))}>macOS / Linux</button>
-                <button aria-pressed={s.os === "win"} onClick={() => setOs("win")} style={S(osBtn + (s.os === "win" ? "rgba(255,255,255,.18)" : "transparent"))}>Windows</button>
+                <button aria-pressed={s.os === "mac"} onClick={() => setOs("mac")} className="mx-os" style={S(osBtn + (s.os === "mac" ? "rgba(255,255,255,.18)" : "transparent"))}>macOS / Linux</button>
+                <button aria-pressed={s.os === "win"} onClick={() => setOs("win")} className="mx-os" style={S(osBtn + (s.os === "win" ? "rgba(255,255,255,.18)" : "transparent"))}>Windows</button>
               </div>
             </div>
-            <div style={S("flex:1;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.6;display:flex;flex-direction:column;gap:3px")}>
+            <div ref={this.termRef} className="mx-term-lines" style={S("flex:1;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.6;display:flex;flex-direction:column;gap:3px")}>
               {this.termView().map((l, i) => (
                 <div key={i} style={S("display:flex;flex-direction:column;gap:6px")}>
                   <div style={{ ...S("white-space:pre-wrap;word-break:break-word"), color: l.color }}>{l.text}</div>
@@ -990,7 +1032,7 @@ export default class TvSite extends React.Component<Props, State> {
     return (
       <section id="ch-04" data-ch="4" aria-label="Channel 04, Built on it" className="m-section" style={this.sectionStyle()}>
         {this.header("CH 04 · BUILT ON IT", "What people built", "Launchers, ports and add-ons people built on top, plus the themes. Nothing here is reviewed by the repo: read each project's README before you sideload it.")}
-        <nav aria-label="Showcase sections" style={S("display:flex;flex-wrap:wrap;gap:8px;margin:0 0 clamp(14px,1.8cqw,22px)")}>
+        <nav aria-label="Showcase sections" className="mx-chips" style={S("display:flex;flex-wrap:wrap;gap:8px;margin:0 0 clamp(14px,1.8cqw,22px)")}>
           {Array.from(new Set(this.slides.map((x) => x.group))).map((g) => {
             const first = this.slides.findIndex((x) => x.group === g), on = sl.group === g;
             return (
@@ -1000,7 +1042,7 @@ export default class TvSite extends React.Component<Props, State> {
             );
           })}
           <a href={GH + "/blob/main/SHOWCASE.md"} target="_blank" rel="noopener" style={S("display:flex;align-items:center;height:36px;padding:0 14px;font-size:14px")}>Full index by TV brand →</a>
-          <a href={GH + "/tree/main/addons"} target="_blank" rel="noopener" style={S("display:flex;align-items:center;height:36px;padding:0 14px;font-size:14px")}>Add-ons in the repo →</a>
+          <a href="/addons" style={S("display:flex;align-items:center;height:36px;padding:0 14px;font-size:14px")}>Add-ons, themes and switches →</a>
         </nav>
         <div style={S("display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(20px,3.4cqw,48px);align-items:center")}>
           <div onTouchStart={(e) => { this.tx = e.touches[0].clientX; }} onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - (this.tx || 0); if (Math.abs(dx) > 40) this.slideGo(s.slide + (dx < 0 ? 1 : -1)); }} style={S("padding:clamp(10px,1.2cqw,16px);border-radius:22px;background:linear-gradient(180deg,#26262a,#121214);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 40px rgba(0,0,0,.4)")}>
@@ -1085,21 +1127,21 @@ export default class TvSite extends React.Component<Props, State> {
     );
   }
 
+  // Phones: a theme button and the channels as labelled tabs that scroll sideways (power and mute stay on the desktop remote).
   renderMobileBar() {
     const s = this.state;
-    const btn = "width:44px;height:44px;flex-shrink:0;border-radius:50%;border:1px solid rgba(255,255,255,.08);background:#1a1a1d;padding:0;";
     return (
-      <div role="group" aria-label="Remote control" className="m-bar" style={S("position:absolute;left:0;right:0;bottom:0;height:60px;padding:0 6px;background:#0d0d0e;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:4px;z-index:20")}>
-        <button aria-label="Power" onClick={() => this.onPower()} className={s.power ? "" : "power-wait"} style={S(btn + "display:grid;place-items:center")}><span className="power-led" style={S("width:9px;height:9px;border-radius:50%;background:#ff5252;box-shadow:0 0 6px #ff5252")} /></button>
-        <button aria-label="Input: switch site theme" onClick={() => this.cycleTheme()} style={S(btn + "font-size:10px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.8)")}>IN</button>
-        <div style={S("display:flex;flex:1;justify-content:center")}>
-          {NAMES.map((n, i) => (
-            <button key={n} aria-label={`Channel ${i}, ${n.toLowerCase()}`} onClick={() => this.channel(i)} className="m-dot" style={S("width:28px;height:44px;border:0;background:transparent;display:grid;place-items:center;padding:0")}>
-              <span style={{ ...S("width:8px;height:8px;border-radius:50%"), background: s.ch === i ? "#CFFFCF" : "rgba(255,255,255,.28)", boxShadow: s.ch === i ? "0 0 6px rgba(140,255,140,.7)" : "none" }} />
+      <div role="group" aria-label="Channels" className="m-bar" style={S("position:absolute;left:0;right:0;bottom:0;height:60px;padding:0 0 0 6px;background:#0d0d0e;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:2px;z-index:20")}>
+        <button aria-label={`Switch site theme (now ${THEMES[s.theme].label.toLowerCase()})`} onClick={() => this.cycleTheme()} className="m-theme">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="1.6" /><path d="M10 2a8 8 0 0 1 0 16z" fill="currentColor" /></svg>
+        </button>
+        <div ref={this.tabsRef} className="m-tabs">
+          {TABS.map((n, i) => (
+            <button key={n} data-tab={i} aria-label={`Channel ${i}, ${NAMES[i].toLowerCase()}`} aria-current={s.ch === i || undefined} onClick={() => this.channel(i)} className="m-tab">
+              <span className="m-tab-n">{String(i).padStart(2, "0")}</span>{n}
             </button>
           ))}
         </div>
-        <button aria-label="Mute: toggle sound" aria-pressed={s.sound} onClick={() => this.toggleSound()} style={S(btn + "font-size:9px;font-weight:500;letter-spacing:.04em;color:var(--mute-ink,rgba(255,255,255,.8))")}>MUTE</button>
       </div>
     );
   }

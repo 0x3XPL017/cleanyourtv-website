@@ -1,19 +1,18 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { PRESS, cdn } from "@/lib/site";
 import { COVERAGE, COVERAGE_COUNTRIES, COVERAGE_TOTAL } from "@/lib/press";
+import { VIDEOS, VIDEOS_AS_OF, videoDate } from "@/lib/videos";
+import VideoGrid from "@/components/VideoGrid";
+import LogoWall from "@/components/LogoWall";
 import PressGrid, { type PressItem } from "@/components/PressGrid";
+import JsonLd from "@/components/JsonLd";
+import { SITE, breadcrumbs, isoDay, pageMeta } from "@/lib/seo";
 
-const description = `${COVERAGE_TOTAL} articles about CleanYourTV from ${COVERAGE_COUNTRIES} countries, from TechCrunch and Mashable to GIGAZINE and Xataka.`;
+const title = "CleanYourTV in the press";
+const description = `${COVERAGE_TOTAL} articles and ${VIDEOS.length} videos about CleanYourTV, from outlets in ${COVERAGE_COUNTRIES} countries: TechCrunch and Mashable to GIGAZINE and Xataka.`;
 
-export const metadata: Metadata = {
-  title: "CleanYourTV in the press",
-  description,
-  alternates: { canonical: "https://cleanyour.tv/press" },
-  openGraph: { title: "CleanYourTV in the press", description, url: "https://cleanyour.tv/press", siteName: "CleanYourTV", images: [{ url: "/docs/og.png", width: 1200, height: 630 }] },
-  twitter: { card: "summary_large_image", creator: "@gathint", title: "CleanYourTV in the press", description, images: ["/docs/og.png"] },
-};
+export const metadata = pageMeta("/press", title, description);
 
 // body is overflow:hidden for the TV, so the page scrolls inside main, as the blog does.
 const page: CSSProperties = {
@@ -29,8 +28,8 @@ const wrap: CSSProperties = { maxWidth: 1160, margin: "0 auto", padding: "40px 2
 const kicker: CSSProperties = { margin: "0 0 20px", fontSize: 15, letterSpacing: 2, textTransform: "uppercase", color: "#9a9a9a" };
 const green = { color: "#cfffcf", borderBottomColor: "rgba(207,255,207,.35)" };
 
-// Icons that are a generated letter, a person's photo or YouTube's own logo, not the outlet's: left out of the logo wall.
-const NO_LOGO = new Set(["tectoc", "timenews", "twaslnews", "newsytoday", "substack", "artificiallyintimidating", "youtube"]);
+// Left out of the logo wall: icons that are a generated letter, a person's photo or YouTube's own logo, and What People Made (a gallery, not an outlet).
+const NO_LOGO = new Set(["tectoc", "timenews", "twaslnews", "newsytoday", "substack", "artificiallyintimidating", "youtube", "whatpeoplemade", "sohu", "digitalage"]);
 // The big names (the home page's press strip) lead, then everything else in the list's order.
 const RANK = new Map(PRESS.map(([slug], i) => [slug, i]));
 const rank = (icon: string, i: number) => RANK.get(icon) ?? 1000 + i;
@@ -50,18 +49,77 @@ export default function Press() {
   const logos = items
     .filter((it) => !NO_LOGO.has(it.icon) && !seen.has(it.icon) && seen.add(it.icon))
     .map((it) => ({ icon: it.icon, url: it.url, outlet: LOGO_NAME[it.icon] ?? it.outlet.replace(/ \(.*\)$/, "") }));
+  // ISO 8601 length for VideoObject: 754 -> PT12M34S
+const isoLength = (s: number) => `PT${s >= 3600 ? `${Math.floor(s / 3600)}H` : ""}${Math.floor((s % 3600) / 60)}M${s % 60}S`;
+
+// The page as a collection of the articles, in the order the grid shows them, and of the videos.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${SITE}/press`,
+        url: `${SITE}/press`,
+        name: title,
+        description,
+        isPartOf: { "@id": `${SITE}/#website` },
+        about: { "@id": `${SITE}/#app` },
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: items.length,
+          itemListElement: items.map((it, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "Article",
+              headline: it.headline,
+              url: it.url,
+              publisher: { "@type": "Organization", name: it.outlet.replace(/ \(.*\)$/, "") },
+              ...(isoDay(it.date) ? { datePublished: isoDay(it.date) } : {}),
+            },
+          })),
+        },
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${SITE}/press#videos`,
+        name: "Videos about CleanYourTV",
+        numberOfItems: VIDEOS.length,
+        itemListElement: VIDEOS.map((v, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          item: {
+            "@type": "VideoObject",
+            name: v.title,
+            description: `${v.title}, by ${v.channel} on YouTube`,
+            url: `https://www.youtube.com/watch?v=${v.id}`,
+            embedUrl: `https://www.youtube.com/embed/${v.id}`,
+            thumbnailUrl: `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
+            uploadDate: v.date,
+            ...(v.duration > 0 ? { duration: isoLength(v.duration) } : {}),
+            author: { "@type": "Person", name: v.channel },
+            interactionStatistic: { "@type": "InteractionCounter", interactionType: { "@type": "WatchAction" }, userInteractionCount: v.views },
+          },
+        })),
+      },
+      breadcrumbs(["Press", "/press"]),
+    ],
+  };
   return (
-    <main style={page}>
+    <main className="page-main" style={page}>
+      <JsonLd data={jsonLd} />
       <div style={wrap}>
         <p style={kicker}>
-          <Link href="/" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; Press
+          <Link href="/" className="home-link" style={green}>cleanyour.tv</Link> &nbsp;·&nbsp; Press
         </p>
         <h1 style={{ fontSize: 44, lineHeight: 1.1, fontWeight: 400, margin: "0 0 14px", letterSpacing: -0.5 }}>In the press</h1>
         <p style={{ margin: "0 0 32px", fontSize: 20, color: "#bdbdbd", maxWidth: 680 }}>
-          {COVERAGE_TOTAL} articles about CleanYourTV in its first days: {fromCountries} from outlets in {COVERAGE_COUNTRIES} countries, the rest from
-          Spanish-language sites in Latin America, newsletters, blogs and AI news sites. Headlines are as published.
+          {COVERAGE_TOTAL} articles and {VIDEOS.length} videos about CleanYourTV in its first days. Of the articles, {fromCountries} are from outlets in{" "}
+          {COVERAGE_COUNTRIES} countries, the rest from Spanish-language sites in Latin America, newsletters, blogs and AI news sites. Headlines are as
+          published.
         </p>
 
+        <LogoWall count={COVERAGE_TOTAL}>
         <ul className="press-logos" aria-label="Outlets">
           {logos.map((l) => (
             <li key={l.icon}>
@@ -73,12 +131,20 @@ export default function Press() {
             </li>
           ))}
         </ul>
+        </LogoWall>
 
+        <h2 id="videos" className="press-h2">Videos</h2>
+        <p className="press-h2-note">On YouTube, most watched first. Views as of {videoDate(VIDEOS_AS_OF)}.</p>
+        <VideoGrid videos={VIDEOS} />
+
+        <h2 id="articles" className="press-h2">Articles</h2>
         <PressGrid items={items} groups={COVERAGE.map((g) => ({ label: g.group, count: g.items.length }))} />
 
         <p style={{ margin: "56px 0 0", color: "#9a9a9a" }}>
           Wrote about CleanYourTV and not on this list? <a href="https://github.com/Gathin23/cleanyourtv/issues/new" style={green}>Open an issue</a> with the link.
           The same list is <a href="https://github.com/Gathin23/cleanyourtv/blob/main/docs/PRESS.md" style={green}>docs/PRESS.md</a> in the repo.
+          New here? Start with <Link href="/faq" style={green}>the questions people ask</Link>, or see{" "}
+          <Link href="/bot" style={green}>the bot that reviews every pull request</Link>.
         </p>
       </div>
     </main>

@@ -1097,5 +1097,173 @@
     "image": "/results/carlosazaustre.jpg",
     "link": "https://x.com/carlosazaustre/status/2112920975171846152",
     "tv": "Xiaomi, backdrop by time and weather"
+  },
+  {
+    "handle": "@kirubaakaran",
+    "quote": "Connected Claude Code with my 5 year old TV, Removed all unwanted apps, home page ads, cleared space. Added Nifty, Sensex on Home Screen. Now my TV loads…",
+    "image": "/results/kirubaakaran.jpg",
+    "link": "https://x.com/kirubaakaran/status/2113093431392337960",
+    "tv": "5-year-old TV, Nifty and Sensex"
+  },
+  {
+    "handle": "@LimitScience",
+    "quote": "Just did it hahaha.",
+    "image": "/results/limitscience.jpg",
+    "link": "https://x.com/LimitScience/status/2113135353687093477",
+    "tv": "Netflix-style home"
+  },
+  {
+    "handle": "@stuntech",
+    "quote": "WebOS, en efecto más latoso. Solo Astra le entró, hay que hacer cuenta deveolper (1 min) Se acabó la lentitud y esperar minutos para ver algo de contenido.",
+    "image": "/results/stuntech-2.jpg",
+    "link": "https://x.com/stuntech/status/2113044415707246890",
+    "tv": "LG webOS, no more waiting"
+  },
+  {
+    "handle": "@KienDotA",
+    "quote": "Fixed my shitty Android TV with Claude, so damn easy. It found the TV on wifi, killed the Google junk, and remapped the remote by itself. Repo: Inspired by…",
+    "image": "/results/kiendota.jpg",
+    "link": "https://x.com/KienDotA/status/2113099822999994796",
+    "tv": "Widget home, city blurred"
+  },
+  {
+    "handle": "@XiJie27870",
+    "quote": "最近社区都在折腾自己的电视，手痒了也把自己的LG C5也折腾了一版：这是基于 @gathint 原项目的 webOS 分支改造： 1、修复了webOS vibe hack对中文乱码的问题 2、添加了主流影视app对动态影视封面的支持 3、加入了自动切换明暗主题的功能。 视觉风格是参考 @jakubkralka…",
+    "image": "/results/xijie27870.jpg",
+    "link": "https://x.com/XiJie27870/status/2113115056905007295",
+    "tv": "LG C5 webOS, Chinese fixed"
+  },
+  {
+    "handle": "@PssBerg",
+    "quote": "我去，投影仪终于可以不用看乱七八糟的桌面了 我用 Claude Code 把家里的 Vidda M2 Pro 投影仪系统改了一遍：停用广告、数据上报和用不上的预装应用；换成开源的极简桌面…",
+    "image": "/results/pssberg.jpg",
+    "link": "https://x.com/PssBerg/status/2113083358507045315",
+    "tv": "Vidda M2 Pro projector"
+  },
+  {
+    "handle": "@alexhmcdaniel",
+    "quote": "It actually works 😂😂😂",
+    "image": "/results/alexhmcdaniel.jpg",
+    "link": "https://x.com/alexhmcdaniel/status/2113064298855743967",
+    "tv": "It actually works"
+  },
+  {
+    "handle": "@DavidNgugi15",
+    "quote": "Finally figured out Samsung TV Tizen 6 hack including live wallpapers. Still can't fully replace the native launcher but can fully map \"Home\" to own app…",
+    "image": "/results/davidngugi15.jpg",
+    "link": "https://x.com/DavidNgugi15/status/2113067143273054471",
+    "tv": "Samsung Tizen 6, own launcher"
+  },
+  {
+    "handle": "@AlejoGrenouille",
+    "quote": "Parce, 15 minutos me demoré haciendo esa vaina. Le dejé a mi abuela solo lo que ella usa, sin propaganda, sin apps raras y en un TV que estaba súper lento.",
+    "image": "/results/alejogrenouille.jpg",
+    "link": "https://x.com/AlejoGrenouille/status/2113068125365412343",
+    "tv": "Grandma's TV, only what she uses"
+  },
+  {
+    "handle": "@suryaatmovies",
+    "quote": "Inspired by this, I built my own Android TV launcher that displays a random movie from my Letterboxd watchlist, with options to watch it on Nuvio. Dock lets…",
+    "image": "/results/suryaatmovies.jpg",
+    "link": "https://x.com/suryaatmovies/status/2113054824849973724",
+    "tv": "Letterboxd launcher, Wi-Fi name blurred"
+  },
+  {
+    "handle": "@ManueldeRey",
+    "quote": "OU YEAAH",
+    "image": "/results/manuelderey.jpg",
+    "link": "https://x.com/ManueldeRey/status/2113339273340395616",
+    "tv": "Xiaomi in Spanish, Wi-Fi name blurred"
+  },
+  {
+    "handle": "@el_gafass",
+    "quote": "algo se intento hacer hasta poniendo musica en segundo plano (me robe la idea de otro que vi por ahi jajaja)",
+    "image": "/results/el_gafass.jpg",
+    "link": "https://x.com/el_gafass/status/2113324826777530529",
+    "tv": "Lamp mascot, Wi-Fi name blurred"
+  },
+  {
+    "handle": "@sadmanyasar_",
+    "quote": "Debloated my TV and added Frutiger Aero theme thanks to @gathint's 🌐🐠🫧",
+    "image": "/results/sadmanyasar_.jpg",
+    "link": "https://x.com/sadmanyasar_/status/2113322866389512207",
+    "tv": "Frutiger Aero theme, Wi-Fi name blurred"
+  },
+  {
+    "handle": "@chemitamaldo3",
+    "quote": "Smooth man!",
+    "image": "/results/chemitamaldo3.jpg",
+    "link": "https://x.com/chemitamaldo3/status/2113307781658812795",
+    "tv": "Pastel home with Movistar+"
+  },
+  {
+    "handle": "@CaptainMexico36",
+    "quote": "I remade the original Playstation 3 XMB with a boot animation and navigation sounds with codex. 🙌🏽",
+    "image": "/results/captainmexico36.jpg",
+    "link": "https://x.com/CaptainMexico36/status/2113305019424411985",
+    "tv": "PS3 XMB, boot animation and all"
+  },
+  {
+    "handle": "@epppyyy",
+    "quote": "I tried this using my brother’s Claude subscription, and it works FANTASTICALLY!! My TV is incredibly responsive, and every action executes instantly. The…",
+    "image": "/results/epppyyy.jpg",
+    "link": "https://x.com/epppyyy/status/2113302608664477977",
+    "tv": "Aurora home, Wi-Fi name blurred"
+  },
+  {
+    "handle": "@nandu_athaduuu",
+    "quote": "Inspired from @gathint And with the very help of @DathuRulz , I’m also changed My New Xiaomi Tv's Google TV UI to Customised UI using claude code and added…",
+    "image": "/results/nandu_athaduuu.jpg",
+    "link": "https://x.com/nandu_athaduuu/status/2113293835334033541",
+    "tv": "Screen time; name, city, Wi-Fi blurred"
+  },
+  {
+    "handle": "@bassam_cz",
+    "quote": "tried this on my tv couple of days ago, then added couple of apps and a custom screensaver with 50 photos and a big clock. apparently my tv is a side project…",
+    "image": "/results/bassam_cz.jpg",
+    "link": "https://x.com/bassam_cz/status/2113283243349000369",
+    "tv": "Photo screensaver with a big clock"
+  },
+  {
+    "handle": "@PrateekJainDev",
+    "quote": "Update on the TV: gave the home screen a Liquid Glass look. Also added a calendar with tithis (lunar days per the Hindu calendar) for my mom and cricket and…",
+    "image": "/results/prateekjaindev-2.jpg",
+    "link": "https://x.com/PrateekJainDev/status/2113273003287224329",
+    "tv": "Liquid Glass with a tithi calendar"
+  },
+  {
+    "handle": "@MarcoPorro",
+    "quote": "OmarchyTV is out in beta An #Omarchy style launcher for Android TV: themes, Waybar style bar, live stats and a terminal-style screensaver. It comes with the…",
+    "image": "/results/marcoporro.jpg",
+    "link": "https://x.com/MarcoPorro/status/2113250090915627161",
+    "tv": "OmarchyTV, Waybar bar, city blurred"
+  },
+  {
+    "handle": "@AneeshVyas",
+    "quote": "In my tv i've added the now bar inspired from OneUi 9, and used a spotify api to fetch the album art and duration(android tv doesnt allow), ive hosted an ip…",
+    "image": "/results/aneeshvyas.jpg",
+    "link": "https://x.com/AneeshVyas/status/2113231196167754111",
+    "tv": "One UI-style now bar, name blurred"
+  },
+  {
+    "handle": "@Griezmenace",
+    "quote": "This trick worked pretty well for me! I used Google Gemini’s Tasks feature on my MacBook for this. I’ll explore more customisation options and see if I can…",
+    "image": "/results/griezmenace.jpg",
+    "link": "https://x.com/Griezmenace/status/2113218395181334556",
+    "tv": "Metz TV, built with Gemini"
+  },
+  {
+    "handle": "@SumeetBadgujar",
+    "quote": "This post got me to build my own TV home screen for my TCL. Ads and rows gone. Just my apps and a wallpaper. Called it Nullofy, free and open source. Nothing…",
+    "image": "/results/sumeetbadgujar-2.jpg",
+    "link": "https://x.com/SumeetBadgujar/status/2113173772941361384",
+    "tv": "Nullofy on a TCL, now open source"
+  },
+  {
+    "handle": "@devbyanthony",
+    "quote": "Turned my 2021 Xiaomi TV into an Apple TV 27 No ads, no bloatware, a Liquid Glass dock, a Top Shelf with real previews, an Explore tab with trending picks…",
+    "image": "/results/devbyanthony.jpg",
+    "link": "https://x.com/devbyanthony/status/2113163056335229407",
+    "tv": "2021 Xiaomi as an Apple TV"
   }
 ]
