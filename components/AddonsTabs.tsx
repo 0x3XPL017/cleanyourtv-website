@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { GH, keyDefault, keyKind } from "@/lib/parse";
 import type { AddonsData, ThemeKey } from "@/lib/parse";
-import { SWITCH_IMAGES, repoCdn } from "@/lib/site";
+import { repoCdn } from "@/lib/site";
 
 type Tab = "themes" | "switches" | "addons";
 const TABS: [Tab, string][] = [["themes", "Themes"], ["switches", "Switches"], ["addons", "Add-ons"]];
@@ -135,7 +135,7 @@ function Themes({ data }: { data: AddonsData }) {
   );
 }
 
-function Switches({ keys }: { keys: ThemeKey[] }) {
+function Switches({ keys, images }: { keys: ThemeKey[]; images: Record<string, string> }) {
   const [q, setQ] = useState("");
   const needle = q.trim().toLowerCase();
   const shown = keys.filter((k) => !needle || k.keys.join(" ").includes(needle) || k.text.toLowerCase().includes(needle));
@@ -157,7 +157,7 @@ function Switches({ keys }: { keys: ThemeKey[] }) {
             </h2>
             <ul className="ao-keys">
               {list.map((k) => {
-                const def = keyDefault(k.text), [line, rest] = splitText(k.text), img = k.keys.map((x) => SWITCH_IMAGES[x]).find(Boolean);
+                const def = keyDefault(k.text), [line, rest] = splitText(k.text), img = k.keys.map((x) => images[x]).find(Boolean);
                 return (
                   <li key={k.keys.join()} className="ao-card">
                     {img && (
@@ -217,6 +217,13 @@ function Addons({ data }: { data: AddonsData }) {
         {data.addons.map((a) => (
           <li key={a.name}>
             <div className="ao-card">
+              {a.screenshot ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img className="ao-thumb" src={repoCdn(a.screenshot)} alt={`${a.name} on a TV`} loading="lazy" decoding="async" />
+              ) : (
+                // Add-ons from before screenshots were required: the gap asks for one.
+                <a className="ao-thumb ao-wanted" href={`${GH}/blob/main/addons/README.md#rules`} target="_blank" rel="noopener">Screenshot wanted</a>
+              )}
               <div className="ao-body">
                 <div className="ao-head">
                   <a className="ao-name" href={a.url} target="_blank" rel="noopener">{a.name}</a>
@@ -293,7 +300,7 @@ export default function AddonsTabs({ data }: { data: AddonsData }) {
         ))}
       </nav>
       {tab === "themes" && <Themes data={data} />}
-      {tab === "switches" && <Switches keys={data.keys} />}
+      {tab === "switches" && <Switches keys={data.keys} images={data.keyImages} />}
       {tab === "addons" && <Addons data={data} />}
     </>
   );
