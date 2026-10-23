@@ -1,12 +1,14 @@
 // Parsers shared by the server loader and the client component. No Node imports here.
 export const REPO = "Gathin23/cleanyourtv";
 export const GH = `https://github.com/${REPO}`;
+/** Theme screenshots are read straight from the repo, so a theme added there shows here with its own picture. */
+export const THEMES_RAW = `https://raw.githubusercontent.com/${REPO}/main/themes/`;
 
 export type Tv = { folder: string; tv: string; brand: string; model: string; os: string; notes: string };
 export type Pr = { login: string; avatar: string; title: string };
 export type ResultItem = { handle: string; quote: string; image: string; link: string; tv: string };
 export type ShowcaseItem = { name: string; what: string; builtOn: string; by: string; url: string; category?: string };
-export type ThemeItem = { name: string; what: string };
+export type ThemeItem = { name: string; what: string; image?: string };
 export type Tweet = { text: string; likes: number; replies: number; date: string };
 export type SiteData = {
   stars: number;
@@ -66,7 +68,10 @@ export function parseThemes(md: string): ThemeItem[] {
     .filter((l) => /^\|\s*`[^`]+\/`\s*\|/.test(l))
     .map((l) => {
       const c = l.split("|").slice(1, -1).map((s) => s.trim());
-      return { name: c[0].replace(/`/g, "").replace(/\/$/, ""), what: c[1] || "" };
+      // The third column holds the screenshot as <img src="name/screenshot.jpg">, relative to themes/.
+      const src = /<img[^>]*\bsrc="([^"]+)"/.exec(c[2] || "")?.[1];
+      const image = src && /^[\w./-]+$/.test(src) && !src.includes("..") ? THEMES_RAW + src : undefined;
+      return { name: c[0].replace(/`/g, "").replace(/\/$/, ""), what: c[1] || "", image };
     });
 }
 

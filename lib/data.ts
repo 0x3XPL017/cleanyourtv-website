@@ -3,7 +3,7 @@
 // page never depends on the public GitHub rate limit at request time.
 import fs from "node:fs/promises";
 import path from "node:path";
-import { GH, REPO, brandsOf, countLanguages, parseAddons, parseFaq, parsePushCommand, parseShowcase, parseSwitchImages, parseThemeKeys, parseTVs, parseThemes, starSeriesFallback, tweetToken } from "./parse";
+import { GH, REPO, THEMES_RAW, brandsOf, countLanguages, parseAddons, parseFaq, parsePushCommand, parseShowcase, parseSwitchImages, parseThemeKeys, parseTVs, parseThemes, starSeriesFallback, tweetToken } from "./parse";
 import { SWITCH_IMAGES } from "./site";
 import type { AddonsData, Faq, Pr, ResultItem, ShowcaseItem, SiteData, ThemeCard, ThemeItem, Tweet } from "./parse";
 
@@ -325,8 +325,10 @@ export const FALLBACK = {
     { name: "AirPlay receiver installer", what: "A script that builds and installs an open-source AirPlay receiver next to the launcher, for iPhone mirroring", builtOn: "Xiaomi MiTV-AESP0, Android TV 9", by: "nguyenduchoai", url: "https://github.com/nguyenduchoai/tv-vibehack/tree/feat/airplay-receiver" },
   ] as ShowcaseItem[],
   themes: [
-    { name: "default", what: "The built-in look written out as JSON, as a starting point for your own" },
-    { name: "aurora", what: "A dark aurora wallpaper (teal and violet on navy, darker at the bottom) with a matching background colour" },
-    { name: "six-columns", what: "Six smaller tiles per row and one grid row visible under the dock" },
+    { name: "default", what: "The built-in look written out as JSON, as a starting point for your own", image: THEMES_RAW + "default/screenshot.jpg" },
+    { name: "aurora", what: "A dark aurora wallpaper (teal and violet on navy, darker at the bottom) with a matching background colour", image: THEMES_RAW + "aurora/screenshot.jpg" },
+    { name: "dussehra", what: "Festive skin for Dussehra (ends 21 Oct 2026): a marigold toran, a faint gold rangoli, a diya for Wi-Fi, a bell for Inputs, a marigold for Settings and a petal shower", image: THEMES_RAW + "dussehra/screenshot.jpg" },
+    { name: "scenes", what: "14 dark illustrated landscapes in `wallpapers/`, a new one every hour; drawn from code by `tools/scenes_wallpapers.py`", image: THEMES_RAW + "scenes/screenshot.jpg" },
+    { name: "six-columns", what: "Six smaller tiles per row and one grid row visible under the dock", image: THEMES_RAW + "six-columns/screenshot.jpg" },
   ] as ThemeItem[],
 };
