@@ -807,35 +807,124 @@ a.video-card:hover .video-play {
   }
 }
 
-/* /addons: tabs as chips (like What people built), cards in the /press card style, copy-to-agent lines. */
+/* /addons: a lede, three big tabs, cards with a picture on top and one copy-to-agent line at the bottom.
+   Phones first: nothing under 14 px, every control at least 44 px tall. */
+.ao-title {
+  margin: 0 0 12px;
+  font-size: 44px;
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+}
+.ao-lede {
+  margin: 0 0 32px;
+  max-width: 820px;
+  text-wrap: pretty;
+  font-size: 20px;
+  line-height: 1.45;
+  color: #bdbdbd;
+}
+.ao-foot {
+  margin: 72px 0 0;
+  color: #9a9a9a;
+}
+.ao-icon {
+  display: block;
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+.ao-chev {
+  display: block;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  transition: transform 0.2s ease;
+}
+.ao-count {
+  font-family: var(--font-vt323), "VT323", monospace;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 400;
+  color: #cfffcf;
+  margin-left: 4px;
+}
+.ao-badge-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  color: #d8d8d8;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* The tabs: one segmented bar, the picked tab lit in the green accent. */
 .ao-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 0 24px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  padding: 6px;
+  margin: 0 0 32px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 .ao-tab {
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  min-height: 80px;
+  padding: 14px 18px;
   border: 0;
-  font-size: 14px;
-  font-weight: 500;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08));
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  border-radius: 16px;
+  text-align: left;
+  color: #bdbdbd;
+  background: transparent;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
-.ao-tab[aria-pressed="true"] {
-  background: #fff;
-  color: #000;
+.ao-tab:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+.ao-tab[aria-selected="true"] {
+  color: #fff;
+  background: linear-gradient(180deg, rgba(207, 255, 207, 0.13), rgba(207, 255, 207, 0.04));
+  box-shadow: inset 0 0 0 1px rgba(207, 255, 207, 0.4), 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+.ao-tab[aria-selected="true"] .ao-badge-icon {
+  color: #050505;
+  background: #cfffcf;
   box-shadow: none;
 }
-.ao-tab span {
-  opacity: 0.6;
-  font-weight: 400;
+.ao-tab-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
 }
+.ao-tab-name {
+  display: flex;
+  align-items: baseline;
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: inherit;
+}
+.ao-tab-text {
+  font-size: 14px;
+  line-height: 1.35;
+  color: #8b8b8b;
+}
+
 .ao-intro {
   margin: 0 0 24px;
   max-width: 760px;
+  font-size: 17px;
   color: #bdbdbd;
 }
 .ao-intro a,
@@ -845,16 +934,35 @@ a.video-card:hover .video-play {
   border-bottom-color: rgba(207, 255, 207, 0.35);
 }
 .ao-intro code,
-.ao-text code,
-.ao-sets code {
+.ao-text code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.86em;
+  font-size: max(14px, 0.86em);
   padding: 1px 6px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.08);
   color: #e9e9e9;
   overflow-wrap: anywhere;
 }
+.ao-intro code {
+  white-space: nowrap;
+}
+.ao-h2 {
+  margin: 40px 0 16px;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #9a9a9a;
+}
+.ao-h2-big {
+  margin: 64px 0 8px;
+  font-size: 26px;
+  letter-spacing: -0.2px;
+  text-transform: none;
+  color: #e9e9e9;
+}
+
+/* Cards: equal heights in a row, the picture on top, the copy line pinned to the bottom. */
 .ao-grid {
   list-style: none;
   padding: 0;
@@ -863,7 +971,7 @@ a.video-card:hover .video-play {
   grid-template-columns: 1fr;
   gap: 20px;
 }
-@media (min-width: 640px) {
+@media (min-width: 700px) {
   .ao-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -873,22 +981,18 @@ a.video-card:hover .video-play {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
-.ao-grid > li {
-  display: flex;
-  min-width: 0;
-}
 .ao-card {
-  flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.03);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   overflow: hidden;
+  transition: box-shadow 0.2s ease;
 }
-.ao-ended .ao-thumb {
-  filter: saturate(0.6) brightness(0.8);
+.ao-card:hover {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
 }
 .ao-thumb {
   display: block;
@@ -897,24 +1001,41 @@ a.video-card:hover .video-play {
   aspect-ratio: 16 / 9;
   object-fit: cover;
   background: #111;
+  border: 0;
 }
-.ao-wanted {
+.ao-ended .ao-thumb {
+  filter: saturate(0.6) brightness(0.8);
+}
+a.ao-wanted {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #6f6f6f;
-  font-size: 15px;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+  gap: 10px;
+  font-size: 14px;
+  color: #8b8b8b;
+  background:
+    radial-gradient(ellipse at 50% 120%, rgba(207, 255, 207, 0.07), transparent 60%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0 12px, transparent 12px 24px),
+    #0c0c0c;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: color 0.2s ease;
 }
-.ao-wanted:hover {
+a.ao-wanted:hover {
   color: #cfffcf;
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+.ao-wanted-icon {
+  width: 34px;
+  height: 34px;
+  opacity: 0.7;
 }
 .ao-body {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 14px 16px 16px;
+  padding: 18px 18px 18px;
   min-width: 0;
 }
 .ao-head {
@@ -924,168 +1045,236 @@ a.video-card:hover .video-play {
   justify-content: space-between;
   gap: 6px 10px;
 }
+.ao-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
 .ao-name {
   margin: 0;
   font-size: 20px;
+  line-height: 1.25;
   font-weight: 400;
   color: #fff;
+}
+a.ao-name {
   border: 0;
+}
+a.ao-name:hover {
+  color: #cfffcf;
 }
 .ao-key {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 15px;
-  color: #cfffcf;
+  font-size: 14px;
+  color: #8fb58f;
   overflow-wrap: anywhere;
+}
+.ao-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #d0d0d0;
+}
+.ao-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.ao-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #8b8b8b;
+}
+.ao-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
 }
 .ao-badge {
   flex: none;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  padding: 3px 9px;
-  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.3;
+  padding: 4px 11px;
+  border-radius: 999px;
   color: #bdbdbd;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
 }
 .ao-season {
   color: #ffd27a;
   box-shadow: inset 0 0 0 1px rgba(255, 210, 122, 0.4);
 }
-.ao-text {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.45;
-  color: #d8d8d8;
-}
-.ao-meta {
-  margin: 0;
+.ao-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-size: 14px;
-  color: #8b8b8b;
+  color: #9a9a9a;
 }
-.ao-sets {
+.ao-note .ao-icon {
+  width: 18px;
+  height: 18px;
+}
+.ao-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1.3;
+  padding: 4px 11px;
+  border-radius: 999px;
+  color: #d8d8d8;
+  background: rgba(255, 255, 255, 0.07);
+}
+.ao-chip-ok {
+  color: #cfffcf;
+  background: rgba(207, 255, 207, 0.08);
+}
+.ao-perms {
+  margin: 0;
+}
+
+/* Disclosures: "Do it yourself", "Details" and an add-on's permissions. */
+.ao-card details > summary {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 6px;
-  margin: 0;
-}
-.ao-sets code {
-  font-size: 12px;
-  color: #bdbdbd;
-}
-.ao-more summary {
-  cursor: pointer;
-  font-size: 14px;
-  color: #cfffcf;
+  min-height: 44px;
   width: max-content;
+  max-width: 100%;
+  cursor: pointer;
+  list-style: none;
+  font-size: 15px;
+  color: #cfffcf;
+  border-radius: 8px;
 }
-.ao-more summary:focus-visible {
+.ao-card details > summary::-webkit-details-marker {
+  display: none;
+}
+.ao-card details > summary:focus-visible {
   outline: 2px solid #cfffcf;
   outline-offset: 2px;
-  border-radius: 4px;
 }
-.ao-more .ao-text {
-  margin-top: 6px;
+.ao-card details[open] > summary .ao-chev,
+.ao-open > .ao-group-head .ao-chev {
+  transform: rotate(180deg);
+}
+.ao-diy > summary .ao-chev {
+  order: 0;
+}
+.ao-perms > summary .ao-chev {
+  color: #8b8b8b;
+}
+.ao-detail {
+  margin: 2px 0 6px;
   font-size: 15px;
   color: #bdbdbd;
 }
+.ao-diy > .ao-line {
+  margin-top: 2px;
+}
+
+/* The copy line: the words an agent gets, and a 44 px Copy pill. */
 .ao-actions {
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-top: 4px;
+  gap: 4px;
+  padding-top: 8px;
 }
-.ao-label {
-  display: block;
-  margin: 0 0 5px;
-  font-size: 12px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+.ao-ask {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ao-ask-label {
+  font-size: 14px;
   color: #8b8b8b;
 }
 .ao-line {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
-  padding: 9px 9px 9px 12px;
-  border-radius: 10px;
+  padding: 6px 6px 6px 14px;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.05);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
-.ao-line code {
+.ao-line p {
   flex: 1;
   min-width: 0;
-  font-family: inherit;
-  font-size: 14px;
+  margin: 0;
+  font-size: 15px;
   line-height: 1.4;
   color: #e9e9e9;
   overflow-wrap: anywhere;
-  padding-top: 3px;
 }
-.ao-cmd code {
+.ao-cmd p {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12.5px;
+  font-size: 14px;
   color: #bdbdbd;
 }
 .ao-copy {
   flex: none;
-  height: 28px;
-  padding: 0 12px;
-  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 16px 0 13px;
+  border-radius: 22px;
   border: 0;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
-  color: #000;
+  color: #050505;
   background: #cfffcf;
+  transition: background-color 0.15s ease;
 }
-.ao-copy:hover {
+.ao-copy .ao-icon {
+  width: 18px;
+  height: 18px;
+}
+.ao-copy:hover,
+.ao-copied {
   background: #fff;
 }
-.ao-h2 {
-  margin: 32px 0 14px;
-  font-size: 15px;
-  font-weight: 400;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #9a9a9a;
+
+/* Settings: search, then the groups as sections that open. */
+.ao-search {
+  position: relative;
+  display: block;
+  max-width: 480px;
+  margin: 0 0 8px;
+  color: #8b8b8b;
 }
-.ao-h2 span {
-  opacity: 0.6;
+.ao-search .ao-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
-.ao-keys {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  columns: 1;
-  column-gap: 20px;
-}
-@media (min-width: 640px) {
-  .ao-keys {
-    columns: 2;
-  }
-}
-@media (min-width: 1100px) {
-  .ao-keys {
-    columns: 3;
-  }
-}
-.ao-keys > li {
-  break-inside: avoid;
-  margin: 0 0 20px;
+.ao-search:focus-within {
+  outline: none;
 }
 .ao-search input {
   appearance: none;
   -webkit-appearance: none;
-  font: inherit;
-  font-size: 15px;
-  color: #e9e9e9;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 22px;
-  height: 44px;
-  padding: 0 18px;
   width: 100%;
-  max-width: 360px;
+  height: 52px;
+  padding: 0 18px 0 48px;
+  font: inherit;
+  font-size: 16px;
+  color: #e9e9e9;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 26px;
 }
 .ao-search input::placeholder {
   color: #8b8b8b;
@@ -1094,98 +1283,168 @@ a.video-card:hover .video-play {
   outline: 2px solid #cfffcf;
   outline-offset: 2px;
 }
-.ao-search {
-  display: block;
-  margin: 0 0 8px;
-}
-.ao-search:focus-within {
-  outline: none;
-}
-.ao-empty {
-  max-width: 720px;
-}
-.ao-empty .ao-body {
-  gap: 14px;
-  padding: 24px;
-}
-.ao-intro code {
-  white-space: nowrap;
-}
-/* /addons: the three steps under the title; a row on every width, the arrows drawn between tiles. */
-.ao-steps {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 32px;
+.ao-groups {
   display: flex;
-  gap: 28px;
-  max-width: 760px;
+  flex-direction: column;
+  gap: 12px;
 }
-.ao-steps li {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 0;
+.ao-group {
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.025);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.ao-group-head {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  gap: 16px;
+  width: 100%;
+  min-height: 76px;
+  padding: 14px 20px 14px 16px;
+  border: 0;
+  border-radius: 18px;
+  text-align: left;
+  color: #e9e9e9;
+  background: transparent;
+  transition: background-color 0.2s ease;
 }
-.ao-steps li + li::before {
-  content: "";
-  position: absolute;
-  left: -19px;
-  top: 50%;
-  width: 8px;
-  height: 8px;
-  border-top: 1.6px solid #cfffcf;
-  border-right: 1.6px solid #cfffcf;
-  transform: translateY(-50%) rotate(45deg);
+.ao-group-head:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.04);
 }
-.ao-step-n {
-  flex: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 13px;
-  font-weight: 500;
-  color: #000;
-  background: #cfffcf;
+.ao-group-head:disabled {
+  cursor: default;
+  opacity: 1;
 }
-.ao-step-icon {
-  flex: none;
-  width: 22px;
-  height: 22px;
+.ao-group-head > .ao-chev {
+  margin-left: auto;
   color: #9a9a9a;
 }
-.ao-step-label {
-  font-size: 15px;
-  line-height: 1.3;
-  color: #d8d8d8;
+.ao-open > .ao-group-head .ao-badge-icon {
+  color: #050505;
+  background: #cfffcf;
+  box-shadow: none;
 }
-@media (max-width: 639px) {
-  .ao-steps {
-    gap: 18px;
+.ao-group-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.ao-group-name {
+  display: flex;
+  align-items: baseline;
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 400;
+  color: #fff;
+}
+.ao-group-text {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #8b8b8b;
+}
+.ao-grid-keys {
+  padding: 4px 14px 14px;
+}
+.ao-grid-keys .ao-card {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+/* Empty states: a quiet dashed frame with one way forward. */
+.ao-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 48px 24px;
+  text-align: center;
+  color: #bdbdbd;
+  border-radius: 18px;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+}
+.ao-empty p {
+  margin: 0;
+  font-size: 17px;
+}
+.ao-empty-ask {
+  width: 100%;
+  max-width: 560px;
+  text-align: left;
+}
+.ao-btn {
+  height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 22px;
+  font-size: 15px;
+  font-weight: 500;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+.ao-btn:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* Phones: the tabs stack icon over name, the description drops (the line under the tabs says it). */
+@media (max-width: 699px) {
+  .ao-title {
+    font-size: 34px;
   }
-  .ao-steps li {
+  .ao-lede {
+    font-size: 18px;
+    margin-bottom: 24px;
+  }
+  .ao-tabs {
+    gap: 4px;
+    padding: 5px;
+    margin-bottom: 24px;
+    border-radius: 20px;
+  }
+  .ao-tab {
     flex-direction: column;
-    align-items: flex-start;
+    justify-content: center;
     gap: 8px;
-    padding: 10px 11px;
+    min-height: 92px;
+    padding: 12px 4px;
+    text-align: center;
+    border-radius: 15px;
   }
-  .ao-steps li + li::before {
-    left: -13px;
-    width: 6px;
-    height: 6px;
+  .ao-tab-titles {
+    align-items: center;
   }
-  .ao-step-icon {
+  .ao-tab-name {
+    font-size: 17px;
+  }
+  .ao-tab-text {
     display: none;
   }
-  .ao-step-label {
-    font-size: 14px;
+  .ao-badge-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+  .ao-intro {
+    font-size: 16px;
+  }
+  .ao-body {
+    padding: 16px;
+  }
+  .ao-group-head {
+    gap: 12px;
+    padding: 12px 14px 12px 12px;
+  }
+  .ao-grid-keys {
+    padding: 2px 8px 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ao-tab,
+  .ao-card,
+  .ao-chev,
+  .ao-badge-icon,
+  .ao-group-head,
+  a.ao-wanted,
+  .ao-copy {
+    transition: none;
   }
 }
 
@@ -1284,15 +1543,6 @@ a.m-nudge-go:focus-visible,
   .m-nudge {
     animation: none;
   }
-}
-
-/* /addons: the "From the community" heading in the Add-ons tab. */
-.ao-sub {
-  margin: 40px 0 6px;
-  font-size: 22px;
-  font-weight: 400;
-  letter-spacing: -0.2px;
-  color: #e9e9e9;
 }
 
 /* /bot: numbers, a pipeline and cards in the /addons card style; the green accent marks the AI steps and what is live. */
@@ -2135,18 +2385,6 @@ a.bot-0g:hover {
   .page-main .home-link::before {
     content: "← ";
     white-space: pre;
-  }
-  /* /addons */
-  .ao-tab {
-    height: 44px;
-  }
-  .ao-copy {
-    height: 44px;
-    font-size: 14px;
-  }
-  .ao-sets code,
-  .ao-cmd code {
-    font-size: 13px;
   }
 }
 /* short phones: the Product Hunt badge gives way (the live pill above the wordmark links there too), so the buttons clear the dock */
