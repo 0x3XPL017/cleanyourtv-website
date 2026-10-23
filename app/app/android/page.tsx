@@ -227,7 +227,7 @@ export default function AndroidApp() {
 
         {/* 03: safety, what stays, what you need. */}
         <section aria-labelledby="safe">
-          <h2 id="safe" className="bot-h2"><span>03</span>Careful with your TV</h2>
+          <h2 id="safe" className="bot-h2"><span>03</span>How it works</h2>
           <div className="and-facts">
             <div className="bot-card and-fact">
               <h3>Safe by design</h3>
