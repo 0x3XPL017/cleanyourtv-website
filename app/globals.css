@@ -3018,3 +3018,110 @@ a.m-docktile {
     padding: 9px 14px 9px 12px;
   }
 }
+/* /bot receipt: a till slip in VT323, dotted leaders, the numbers in mint. */
+.bot-receipt {
+  display: grid;
+  gap: 16px 32px;
+  margin: 40px 0 0;
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .bot-receipt {
+    grid-template-columns: minmax(0, 460px) minmax(0, 1fr);
+  }
+}
+.bot-rcpt {
+  position: relative;
+  padding: 22px 22px 18px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  font-family: var(--font-vt323), "VT323", monospace;
+  font-size: 22px;
+  line-height: 1.25;
+  color: #d8d8d8;
+  -webkit-mask: radial-gradient(circle 6px at 9px 100%, transparent 98%, #000) 0 0 / 18px 100% repeat-x;
+  mask: radial-gradient(circle 6px at 9px 100%, transparent 98%, #000) 0 0 / 18px 100% repeat-x;
+  padding-bottom: 26px;
+}
+.bot-rcpt-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 0 0 14px;
+  padding: 0 0 12px;
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.22);
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+.bot-rcpt-head span:first-child {
+  font-family: var(--font-fredoka), Fredoka, sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  color: #cfffcf;
+}
+.bot-rcpt-head span:last-child {
+  font-size: 18px;
+  color: #8b8b8b;
+  text-transform: uppercase;
+}
+.bot-rcpt-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.bot-rcpt-lines li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 3px 0;
+}
+.bot-rcpt-lines i {
+  flex: 1;
+  min-width: 12px;
+  border-bottom: 2px dotted rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px);
+}
+.bot-rcpt-lines b {
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1;
+  color: #cfffcf;
+  white-space: nowrap;
+}
+.bot-rcpt-days {
+  margin: 12px 0 0;
+  padding: 12px 0 0;
+  border-top: 2px dashed rgba(255, 255, 255, 0.22);
+  font-size: 19px;
+  color: #9a9a9a;
+}
+.bot-rcpt-foot {
+  margin: 14px 0 0;
+  padding: 12px 0 0;
+  border-top: 2px dashed rgba(255, 255, 255, 0.22);
+  text-align: center;
+  font-size: 19px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #bdbdbd;
+}
+.bot-rcpt-notes p {
+  margin: 0 0 12px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #bdbdbd;
+  max-width: 620px;
+}
+.bot-rcpt-notes b {
+  font-weight: 500;
+  color: #fff;
+}
+.bot-rcpt-notes .bot-small {
+  font-size: 14px;
+  color: #8b8b8b;
+}
