@@ -30,6 +30,7 @@ export const COVERAGE: PressGroup[] = [
       ["PCWorld", "Please don't use AI hacks to debloat your TV", "22 Oct", "https://www.pcworld.com/article/3266473/please-dont-use-ai-hacks-to-debloat-your-tv.html", "pcworld-b798ef", "pcworld"],
       ["ExtremeTech", "Developers Are Dumbing Down Their Smart TVs", "21 Oct", "https://www.extremetech.com/electronics/developers-are-dumbing-down-their-smart-tvs", "extremetech-d99fa5", "extremetech"],
       ["AdExchanger", "So Begins ChatGPT’s Endless Ad Iterations; YouTube Affiliates With AliExpress", "20 Oct", "https://www.adexchanger.com/daily-news-roundup/tuesday-20102026/", "adexchanger-a0abf9", "adexchanger"],
+      ["The Cool Down", "People are using AI to make smart TVs do 'what you paid for'", "23 Oct", "https://www.thecooldown.com/green-tech/smart-tv-ai-custom-launchers-user-control/", "thecooldown-c9f48e", "thecooldown"],
     ],
   },
   {
@@ -39,6 +40,7 @@ export const COVERAGE: PressGroup[] = [
       ["TechRadar", "‘Your TV should do what you paid for’: People are so sick of ads, trackers and bloat in their smart TVs that they're using AI to vibe code them away", "20 Oct", "https://www.techradar.com/entertainment/streaming/your-tv-should-do-what-you-paid-for-people-are-vibe-coding-apps-to-banish-ads-from-their-smart-tvs-and-android-tv-and-its-catching-on", "techradar-e955f1", "techradar"],
       ["Tech Times", "Man Asks AI with a Simple Prompt 'Can You Hack This?' to Fix His TV: Now Everyone Wants to Copy Him", "19 Oct", "https://www.techtimes.co.uk/ai-smart-tv-bloatware-performance-fix-1809233", "techtimes-c99e97", "techtimes"],
       ["Tech Times", "Owners Are Using AI to Bring Abandoned Smart Devices Back to Life and Strip Out Ads", "22 Oct", "https://www.techtimes.co.uk/ai-tools-remove-smart-tv-ads-bloatware-1809318", "techtimes-fdee0f", "techtimes"],
+      ["Tech Times", "Fed up With Smart TV Ads, People Are Using AI To Remove Them and Take Back Control", "23 Oct", "https://www.techtimes.co.uk/ai-tools-customize-smart-tv-home-screens-1809370", "techtimes-15dc2c", "techtimes"],
     ],
   },
   {
@@ -206,6 +208,7 @@ export const COVERAGE: PressGroup[] = [
       ["Showmetech", "TV vibecoding: usuários estão usando IA para remover anúncios e apps de suas smart TVs", "20 Oct", "https://www.showmetech.com.br/ia-remover-anuncios-smart-tvs-vibe-coding/", "showmetech-8135ed", "showmetech"],
       ["SpaceMoney", "Usuários recorrem a IA para enxugar smart TVs Android", "20 Oct", "https://www.spacemoney.com.br/tecnologia/ia-smart-tvs-android/", "spacemoney-dfcff0", "spacemoney"],
       ["Boa Informação", "As pessoas estão usando IA para tornar suas smart TVs burras novamente", "19 Oct", "https://boainformacao.com.br/2026/10/as-pessoas-estao-usando-ia-para-tornar-suas-smart-tvs-burras-novamente/", "boainformacao-f6cccc", "boainformacao"],
+      ["Tecnoblog", "Usuários recorrem à IA para remover anúncios e mudar interfaces de TVs", "19 Oct", "https://tecnoblog.net/noticias/usuarios-usam-ia-para-remover-anuncios-e-mudar-interfaces-de-tvs/", "tecnoblog-cbb8c1", "tecnoblog"],
     ],
   },
   {
@@ -236,6 +239,7 @@ export const COVERAGE: PressGroup[] = [
       ["AI产品库 AIProductHub", "CleanYourTV - 开源电视去广告启动器，一键替换桌面", "20 Oct", "https://aiproducthub.cn/launch/p/70162.html", "aiproducthub-0106da", "aiproducthub"],
       ["搜狐 Sohu", "安卓 TV 去广告开源工具走红，电视厂商广告收入承压", "", "https://timeline.sohu.com/news/OD888PpI4v", "sohu-1238c7", "sohu"],
       ["流媒体网 lmtw", "电视厂商的财路，被开源软件断了", "", "https://lmtw.com/mzw/content/detail/id/259307", "lmtw-21c1db", "lmtw"],
+      ["IT之家 IT Home", "智能电视广告引不满，部分用户借助 Claude 等 AI 智能体清理广告和预装应用", "20 Oct", "https://www.ithome.com/1/015/598.htm", "ithome-b8ef1f", "ithome"],
     ],
   },
   {
@@ -317,6 +321,7 @@ export const COVERAGE: PressGroup[] = [
       ["PlayGround.ru", "Энтузиасты начали использовать ИИ для очистки телевизоров от встроенной рекламы и замедляющего софта", "19 Oct", "https://www.playground.ru/misc/news/entuziasty_nachali_ispolzovat_ii_dlya_ochistki_televizorov_ot_vstroennoj_reklamy_i_zamedlyayuschego_softa-1883066", "playground-01d2f5", "playground"],
       ["iXBT.com", "Полезный вайбкодинг: DeepSeek и Claude сделали приложения, которые убирают с телевизоров рекламу и ненужные приложения", "20 Oct", "https://www.ixbt.com/news/2026/10/20/poleznyi-vaibkoding-deepseek-i-claude-sdelali-prilozeniia-kotorye-ubiraiut-s-televizorov-reklamu-i-nenuznye-prilozeniia.html", "ixbt-765927", "ixbt"],
       ["Habr", "Представлен открытый вайбкод-проект TV VibeHac для убирания лагов на умных ТВ из-за мусорных приложений", "18 Oct", "https://habr.com/ru/posts/1095896/", "habr-23079b", "habr"],
+      ["AdIndex", "Расширения для удаления рекламы в Smart TV набирают популярность в США", "20 Oct", "https://adindex.ru/news/tendencies/2026/10/20/350100.phtml", "adindex-3f6720", "adindex"],
     ],
   },
   {
@@ -362,6 +367,13 @@ export const COVERAGE: PressGroup[] = [
     ],
   },
   {
+    group: "Pakistan",
+    country: true,
+    items: [
+      ["ProPakistani", "People Are Using AI to Make Smart TVs Faster, Safer, and Ad-Free", "21 Oct", "https://propakistani.pk/2026/10/21/people-are-using-ai-to-make-smart-tvs-faster-safer-and-ad-free/", "propakistani-edbace", "propakistani"],
+    ],
+  },
+  {
     group: "Online (newsletters, blogs, AI news)",
     country: false,
     items: [
@@ -391,6 +403,9 @@ export const COVERAGE: PressGroup[] = [
       ["Jeff Bruchado", "tv-vibehack in 2026: How to Remove Ads From Your Android TV With ADB", "19 Oct", "https://jeffbruchado.com.br/en/blog/tv-vibehack-android-tv-no-ads-debloat-adb-2026", "jeffbruchado-09f9eb", "jeffbruchado"],
       ["NextAiBreakout", "Claude Code Android TV Debloat: cleanyourtv Explained", "19 Oct", "https://nextaibreakout.com/blog/claude-code-android-tv-debloat/", "nextaibreakout-7152ac", "nextaibreakout"],
       ["Blockonomi", "Smart TV Owners Use Claude Code to Remove Ads and Tracking Software", "21 Oct", "https://blockonomi.com/smart-tv-owners-use-claude-code-to-remove-ads-and-tracking-software/", "blockonomi-9e5874", "blockonomi"],
+      ["AI Weekly", "Vibe coders use Claude Code to strip ads from smart TVs", "20 Oct", "https://aiweekly.co/alerts/vibe-coders-use-claude-code-to-strip-ads-from-smart-tvs", "aiweekly-fe2f55", "aiweekly"],
+      ["AI Weekly", "Claude Code sert à vider les Smart TV Xiaomi et TCL de leurs pubs", "19 Oct", "https://aiweekly.co/fr/alerts/claude-code-sert-vider-les-smart-tv-xiaomi-et-tcl-de-leurs-pubs", "aiweekly-4f808d", "aiweekly"],
+      ["AIchief", "AI Agents Empower Users to Dumb Down Smart TVs and Remove Bloatware", "19 Oct", "https://aichief.com/news/ai-agents-empower-users-to-dumb-down-smart-tvs-and-remove-bloatware/", "aichief-6074c0", "aichief"],
     ],
   },
 ];
