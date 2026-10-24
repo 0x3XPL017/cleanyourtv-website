@@ -163,13 +163,6 @@ export default function AndroidApp() {
               <li>Open source</li>
               <li>131 TV models · 46 brands</li>
             </ul>
-            <a href={AUTHOR} className="and-credit">
-              <Avatar size={44} />
-              <span>
-                <b>Built by udhaykumarbala for the community</b>
-                <span>Built on Clean Your TV</span>
-              </span>
-            </a>
           </div>
           <div className="and-hero-art">
             {/* eslint-disable-next-line @next/next/no-img-element */}

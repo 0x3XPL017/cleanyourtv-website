@@ -2597,15 +2597,16 @@ a.m-navpill-new {
 .and-tag {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  margin: 0 0 22px;
-  padding: 7px 16px 7px 14px;
+  gap: 12px;
+  margin: 0 0 26px;
+  padding: 10px 20px 10px 16px;
   border-radius: 999px;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   color: var(--amber);
-  background: rgba(232, 168, 76, 0.08);
-  box-shadow: inset 0 0 0 1px rgba(232, 168, 76, 0.32);
+  background: rgba(232, 168, 76, 0.14);
+  box-shadow: inset 0 0 0 1.5px rgba(232, 168, 76, 0.55), 0 0 28px rgba(232, 168, 76, 0.18);
 }
 .and-tag span {
   width: 8px;
@@ -3009,4 +3010,11 @@ a.m-docktile {
   height: 0.8em;
   width: auto;
   display: block;
+}
+@media (max-width: 480px) {
+  .and-tag {
+    font-size: 14px;
+    gap: 9px;
+    padding: 9px 14px 9px 12px;
+  }
 }
