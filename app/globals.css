@@ -3146,3 +3146,11 @@ a.m-navpill-coffee:hover {
     display: inline;
   }
 }
+/* Home on phones: the stats line stays on one line. */
+@media (max-width: 480px) {
+  .m-counters {
+    font-size: 15px !important;
+    letter-spacing: 0.02em !important;
+    white-space: nowrap;
+  }
+}

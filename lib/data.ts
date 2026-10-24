@@ -25,6 +25,18 @@ async function text(url: string): Promise<string | null> {
   }
 }
 
+// Everyone with a commit on main, from GitHub's contributors list: one entry per page, so the last page number is the count.
+async function contributorCount(): Promise<number | null> {
+  try {
+    const r = await fetch(`https://api.github.com/repos/${REPO}/contributors?per_page=1&anon=0`, { headers: ghHeaders(), next: { revalidate: REVALIDATE } });
+    if (!r.ok) return null;
+    const last = /[?&]page=(\d+)>; rel="last"/.exec(r.headers.get("link") || "");
+    return last ? Number(last[1]) : ((await r.json()) as unknown[]).length;
+  } catch {
+    return null;
+  }
+}
+
 async function json<T>(url: string): Promise<T | null> {
   try {
     const r = await fetch(url, { headers: ghHeaders(), next: { revalidate: REVALIDATE } });
@@ -120,7 +132,7 @@ export async function loadSiteData(): Promise<SiteData> {
     forks: repo?.forks_count ?? FALLBACK.forks,
     prs,
     prCount: prs.length || FALLBACK.prCount,
-    contributors: prs.length ? new Set(prs.map((p) => p.login)).size : FALLBACK.contributors,
+    contributors: (await contributorCount()) ?? (prs.length ? new Set(prs.map((p) => p.login)).size : FALLBACK.contributors),
     tvs: examplesMd ? parseTVs(examplesMd) : parseTVs(FALLBACK.examples),
     results,
     showcase: showcaseMd ? parseShowcase(showcaseMd) : FALLBACK.showcase,

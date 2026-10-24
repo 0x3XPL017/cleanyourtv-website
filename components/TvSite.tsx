@@ -580,6 +580,7 @@ export default class TvSite extends React.Component<Props, State> {
                 <a href={TWEET} target="_blank" rel="noopener">The tweet</a>
                 <a href={GH + "/blob/main/LICENSE"} target="_blank" rel="noopener">MIT licence</a>
                 <a href={COFFEE} target="_blank" rel="noopener">Buy me a coffee</a>
+                <a href={PH} target="_blank" rel="noopener">Product Hunt</a>
               </div>
               <p style={S("margin:0;max-width:34em;line-height:1.45;text-wrap:pretty")}>Started as one afternoon on my parents&apos; TV. Built with Claude Code.</p>
               <button onClick={() => this.powerOn()} className="hov-white" style={S("height:44px;padding:0 20px;border-radius:22px;border:0;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);font-family:'VT323',monospace;font-size:clamp(18px,1.8cqw,22px);letter-spacing:.08em")}>TURN IT BACK ON</button>
@@ -707,7 +708,7 @@ export default class TvSite extends React.Component<Props, State> {
         <div ref={this.r.title} className="m-title" style={S("position:absolute;left:0;right:0;top:0;bottom:clamp(90px,16cqw,200px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2cqw,28px);padding:clamp(60px,9cqw,110px) 5cqw 0;text-align:center;opacity:0;pointer-events:none;color:var(--ink,rgba(255,255,255,.95))")}>
           <div style={S("display:flex;flex-direction:column;align-items:center;gap:clamp(6px,.8cqw,12px)")}>
             {/* The community Android app (udhaykumarbala): a pill above the wordmark; narrow phones use the App pill instead. */}
-            <a href="/app/android" onClick={(e) => e.stopPropagation()} className="m-applive no-border act-shrink" style={S("pointer-events:auto;display:inline-flex;align-items:center;gap:10px;height:clamp(32px,3cqw,40px);padding:0 clamp(14px,1.6cqw,20px);margin-bottom:clamp(4px,.6cqw,10px);border-radius:999px;background:#cfffcf;color:#0b2a14;font-size:clamp(13px,1.3cqw,16px);font-weight:600;letter-spacing:.02em;box-shadow:0 6px 24px rgba(140,255,140,.25)")}>
+            <a href="/app/android" onClick={(e) => e.stopPropagation()} className="m-applive no-border act-shrink" style={S("pointer-events:auto;display:inline-flex;align-items:center;margin-bottom:clamp(2px,.4cqw,6px);font-size:clamp(13px,1.2cqw,15px);font-weight:500;letter-spacing:.01em;color:var(--brand,#cfffcf);opacity:.9")}>
               New: clean your TV from your phone →
             </a>
             <h1 className="m-h1" aria-label="CleanYourTV" style={S("margin:0;display:flex;align-items:center;gap:.22em;font-family:var(--font-fredoka),'Fredoka',sans-serif;font-size:clamp(40px,min(8cqw,11vh),104px);font-weight:600;letter-spacing:-.01em;line-height:1;white-space:nowrap")}>
@@ -730,29 +731,17 @@ export default class TvSite extends React.Component<Props, State> {
               <span>CleanYour<span style={S("color:var(--brand,#cfffcf)")}>TV</span></span>
             </h1>
             <p className="m-tag" style={S("margin:0;font-size:clamp(15px,2.1cqw,26px);font-weight:300;opacity:.8")}>Your TV, minus the ads.</p>
-            <p className="m-sub" style={S("margin:0;max-width:60em;font-size:clamp(13px,1.2cqw,16px);line-height:1.45;opacity:.75;text-wrap:balance")}>For Android TV and Google TV: an AI coding assistant removes the ads over Wi-Fi. No root, nothing uninstalled, free and open source.</p>
+            <p className="m-sub" style={S("margin:0;max-width:60em;font-size:clamp(13px,1.2cqw,16px);line-height:1.45;opacity:.75;text-wrap:balance")}>For Android TV and Google TV. No root, nothing uninstalled.</p>
           </div>
-          <div className="m-counters" style={S("width:min(86cqw,760px);display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:clamp(8px,1.4cqw,18px) clamp(14px,2.4cqw,32px);font-family:'VT323',monospace;font-size:clamp(18px,2.1cqw,28px);line-height:1")}>
-            {counters.map((c) => (
-              <div key={c.key} style={S("display:flex;flex-direction:column;gap:5px;text-align:left")}>
-                <div style={S("display:flex;justify-content:space-between;gap:8px")}><span style={S("opacity:.7;letter-spacing:.06em")}>{c.label}</span><span>{c.text}</span></div>
-                <div className="m-gauge" style={S("position:relative;height:clamp(9px,1cqw,13px);background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);opacity:1")}>
-                  <div style={S("position:absolute;inset:0;background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);opacity:.22")} />
-                  <div style={{ ...S("position:absolute;left:0;top:0;bottom:0;background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px);transition:width 1.4s cubic-bezier(.2,.8,.2,1)"), width: c.pct + "%" }} />
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Stars, forks and contributors as one quiet line (it used to be three gauges). */}
+          <p className="m-counters" style={S("margin:0;font-family:'VT323',monospace;font-size:clamp(18px,1.9cqw,24px);letter-spacing:.06em;opacity:.75")}>
+            {counters.map((c) => `${c.key === "contributors" ? c.display.toLocaleString("en-US") + "+" : c.display >= 1000 ? (c.display / 1000).toFixed(1) + "K" : String(c.display)} ${c.label.toLowerCase()}`).join("  ·  ")}
+          </p>
           <div className="m-btns" style={S("display:flex;gap:10px;flex-wrap:wrap;justify-content:center")}>
             <button onClick={() => this.channel(3)} className="act-shrink" style={S("pointer-events:auto;height:44px;padding:0 24px;border-radius:22px;border:0;background:var(--ink,#fff);color:var(--bg,#000);font-size:15px;font-weight:500;letter-spacing:.01em;transition:transform .2s")}>Set up your TV</button>
             <a href={GH} target="_blank" rel="noopener" onClick={() => this.click()} className="hov-white act-shrink" style={S("pointer-events:auto;display:flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:22px;border:0;background:var(--pill-bg,linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));font-size:15px;font-weight:500;letter-spacing:.01em;color:inherit;transition:background .2s,transform .2s")}>
               <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z" /></svg>
               Star on GitHub
-            </a>
-            {/* Launch week: the Product Hunt badge sits with the buttons. */}
-            <a href={PH} target="_blank" rel="noopener" className="no-border m-phbadge" style={S("pointer-events:auto;display:flex;align-items:center;justify-content:center;line-height:0")}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1286319&theme=dark" alt="CleanYourTV on Product Hunt" width={204} height={44} style={S("width:204px;height:44px;display:block")} />
             </a>
           </div>
           {/* The press, scrolling under the buttons; hover pauses it, reduced motion keeps it still. The link after it opens the full list on /press; the duration grows with the list so the speed stays put. */}
