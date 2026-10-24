@@ -2997,3 +2997,16 @@ a.and-credit span span {
     border-radius: 22px;
   }
 }
+
+/* Home: the dock tiles are links; the PR Bot pill carries the 0G mark. */
+a.m-docktile {
+  color: inherit;
+  text-decoration: none;
+  text-align: center;
+  line-height: 1.1;
+}
+.m-navpill-bot .m-0g {
+  height: 0.8em;
+  width: auto;
+  display: block;
+}

@@ -5,6 +5,14 @@ import React from "react";
 import { GH, brandsOf } from "@/lib/parse";
 import type { SiteData } from "@/lib/parse";
 import { GROUPS, KONAMI, NAMES, ORDER, PRESS, PRESS_LOGO_W, S, SHOWCASE_IMAGES, cdn, thumb, TERM, TERM_TOTAL, THEMES, TILE_COLORS, classify, termCost, wait } from "@/lib/site";
+
+// Home dock: Add-ons and App are pages; Get started (How to) and Showcase (Built on it) are channels 3 and 4 here.
+const DOCK: { label: string; href: string; ch?: number }[] = [
+  { label: "Add-ons", href: "/addons" },
+  { label: "App", href: "/app/android" },
+  { label: "Get started", href: "#ch-03", ch: 3 },
+  { label: "Showcase", href: "#ch-04", ch: 4 },
+];
 import type { ThemeName } from "@/lib/site";
 
 const TWEET = "https://x.com/gathint/status/2111379569030939102";
@@ -613,8 +621,8 @@ export default class TvSite extends React.Component<Props, State> {
     const pill = "height:clamp(24px,3.3cqw,42px);padding:0 clamp(10px,1.5cqw,20px);border-radius:999px;background:var(--pill-bg,linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1px var(--pill-rim,rgba(255,255,255,.22));display:flex;align-items:center;font-size:clamp(9px,1.15cqw,15px);font-weight:500";
     const zap = "flex-shrink:0;width:11cqw;aspect-ratio:16/9;border-radius:.8cqw;display:grid;place-items:center;";
     const chip = "flex-shrink:0;padding:.7cqw 1.6cqw;border-radius:.6cqw;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)";
-    const hoverTile = (e: React.MouseEvent<HTMLDivElement>) => { if (this.state.booted) this.focusTile(Number(e.currentTarget.dataset.tile)); };
-    const clickTile = (e: React.MouseEvent<HTMLDivElement>) => { if (!this.state.booted) return; this.click(); e.currentTarget.animate([{ transform: "scale(1.06)" }, { transform: "scale(.98)" }, { transform: "scale(1.06)" }], { duration: 220, easing: "ease-out" }); };
+    const hoverTile = (e: React.MouseEvent<HTMLElement>) => { if (this.state.booted) this.focusTile(Number(e.currentTarget.dataset.tile)); };
+    const clickTile = (e: React.MouseEvent<HTMLElement>) => { if (!this.state.booted) return; this.click(); e.currentTarget.animate([{ transform: "scale(1.06)" }, { transform: "scale(.98)" }, { transform: "scale(1.06)" }], { duration: 220, easing: "ease-out" }); };
     return (
       <section id="ch-00" data-ch="0" aria-label="Channel 00, Boot" className="m-hero" onClick={() => this.skip()} style={S("position:relative;height:100%;scroll-snap-align:start;overflow:hidden")}>
         <div ref={this.r.launcher} style={S("position:absolute;inset:0;background-color:var(--bg,#000);background-image:var(--wall,none);background-size:cover;background-position:center;color:var(--ink,rgba(255,255,255,.95))")}>
@@ -631,18 +639,18 @@ export default class TvSite extends React.Component<Props, State> {
             </div>
             <div className="m-pills" style={S("display:flex;gap:clamp(4px,.8cqw,10px);flex-shrink:0")}>
               {/* The launcher's Inputs / Wi-Fi / Settings pills, as the site's own navigation. */}
-              <a href="/addons" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>Add-ons</a>
-              <a href="/app/android" onClick={(e) => e.stopPropagation()} className="m-navpill m-navpill-new" style={S(pill)}>App<span className="m-new" aria-label="new">NEW</span></a>
               <a href="/press" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>Press</a>
               <a href="/faq" onClick={(e) => e.stopPropagation()} className="m-navpill" style={S(pill)}>FAQ</a>
+              <a href="/bot" onClick={(e) => e.stopPropagation()} className="m-navpill m-navpill-bot" aria-label="PR Bot, powered by 0G" style={S(pill + ";gap:.45em")}>PR Bot<img src="/brand/0g.svg" alt="" className="m-0g" /></a>
             </div>
           </div>
           <div ref={this.r.dock} className="m-dock" style={S("position:absolute;left:50%;bottom:clamp(28px,5cqw,64px);transform:translateX(-50%);padding:clamp(8px,1.1cqw,14px);border-radius:clamp(16px,2cqw,26px);background:var(--band,#141416);box-shadow:inset 0 0 0 1px var(--band-rim,rgba(255,255,255,.12));display:flex;gap:clamp(8px,1.6cqw,22px)")}>
-            {["Films", "Series", "Music", "Live TV"].map((label, i) => (
-              <div key={label} data-tile={i} data-color={TILE_COLORS[i]} onMouseEnter={hoverTile} onClick={clickTile} style={S(tile + TILE_COLORS[i])}>
-                {label}
-                <div data-name style={S(name)}>{label}</div>
-              </div>
+            {/* The dock's four tiles are the site's main links: two pages and two channels on this page. */}
+            {DOCK.map((t, i) => (
+              <a key={t.label} href={t.href} data-tile={i} data-color={TILE_COLORS[i]} onMouseEnter={hoverTile} onClick={(e) => { e.stopPropagation(); if (!this.state.booted) { e.preventDefault(); this.skip(); return; } clickTile(e); if (t.ch !== undefined) { e.preventDefault(); this.channel(t.ch); } }} className="m-docktile" style={S(tile + TILE_COLORS[i])}>
+                {t.label}
+                <div data-name style={S(name)}>{t.label}</div>
+              </a>
             ))}
           </div>
           <div ref={this.r.glass} aria-hidden="true" className="m-glass" style={S("position:absolute;left:0;top:0;width:10px;height:10px;opacity:0;pointer-events:none;border-radius:clamp(10px,1.6cqw,22px);background:var(--glass-fill,linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.08)));box-shadow:inset 0 0 0 1.5px var(--glass-rim,rgba(255,255,255,.8)),0 0 0 1px rgba(255,255,255,.14),0 0 14px rgba(255,255,255,.28);will-change:transform,width,height")}>
