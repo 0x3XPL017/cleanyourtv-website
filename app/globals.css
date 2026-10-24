@@ -3125,3 +3125,24 @@ a.m-docktile {
   font-size: 14px;
   color: #8b8b8b;
 }
+
+/* Home: the Buy me a coffee pill, a warm tint so it reads as support rather than navigation. */
+a.m-navpill-coffee {
+  background: rgba(255, 221, 0, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 221, 0, 0.45);
+  color: #ffe88a;
+}
+a.m-navpill-coffee:hover {
+  background: rgba(255, 221, 0, 0.24);
+}
+.m-coffee-short {
+  display: none;
+}
+@media (max-width: 480px) {
+  .m-coffee-long {
+    display: none;
+  }
+  .m-coffee-short {
+    display: inline;
+  }
+}
