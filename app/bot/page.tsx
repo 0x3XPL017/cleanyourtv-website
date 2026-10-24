@@ -77,20 +77,20 @@ const RESULTS: { label: string; from: string; to: string; note: string }[] = [
   { label: "Wrong merges", from: "2", to: "2", note: "v4: #787 and #794, both sent back for changes" },
 ];
 
-// The receipt: recomputed read-only on 24 Oct 2026, 07:10 UTC. Reviews and timing from the bot's sticky comments, spend from
-// each review's cost_usd in the bot's Actions logs (the 0G PC router's listed per-token prices), outcomes from GitHub.
-const RECEIPT_ASOF = "24 Oct 2026, 12:40 IST";
-const RECEIPT: { label: string; value: string }[] = [
-  { label: "PRs reviewed", value: "633" },
-  { label: "Model spend on 0G PC", value: "$53.61" },
+// The receipt. Review runs and PRs carrying a review are live (loadBotStats, the same counts as "Reviews run" below).
+// The rest was recomputed read-only on 24 Oct 2026, 08:05 UTC: spend from each review's cost_usd in the bot's Actions
+// logs (the 0G PC router's listed per-token prices), timing from the bot's sticky comments, calls from GitHub.
+const RECEIPT_ASOF = "24 Oct 2026, 13:35 IST";
+const RECEIPT_FIXED: { label: string; value: string }[] = [
+  { label: "Model spend on 0G PC", value: "$53.81" },
   { label: "Median time to review", value: "87 s" },
-  { label: "Merge calls merged", value: "230 of 232" },
+  { label: "Same call as the maintainer*", value: "246 of 248" },
 ];
 const RECEIPT_DAYS: [string, string][] = [
   ["Wed 21 Oct", "$15.64"],
   ["Thu 22 Oct", "$20.25"],
   ["Fri 23 Oct", "$14.23"],
-  ["Sat 24 Oct, so far", "$3.50"],
+  ["Sat 24 Oct, so far", "$3.69"],
 ];
 
 const ROADMAP: { phase: string; name: string; status: string; live?: boolean; text: string }[] = [
@@ -169,7 +169,11 @@ export default async function Bot() {
               <span>Receipt · since 21 Oct</span>
             </h2>
             <ul className="bot-rcpt-lines">
-              {RECEIPT.map((r) => (
+              {[
+                { label: "Review runs", value: n(s.runs) },
+                { label: "PRs carry its review", value: n(s.reviewed) },
+                ...RECEIPT_FIXED,
+              ].map((r) => (
                 <li key={r.label}><span>{r.label}</span><i aria-hidden="true" /><b>{r.value}</b></li>
               ))}
             </ul>
@@ -182,9 +186,9 @@ export default async function Bot() {
             <p className="bot-rcpt-foot">Runs on 0G Private Computer</p>
           </div>
           <div className="bot-rcpt-notes">
-            <p><b>5.5¢ a review</b> is the median: 958 reviews of 618 PRs, re-reviews after a push included. A PR costs 6.5¢ over all its reviews, median.</p>
-            <p><b>Merge calls merged:</b> PRs where the bot suggested a merge on its own and the maintainer has since decided. The two others were duplicates of another PR, which it now checks for. Not a blind test: the maintainer could see the suggestion.</p>
-            <p className="bot-small">As of {RECEIPT_ASOF}. Time to review: from a PR opening to the bot&rsquo;s comment, for the 508 PRs opened since it went live. Spend: each review&rsquo;s cost in the bot&rsquo;s run logs, at the 0G PC router&rsquo;s listed prices.</p>
+            <p><b>5.5¢ a review</b> is the median model cost of one review on 0G PC. Re-checking an unchanged push costs nothing.</p>
+            <p><b>*Same call as the maintainer:</b> when the bot made the call on its own, the maintainer later did the same thing 246 times out of 248. Not a blind test: the maintainer could see its suggestion. Both misses were duplicates of another PR, which it now checks for. Its merge calls: 230 of 232 merged.</p>
+            <p className="bot-small">Review runs and PRs carrying its review are live counts from GitHub. Spend, time to review and calls as of {RECEIPT_ASOF}. Time to review: from a PR opening to the bot&rsquo;s comment, median. Spend: each review&rsquo;s cost in the bot&rsquo;s run logs, at the 0G PC router&rsquo;s listed prices.</p>
           </div>
         </section>
 
@@ -299,7 +303,7 @@ export default async function Bot() {
             <li className="bot-card">
               <span className="bot-r-label">Reviews run</span>
               <span className="bot-r-nums"><b>{n(s.runs)}</b></span>
-              <span className="bot-small">successful runs since 21 Oct, re-reviews and sweeps included</span>
+              <span className="bot-small">successful runs since 21 Oct; {n(s.reviewed)} PRs carry its review</span>
             </li>
           </ul>
           <div className="bot-card bot-method">
