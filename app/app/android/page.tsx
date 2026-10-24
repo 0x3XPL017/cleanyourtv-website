@@ -17,7 +17,7 @@ const title = "Clean Your TV app for Android phones";
 const description =
   "A community-built phone app for Clean Your TV: clean up your Android TV or Google TV from your Android phone over Wi-Fi. No laptop, no coding agent, no cables. Free and open source.";
 const BANNER_ALT =
-  "Community app for Clean Your TV. Clean your TV from your phone. No laptop. No coding agent. Open the app on your Android phone, tap Start, and the ads and bloat are gone in about five minutes. Three steps: connect, analyse, clean.";
+  "Community-maintained app for Clean Your TV. Clean your TV from your phone. No laptop. No coding agent. Open the app on your Android phone, tap Start, and the ads and bloat are gone in about five minutes. Three steps: connect, analyse, clean.";
 
 export const metadata = pageMeta("/app/android", title, description, {
   image: { url: `${IMG}/og.png`, width: 1200, height: 630, alt: BANNER_ALT },
@@ -151,7 +151,7 @@ export default function AndroidApp() {
         {/* Hero: the pitch on the left, his banner's phone and TV on the right (below on phones). */}
         <header className="and-hero">
           <div className="and-hero-text">
-            <p className="and-tag"><span aria-hidden="true" />Community app for Clean Your TV</p>
+            <p className="and-tag"><span aria-hidden="true" />Community-maintained app for Clean Your TV</p>
             <h1 className="and-title">Clean your TV <em>from your phone</em></h1>
             <p className="and-lede">
               <b>No laptop. No coding agent.</b> Open the app on your Android phone, tap Start, and the ads and bloat are gone in about five minutes.
